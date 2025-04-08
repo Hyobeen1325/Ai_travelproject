@@ -27,7 +27,7 @@ public class HBController {
 				.fromUriString("https://openapi.naver.com")
 				.path("/v1/search/local.json")
 				.queryParam("query", text)
-				.queryParam("display", 5)
+				.queryParam("display", 1)
 				.queryParam("start", 1)
 				.queryParam("sort", "random")
 				.encode(Charset.forName("UTF-8"))
