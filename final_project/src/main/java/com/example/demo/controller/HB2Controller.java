@@ -11,4 +11,8 @@ public class HB2Controller {
 		return "test";
 	}
 	
+	@RequestMapping("/kakaoAPI")
+	public String kakao() {
+		return "kakaoAPI";
+	}
 }
