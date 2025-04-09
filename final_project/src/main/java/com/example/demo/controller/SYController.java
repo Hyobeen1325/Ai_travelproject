@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequestMapping("/login") // 클래스 공통 경로
+@RequestMapping("/login")  // 클래스 공통 경로
 public class SYController { // 유 컨트롤
 	
 	// 로그인 페이지
