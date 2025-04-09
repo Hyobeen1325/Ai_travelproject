@@ -12,14 +12,14 @@ public class SYController { // 유 컨트롤
 	// http://localhost:8080/login
 	@GetMapping("")
 	public String login() {
-		return "user/login"; // /WEB-INF/jsp/user/login.jsp
+		return "login"; // /WEB-INF/jsp/user/login.jsp
 	}
 	
 	//마이 페이지 (내정보 관리)
 	// http://localhost:8080/login/mypage
 	@GetMapping("/mypage")
 	public String mypage() {
-		return "user/mypage";
+		return "mypage";
 	}
 
 }
