@@ -177,9 +177,12 @@
                         <td>2025-04-10</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="edit-btn" onclick="location.href='${pageContext.request.contextPath}/admin/member/edit?memberId=${member.id}'">수정</button>
-                                <button class="delete-btn" onclick="deleteMember('${member.id}', '${member.name}')">삭제</button>
-                            </div>
+                                <button class="edit-btn" >수정</button>
+                                <button class="delete-btn" >삭제</button>
+								
+								<!--<button class="edit-btn" onclick="location.href='${pageContext.request.contextPath}/admin/member/edit?memberId=${member.id}'">수정</button>
+								<button class="delete-btn" onclick="deleteMember('${member.id}', '${member.name}')">삭제</button>-->
+								</div>
                         </td>
                     </tr>
                 
