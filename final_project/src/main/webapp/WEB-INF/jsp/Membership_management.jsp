@@ -149,7 +149,7 @@
                 </tr>
             </thead>
             <tbody>
-              <-- <c:forEach items="${members}" var="member" varStatus="status">
+              <!-- <c:forEach items="${members}" var="member" varStatus="status">
                     <tr>
                         <td>${status.count}</td>
                         <td>${member.name}</td>
@@ -165,8 +165,8 @@
                             </div>
                         </td>
                     </tr>
-                </c:forEach> -->
-                            
+                </c:forEach> 
+				-->
                     <tr>
                         <td>1</td>
                         <td>홍길동</td>
