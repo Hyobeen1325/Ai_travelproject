@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -147,25 +149,43 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- 단일 행만 표시 (샘플 데이터) -->
-                <tr>
-                    <td>1</td>
-                    <td>회원1</td>
-                    <td>닉네임1</td>
-                    <td>member1@example.com</td>
-                    <td>010-1234-5671</td>
-                    <td>24-04-04</td>
-                    <td>24-04-04</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="edit-btn" onclick="location.href='${pageContext.request.contextPath}/admin/member/edit?memberId=1'">수정</button>
-                            <button class="delete-btn" onclick="deleteMember('1', '회원1')">삭제</button>
-                        </div>
-                    </td>
-                </tr>
+              <-- <c:forEach items="${members}" var="member" varStatus="status">
+                    <tr>
+                        <td>${status.count}</td>
+                        <td>${member.name}</td>
+                        <td>${member.nickname}</td>
+                        <td>${member.email}</td>
+                        <td>${member.phone}</td>
+                        <td><fmt:formatDate value="${member.createdDate}" pattern="yy-MM-dd"/></td>
+                        <td><fmt:formatDate value="${member.modifiedDate}" pattern="yy-MM-dd"/></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="edit-btn" onclick="location.href='${pageContext.request.contextPath}/admin/member/edit?memberId=${member.id}'">수정</button>
+                                <button class="delete-btn" onclick="deleteMember('${member.id}', '${member.name}')">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach> -->
+                            
+                    <tr>
+                        <td>1</td>
+                        <td>홍길동</td>
+                        <td>병맛레시피</td>
+                        <td>aaa@gmail.com</td>
+                        <td>010-1234-5678</td>
+                        <td>2025-04-09</td>
+                        <td>2025-04-10</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="edit-btn" onclick="location.href='${pageContext.request.contextPath}/admin/member/edit?memberId=${member.id}'">수정</button>
+                                <button class="delete-btn" onclick="deleteMember('${member.id}', '${member.name}')">삭제</button>
+                            </div>
+                        </td>
+                    </tr>
+                
             </tbody>
         </table>
-//
+
         <div class="pagination">
             <% 
                 int currentPage = (Integer) request.getAttribute("currentPage");
@@ -198,7 +218,20 @@
     <script>
         function deleteMember(memberId, memberName) {
             if (confirm('회원 [' + memberName + '] (ID: ' + memberId + ') 정말 삭제하시겠습니까?\n삭제 후 복구할 수 없습니다.')) {
-                alert('삭제 기능은 아직 구현되지 않았습니다.');
+                fetch('${pageContext.request.contextPath}/admin/member/delete/' + memberId, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('삭제되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('삭제 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    alert('오류가 발생했습니다: ' + error);
+                });
             }
         }
     </script>
