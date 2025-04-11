@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class JHResponse {
-    private String message;
+    private String response;
 }
 

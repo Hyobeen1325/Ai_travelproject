@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JHRequestDto {
-    private String schedule;
-    private String theme;
-    private String loc1;
+    private String message;
 }
