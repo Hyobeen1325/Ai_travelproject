@@ -13,6 +13,7 @@ public class CWTravelAPI_00_Request {
 	private String sigunguCodeVal;
 	private String cat1Val;
 	private String cat2Val;
+	private int contentTypeIdVal;
 	
 
 }
