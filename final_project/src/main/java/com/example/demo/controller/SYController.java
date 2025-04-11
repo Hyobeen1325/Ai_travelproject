@@ -32,7 +32,7 @@ public class SYController { // 유저 관리 컨트롤러
         return "login"; // /WEB-INF/jsp/login.jsp
     }
 
-    // kakao 로그인 redirect 처리
+    // kakao 로그인 redirect 
     // http://localhost:8080/login/kakaologin?code=...
     @GetMapping("/kakaologin")
     public String kakaologin(@RequestParam("code") String code, Model model) {
