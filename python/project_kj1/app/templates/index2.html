@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 응답 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dcd5c4bab6de479a15aa752115990e79&autoload=false"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 왼쪽 섹션 -->
+        <div class="left-section">
+            <!-- 지도 -->
+            <div class="map-container" id="map"></div>
+
+            <!-- 여행 정보 -->
+            <div class="travel-info">
+                <!-- 여행 코스 컨테이너 -->
+                <div class="course-container">
+                    <!-- 원형 일정 -->
+                    <div class="schedule-circle">당일</div>
+                    
+                    <!-- 파란색 여행 코스 박스 -->
+                    <div class="course-box">
+                        <h2>xxx님을 위한 여행 코스</h2>
+                        <!-- 여행 상세 정보 -->
+                        <div class="travel-details">
+                            <div class="detail-item">
+                                <span>총 이동거리:</span>
+                                <span>4.2km</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>이동 지역:</span>
+                                <span>서울시 강남구 역삼동</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>추천 여행지:</span>
+                                <span>강남역, 선릉역, 역삼역</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 이전 검색 기록 섹션 -->
+                <div class="search-history-section">
+                    <h3>이전 검색 기록</h3>
+                    <ul class="search-history-list">
+                        <li>검색어 1</li>
+                        <li>검색어 2</li>
+                        <li>검색어 3</li>
+                        <li>검색어 4</li>
+                        <li>검색어 5</li>
+                        <li>검색어 6</li>
+                        <li>검색어 7</li>
+                        <li>검색어 8</li>
+                        <li>검색어 9</li>
+                        <li>검색어 10</li>
+                    </ul>
+                </div>
+
+                <!-- 이전 화면 버튼 -->
+                <button class="back-button" onclick="history.back()">
+                    이전
+                </button>
+            </div>
+        </div>
+
+        <!-- 검색 결과 섹션 -->
+        <div class="query-result">
+            <p>검색어: {{ query }}</p>
+            <div class="ai-response">
+                <h3>AI 응답:</h3>
+                <div class="response-content">
+                    {% if ai_response %}
+                        <p>{{ ai_response | safe | replace('\n', '<br>') }}</p>
+                    {% else %}
+                        <p>이곳에 AI 모델의 응답이 표시됩니다.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 검색 폼 -->
+        <form action="/chat" method="get" style="position: absolute; bottom: 20px;">
+            <div class="search-container">
+                <input type="text" name="query" class="search-input" placeholder="무엇이든 물어보세요">
+                <button type="submit" class="search-button">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 카카오맵 로드 함수
+        function loadKakaoMap() {
+            kakao.maps.load(function() {
+                var mapContainer = document.getElementById('map');
+                var mapOption = {
+                    center: new kakao.maps.LatLng(37.5012, 127.0396),
+                    level: 3
+                };
+                
+                try {
+                    var map = new kakao.maps.Map(mapContainer, mapOption);
+                } catch (e) {
+                    console.error('지도 로드 실패:', e);
+                }
+            });
+        }
+        
+        // 페이지 로드 시 지도 초기화
+        window.onload = function() {
+            loadKakaoMap();
+        };
+    </script>
+</body>
+</html> 
