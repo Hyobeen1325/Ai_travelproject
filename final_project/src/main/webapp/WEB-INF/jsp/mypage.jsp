@@ -7,331 +7,260 @@
   <title>My Page</title>
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background-color: #f8fafd;
-      min-height: 100vh;
-      padding: 20px;
-      color: #1a2b4d;
-    }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #e6f3ff;
+  color: #1a2b4d;
+  min-height: 100vh;
+  padding-top: 100px;
+  position: relative;
+}
 
-    /* 로고 관련 스타일 */
-    .logo-container {
-      text-align: left;
-      padding: 15px 25px;
-      margin-bottom: 20px;
-      border-bottom: none;
-      background-color: transparent;
-      position: relative;
-      box-shadow: none;
-    }
+.logo-container {
+  position: fixed;
+  top: 20px;
+  left: 30px;
+  z-index: 1000;
+}
 
-    .logo {
-      max-width: 120px;
-      height: auto;
-      transition: transform 0.2s ease;
-    }
+.logo {
+  width: 160px;
+  height: auto;
+  transition: transform 0.2s ease;
+}
 
-    .logo:hover {
-      transform: scale(1.05);
-    }
+.logo:hover {
+  transform: scale(1.05);
+}
 
-    /* 마이페이지 박스 스타일 */
-    .mypage-box {
-      max-width: 580px;
-      margin: 20px auto 0 auto;
-      background-color: white;
-      padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(31, 68, 135, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+.mypage-box {
+  max-width: 600px;
+  margin: 100px auto;
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(31, 68, 135, 0.08);
+}
 
-    .mypage-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 50px rgba(31, 68, 135, 0.12);
-    }
+.mypage-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 25px;
+  text-align: left;
+}
 
-    .mypage-title {
-      font-size: 30px;
-      font-weight: 600;
-      color: #1a2b4d;
-      margin-bottom: 30px;
-      letter-spacing: -0.3px;
-      text-align: center;
-    }
+.mypage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-    /* 폼 관련 스타일 */
-    .mypage-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+/* ✅ 로그인 스타일과 통일된 입력창 스타일 */
+.mypage-input,
+.modal-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
 
-    .mypage-input,
-    .modal-input {
-      width: 100%;
-      padding: 14px;
-      font-size: 14px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      border: 1px solid #e4e9f2;
-      border-radius: 12px;
-      outline: none;
-      transition: all 0.2s ease;
-      background-color: #f8fafd;
-      color: #1a2b4d;
-    }
+.mypage-input:focus,
+.modal-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+  background-color: white;
+}
 
-    .mypage-input::placeholder,
-    .modal-input::placeholder {
-      color: #8e9cb4;
-      font-size: 14px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
+.mypage-input[readonly] {
+  background-color: white; /* ← 기존 회색 → 흰색으로 변경 */
+  cursor: not-allowed;
+}
 
-    .mypage-input:focus,
-    .modal-input:focus {
-      border-color: #3b7dff;
-      background-color: white;
-      box-shadow: 0 0 0 3px rgba(59, 125, 255, 0.1);
-    }
 
-    .mypage-input:disabled,
-    .mypage-input[readonly] {
-      background-color: #f0f3f9;
-      cursor: not-allowed;
-    }
+.mypage-button {
+  align-self: flex-end;
+  padding: 12px 24px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-    /* 버튼 스타일 */
-    .mypage-button {
-      width: auto;
-      padding: 14px 28px;
-      background-color: #3b7dff;
-      color: white;
-      font-size: 14px;
-      font-weight: 500;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      letter-spacing: -0.2px;
-      align-self: flex-end;
-    }
+.mypage-button:hover {
+  background-color: #357abd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
 
-    .mypage-button:hover {
-      background-color: #2d6bea;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 125, 255, 0.2);
-    }
+.error-message {
+  color: #ff3b3b;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff1f1;
+  border-radius: 8px;
+}
 
-    .mypage-button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(59, 125, 255, 0.15);
-    }
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(26, 43, 77, 0.4);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
 
-    /* 모달 스타일 */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(26, 43, 77, 0.4);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(4px);
-      animation: fadeIn 0.2s ease;
-    }
+.modal-content {
+  background-color: white;
+  padding: 35px;
+  border-radius: 20px;
+  width: 480px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(31, 68, 135, 0.15);
+  animation: slideUp 0.3s ease;
+}
 
-    .modal-content {
-      background-color: white;
-      padding: 35px;
-      border-radius: 20px;
-      width: 480px;
-      position: relative;
-      box-shadow: 0 25px 50px -12px rgba(31, 68, 135, 0.15);
-      animation: slideUp 0.3s ease;
-    }
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a2b4d;
+  margin-bottom: 20px;
+}
 
-    .modal-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: #1a2b4d;
-      margin-bottom: 25px;
-      letter-spacing: -0.3px;
-    }
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-    .modal-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
 
-    .modal-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 25px;
-    }
+.modal-button {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-    .modal-button {
-      padding: 14px 24px;
-      font-size: 14px;
-      font-weight: 500;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      letter-spacing: -0.2px;
-      width: auto;
-    }
+.modal-cancel {
+  background-color: #e0e0e0;
+  color: #333;
+}
 
-    .modal-cancel {
-      background-color: #eef1f8;
-      color: #1a2b4d;
-    }
+.modal-save {
+  background-color: #4a90e2;
+  color: white;
+}
 
-    .modal-cancel:hover {
-      background-color: #e4e9f2;
-    }
+.modal-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-    .modal-save {
-      background-color: #3b7dff;
-      color: white;
-    }
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
 
-    .modal-save:hover {
-      background-color: #2d6bea;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 125, 255, 0.2);
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-    .close-button {
-      position: absolute;
-      top: 25px;
-      right: 25px;
-      font-size: 22px;
-      color: #8e9cb4;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 5px;
-      transition: all 0.2s ease;
-    }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    .close-button:hover {
-      color: #1a2b4d;
-      transform: rotate(90deg);
-    }
+@media (max-width: 768px) {
+  .mypage-box {
+    margin: 100px 16px;
+    padding: 28px;
+  }
 
-    /* 애니메이션 */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+  .modal-content {
+    width: 90%;
+    margin: 20px;
+  }
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+  .mypage-button,
+  .modal-button {
+    width: 100%;
+  }
 
-    /* 에러 메시지 스타일 */
-    .error-message {
-      color: #ff3b3b;
-      font-size: 12px;
-      text-align: center;
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #fff1f1;
-      border-radius: 8px;
-      animation: shake 0.5s ease;
-    }
+  .modal-buttons {
+    flex-direction: column;
+  }
+}
 
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 768px) {
-      .mypage-box {
-        margin: 10px;
-        padding: 25px;
-      }
-
-      .modal-content {
-        width: 90%;
-        margin: 20px;
-      }
-
-      .mypage-button {
-        width: 100%;
-      }
-
-      .modal-buttons {
-        flex-direction: column;
-      }
-
-      .modal-button {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
-  <%-- 로그인 체크 임시 주석처리
-  <c:if test="${empty sessionScope.userName}">
-    <c:redirect url="/login"/>
-  </c:if>
-  --%>
 
-  <!-- 로고 영역 -->
+  <!-- 로고 -->
   <div class="logo-container">
     <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
   </div>
 
-  <!-- 마이페이지 섹션 -->
-  <div class="section-container">
-    <div class="section-content">
-      <div class="mypage-box">
-        <div class="mypage-title">
-          내정보
-        </div>
+  <!-- 마이페이지 박스 -->
+  <div class="mypage-box">
+    <div class="mypage-title">내정보</div>
 
-        <c:if test="${not empty message}">
-          <p class="error-message">${message}</p>
-        </c:if>
+    <c:if test="${not empty message}">
+      <p class="error-message">${message}</p>
+    </c:if>
 
-        <form class="mypage-form" action="<c:url value='/login/update-profile'/>" method="post">
-          <input type="text" placeholder="이름" class="mypage-input" name="name" 
-                 value="${sessionScope.userName}" readonly>
-          <input type="text" placeholder="닉네임" class="mypage-input" name="nickname" 
-                 value="${sessionScope.userNickname}">
-          <input type="tel" placeholder="전화번호" class="mypage-input" name="phone" 
-                 value="${sessionScope.userPhone}">
-          <input type="text" placeholder="아이디" class="mypage-input" name="id" 
-                 value="${sessionScope.userId}">
-          <button type="submit" class="mypage-button">수정</button>
-        </form>
-      </div>
-    </div>
+    <form class="mypage-form" id="mainForm">
+      <input type="text" placeholder="이름" class="mypage-input" name="name" value="${sessionScope.userName}" readonly>
+      <input type="text" placeholder="닉네임" class="mypage-input" name="nickname" value="${sessionScope.userNickname}">
+      <input type="tel" placeholder="전화번호" class="mypage-input" name="phone" value="${sessionScope.userPhone}">
+      <input type="text" placeholder="아이디" class="mypage-input" name="id" value="${sessionScope.userId}">
+      <button type="button" class="mypage-button" onclick="openModal()">수정</button>
+    </form>
   </div>
 
-  <!-- 모달 추가 -->
+  <!-- 모달 -->
   <div class="modal" id="editModal">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal()">&times;</button>
@@ -353,56 +282,48 @@
     const mainForm = document.querySelector('.mypage-form');
     const editForm = document.getElementById('editForm');
 
-    mainForm.querySelector('.mypage-button').addEventListener('click', function(e) {
-      e.preventDefault();
+    function openModal() {
       const inputs = mainForm.querySelectorAll('.mypage-input');
-      const modalInputs = document.querySelectorAll('.modal-input');
-      
-      modalInputs[0].value = inputs[1].value;
-      modalInputs[1].value = inputs[2].value;
-      modalInputs[2].value = inputs[3].value;
-      
+      document.getElementById('editNickname').value = inputs[1].value;
+      document.getElementById('editPhone').value = inputs[2].value;
+      document.getElementById('editId').value = inputs[3].value;
       modal.style.display = 'flex';
-    });
+    }
 
     function closeModal() {
       modal.style.display = 'none';
     }
 
-    editForm.addEventListener('submit', function(e) {
+    editForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const formData = new FormData(this);
-      
+
       fetch('<c:url value="/login/update-profile"/>', {
         method: 'POST',
         body: formData
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          const modalInputs = document.querySelectorAll('.modal-input');
-          const mainInputs = mainForm.querySelectorAll('.mypage-input');
-          
-          mainInputs[1].value = modalInputs[0].value;
-          mainInputs[2].value = modalInputs[1].value;
-          mainInputs[3].value = modalInputs[2].value;
-          
-          closeModal();
-        } else {
-          alert('업데이트에 실패했습니다. 다시 시도해주세요.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('오류가 발생했습니다. 다시 시도해주세요.');
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const mainInputs = mainForm.querySelectorAll('.mypage-input');
+            mainInputs[1].value = document.getElementById('editNickname').value;
+            mainInputs[2].value = document.getElementById('editPhone').value;
+            mainInputs[3].value = document.getElementById('editId').value;
+            closeModal();
+          } else {
+            alert('업데이트에 실패했습니다.');
+          }
+        })
+        .catch(() => {
+          alert('오류가 발생했습니다.');
+        });
     });
 
-    window.onclick = function(event) {
-      if (event.target == modal) {
+    window.onclick = function (event) {
+      if (event.target === modal) {
         closeModal();
       }
-    }
+    };
   </script>
 </body>
 </html>
