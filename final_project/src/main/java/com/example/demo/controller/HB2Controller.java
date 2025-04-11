@@ -15,4 +15,10 @@ public class HB2Controller {
 	public String kakao() {
 		return "kakaoAPI";
 	}
+	
+	@RequestMapping("/transit")
+	// http://localhost:8080/transit
+	public String transit() {
+		return "transit";
+	}
 }
