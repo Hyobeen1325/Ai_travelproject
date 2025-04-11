@@ -16,13 +16,22 @@
 </head>
 
 <body>
-	<form action="/cwtestAPIre">
-		<input name="high_loc" type="text">
-		<input name="low_loc" type="text">
-		<input name="theme1" type="text">
-		<input name="theme2" type="text">
-		<input name="theme3" type="text">
-		<input name="theme4" type="text">
+	<form action="/cwtestAPIre" method="post">
+		상위 지역 코드 <input name="high_loc" type="text"/><br>
+		하위 지역 코드 <input name="low_loc" type="text"/><br>
+		테마1 <input name="theme1" type="text"/><br>
+		테마1 <input name="theme1" type="text"/><br>
+		테마1 <input name="theme1" type="text"/><br>
+		테마2 <input name="theme2" type="text"/><br>
+		테마2 <input name="theme2" type="text"/><br>
+		테마2 <input name="theme2" type="text"/><br>
+		테마3 <input name="theme3" type="text"/><br>
+		테마3 <input name="theme3" type="text"/><br>
+		테마3 <input name="theme3" type="text"/><br>
+		테마4 <input name="theme4" type="text"/><br>
+		테마4 <input name="theme4" type="text"/><br>
+		테마4 <input name="theme4" type="text"/><br>
+		일정 <input name="days" type="number"/><br>
 	</form>
 	<div>
 		받은 값 : 

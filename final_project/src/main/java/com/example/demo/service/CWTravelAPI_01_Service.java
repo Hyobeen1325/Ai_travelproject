@@ -26,14 +26,21 @@ public class CWTravelAPI_01_Service {
     			"serviceKey=0MHNpRPQr0BonjfZozHtGZWjNLitvGLKjNT%2BW6nBSCYW2Zz7e5ro7gq%2FMRKLoP%2FcNmbAAErU2AgWo2LvLGiIfA%3D%3D&"+
     			"pageNo=1&numOfRows=100&"+
     			"areaCode={areaCode}&"+
-    			"sigunguCode={sigunguCode}&"+
-    			"cat1={cat1}&"+
-    			"cat2={cat2}";
+    			"sigunguCode={sigunguCode}";
     	
-        return restTemplate.getForObject(
-        		TravelApiUrl,
-        		CWTravelAPI_06_FinalRequest.class,
-        		areaCode, sigunguCode,
-        		cat1, cat2);
+    	if(request.getContentTypeIdVal()==32) {
+    		TravelApiUrl+="contentTypeId=32";
+            return restTemplate.getForObject(
+            		TravelApiUrl,
+            		CWTravelAPI_06_FinalRequest.class,
+            		areaCode, sigunguCode);
+    	}else {
+    		TravelApiUrl += "&cat1={cat1}&"+"cat2={cat2}";
+            return restTemplate.getForObject(
+            		TravelApiUrl,
+            		CWTravelAPI_06_FinalRequest.class,
+            		areaCode, sigunguCode,
+            		cat1, cat2);
+    	}
     }
 }

@@ -74,6 +74,9 @@ public class CWController {
 	        	responses.add(items);
         	}
     	}
+    	//if(days>1) {
+    		
+    	//}
     	
         model.addAttribute("responses", responses);
         return "\\cw-test\\cwAPItest";
