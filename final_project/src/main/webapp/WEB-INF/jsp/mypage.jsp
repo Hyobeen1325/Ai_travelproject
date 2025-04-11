@@ -301,7 +301,7 @@
 
   <!-- 로고 영역 -->
   <div class="logo-container">
-    <img src="<c:url value='/image.png' />" alt="Logo" class="logo">
+    <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
   </div>
 
   <!-- 마이페이지 섹션 -->

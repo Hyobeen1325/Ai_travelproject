@@ -207,7 +207,7 @@
 
   <!-- 로고 -->
   <div class="logo-container">
-  <img src="<c:url value='image.png' />" alt="Logo" class="logo">
+  <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
   </div>
 
   <!-- 로그인 박스 -->
@@ -245,7 +245,8 @@
       <button type="submit" class="login-button">
         로그인
       </button>
-      <button type="button" class="kakao-login-btn" onclick="location.href='<c:url value='/user/kakao-login'/>'">
+     <button type="button" class="kakao-login-btn" onclick="location.href='${location}'"> 
+    											<!--  location : kakao 로그인 정보  -->
         <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" 
              alt="kakao" 
              class="kakao-icon">
