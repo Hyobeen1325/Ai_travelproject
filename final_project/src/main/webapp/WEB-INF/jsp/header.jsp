@@ -21,7 +21,7 @@
   <h3>메뉴</h3>
   <ul>
     <li><a href="/page0">메인홈</a></li>
-    <li><a href="/mypage">마이페이지</a></li>
+    <li><a href="/login/mypage">마이페이지</a></li>
     <li><a href="/login">로그아웃</a></li>
   </ul>
   <button class="button" style="color: white;" onclick="togglePopup()">닫기</button> <!-- 버튼 텍스트 색상 하얀색으로 변경 -->

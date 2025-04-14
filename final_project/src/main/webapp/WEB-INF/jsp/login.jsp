@@ -241,7 +241,8 @@
 
   <div class="signup-wrapper">
     <span class="signup-text">계정이 없으신가요?</span>
-     <a href="/Membership_management" class="signup-link">회원가입</a>
+     <a href="/join" class="signup-link">회원가입</a> 
+   			<!-- join: 컨트롤러로 설정 url -->
   </div>
 </div>
 <jsp:include page="header2.jsp" />

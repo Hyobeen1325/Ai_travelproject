@@ -45,7 +45,7 @@ public class SYController { // 유저 관리 컨트롤러
     // 회원가입 페이지
     @GetMapping("/join")
     public String join() {
-        return "join_member"; // /WEB-INF/jsp/signup.jsp
+        return "/Membership_managemen"; // /WEB-INF/jsp/signup.jsp
     }
 
     
