@@ -1,7 +1,8 @@
 package com.example.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CWTravelAPI_04_BodyRequest {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CWTravelAPI_03_Body {
 	
 	// 참고 구조
 	/*
@@ -56,18 +58,14 @@ public class CWTravelAPI_04_BodyRequest {
 }
 	
 	 */
-	
-	@JsonProperty("items")
-	private CWTravelAPI_03_ItemsRequest items;
-	
-	@JsonProperty("numOfRows")
-	private int numOfRows;
-	
-	@JsonProperty("pageNo")
-	private int pageNo;
-	
-	@JsonProperty("totalCount")
-	private int totalCount;
+
+	private CWTravelAPI_02_Items items;
+
+	private String numOfRows;
+
+	private String pageNo;
+
+	private String totalCount;
 	
 
 }

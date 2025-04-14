@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.dto.CWTravelAPI_02_ItemRequest;
-
 @Service
 public class CWThemeService {
 	// 선택한 테마값 저장하는 서비스단

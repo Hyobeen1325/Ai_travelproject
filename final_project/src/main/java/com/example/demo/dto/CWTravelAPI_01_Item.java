@@ -1,7 +1,8 @@
 package com.example.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,69 +10,70 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CWTravelAPI_01_AreaListRequest {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CWTravelAPI_01_Item {
 	
 	// 관광 API에서 받아 LLM에게 전달하고 다시 받을 값들
-	@JsonProperty("addr1")
+	@XmlElement(required = false) // 값이 null이면 건너뜀
 	private String addr1;
 	
-	@JsonProperty("addr2")
+	@XmlElement(required = false)
 	private String addr2;
 	
-	@JsonProperty("areacode")
+	@XmlElement(required = false)
 	private String areacode;
-	
-	@JsonProperty("booktout")
+
+	@XmlElement(required = false)
 	private String booktout;
-	
-	@JsonProperty("cat1")
+
+	@XmlElement(required = false)
 	private String cat1;
-	
-	@JsonProperty("cat2")
+
+	@XmlElement(required = false)
 	private String cat2;
 
-	@JsonProperty("cat3")
+	@XmlElement(required = false)
 	private String cat3;
 
-	@JsonProperty("contentid")
+	@XmlElement(required = false)
 	private String contentid;
 
-	@JsonProperty("contenttypeid")
+	@XmlElement(required = false)
 	private String contenttypeid;
 
-	@JsonProperty("createdtime")
+	@XmlElement(required = false)
 	private String createdtime;
 
-	@JsonProperty("firstimage")
+	@XmlElement(required = false)
 	private String firstimage;
 
-	@JsonProperty("firstimage2")
+	@XmlElement(required = false)
 	private String firstimage2;
 
-	@JsonProperty("cpyrhtDivCd")
+	@XmlElement(required = false)
 	private String cpyrhtDivCd;
 
-	@JsonProperty("mapx")
+	@XmlElement(required = false)
 	private String mapx;
 
-	@JsonProperty("mapy")
+	@XmlElement(required = false)
 	private String mapy;
 
-	@JsonProperty("mlevel")
+	@XmlElement(required = false)
 	private String mlevel;
 
-	@JsonProperty("modifiedtime")
+	@XmlElement(required = false)
 	private String modifiedtime;
 
-	@JsonProperty("sigungucode")
+	@XmlElement(required = false)
 	private String sigungucode;
 
-	@JsonProperty("tel")
+	@XmlElement(required = false)
 	private String tel;
 
-	@JsonProperty("title")
+	@XmlElement(required = false)
 	private String title;
 
-	@JsonProperty("zipcode")
+	@XmlElement(required = false)
 	private String zipcode;
 }
