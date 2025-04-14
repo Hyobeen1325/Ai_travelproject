@@ -210,7 +210,7 @@
             localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
             
             setTimeout(() => {
-                location.href = '#';
+                location.href = '/ask';
             }, 500);
         });
 
@@ -219,7 +219,7 @@
             location.href = '/page2';
         });
 
-        // 페이지 로드 시 이전에 선택한 테마가 있다면 표시
+/*         // 페이지 로드 시 이전에 선택한 테마가 있다면 표시
         window.addEventListener('load', function() {
             const savedThemes = JSON.parse(localStorage.getItem('selectedThemes') || '[]');
             if (savedThemes.length > 0) {
@@ -230,7 +230,7 @@
                     }
                 });
             }
-        });
+        }); */
     </script>
 </body>
 </html> 
