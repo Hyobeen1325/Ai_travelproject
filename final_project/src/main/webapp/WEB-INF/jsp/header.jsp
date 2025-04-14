@@ -4,7 +4,7 @@
 <!-- 상단 헤더 -->
 <nav>
   <div class="nav-container">
-    <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo-img">
+    <a href="/project1"><img src="<c:url value='/image/logo.png'/>" alt="Logo" class="logo-img"></img></a>
     <div class="logo-text" style="color: black;">소담여행</div> <!-- 텍스트 색상 검정색으로 변경 -->
    
     <div class="menu-icon">
@@ -20,8 +20,8 @@
 <div id="popup">
   <h3>메뉴</h3>
   <ul>
-    <li><a href="/page0">메인홈</a></li>
-    <li><a href="/login/mypage">마이페이지</a></li>
+    <li><a href="/project1">메인홈</a></li>
+    <li><a href="/login/mypage">마이페이지</a></li>  <!-- ("/login/main") : 컨트롤러로 설정 url  -->
     <li><a href="/login">로그아웃</a></li>
   </ul>
   <button class="button" style="color: white;" onclick="togglePopup()">닫기</button> <!-- 버튼 텍스트 색상 하얀색으로 변경 -->
