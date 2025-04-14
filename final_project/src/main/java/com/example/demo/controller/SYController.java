@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/login")  // 클래스 공통 경로
 public class SYController { // 유저 관리 컨트롤러
-	
+    
 	// Rest API
     @Value("${kakao.client_id}") 
     private String client_id;
@@ -31,7 +31,7 @@ public class SYController { // 유저 관리 컨트롤러
 
         return "login"; // /WEB-INF/jsp/login.jsp
     }
-
+    
     // kakao 로그인 redirect 
     // http://localhost:8080/login/kakaologin?code=...
     @GetMapping("/kakaologin")
@@ -42,10 +42,20 @@ public class SYController { // 유저 관리 컨트롤러
         return "redirect:/page0"; //  /WEB-INF/jsp/page0.jsp
     }
     
+    // 회원가입 페이지
+    @GetMapping("/join")
+    public String join() {
+        return "join_member"; // /WEB-INF/jsp/signup.jsp
+    }
+
+    
     // 마이 페이지 (내정보 관리)
     // http://localhost:8080/login/mypage
     @GetMapping("/mypage")
     public String mypage() {
         return "mypage"; // /WEB-INF/jsp/mypage.jsp
     }
+    
+
+    
 }

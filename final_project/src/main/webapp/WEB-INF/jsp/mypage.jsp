@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
+  <jsp:include page="header.jsp" />
 <head>
   <meta charset="UTF-8">
   <title>My Page</title>
@@ -240,7 +241,7 @@ body {
 
   <!-- 로고 -->
   <div class="logo-container">
-    <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
+
   </div>
 
   <!-- 마이페이지 박스 -->
@@ -325,5 +326,6 @@ body {
       }
     };
   </script>
+<jsp:include page="header2.jsp" />
 </body>
 </html>

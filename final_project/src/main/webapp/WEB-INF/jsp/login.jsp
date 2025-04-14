@@ -208,11 +208,16 @@
   </p>
 
   <!-- 에러 메시지 -->
-  <% if (request.getAttribute("errorMsg") != null) { %>
-    <p class="error-message">
-      <%= request.getAttribute("errorMsg") %>
-    </p>
-  <% } %>
+<% 
+  String errorMsg = (String) request.getAttribute("errorMsg");
+  if (errorMsg != null) { 
+%>
+    <script type="text/javascript">
+        alert('<%= errorMsg %>');
+    </script>
+<% 
+  }
+%>
 
   <form class="login-form" action="<c:url value='/user/login'/>" method="post">
     <input type="text" name="id" placeholder="아이디" class="login-input" required value="${param.id}">
@@ -236,8 +241,9 @@
 
   <div class="signup-wrapper">
     <span class="signup-text">계정이 없으신가요?</span>
-    <a href="<c:url value='/user/signup'/>" class="signup-link">회원가입</a>
+     <a href="/Membership_management" class="signup-link">회원가입</a>
   </div>
 </div>
+<jsp:include page="header2.jsp" />
 </body>
 </html>
