@@ -21,17 +21,17 @@ import java.util.Collections;
 import java.util.List;
 
 @Controller
-@RequestMapping("/area")
-public class AreaController {
- //http://localhost:8080/area/subregions?areaCode=32
-    private static final Logger logger = LoggerFactory.getLogger(AreaController.class);
+@RequestMapping("/mainarea")
+public class MainAreaController {
+ //http://localhost:8080/mainarea/regions?numOfRows=20
+    private static final Logger logger = LoggerFactory.getLogger(MainAreaController.class);
 
-    @GetMapping("/subregions")
-    public String getSubregions(@RequestParam(value = "areaCode", defaultValue = "32") int areaCode, Model model) {
+    @GetMapping("/regions")
+    public String getSubregions(@RequestParam(value = "numOfRows", defaultValue = "1") int numOfRows, Model model) {
         try {
             String serviceKey = "zobQk13tnvYbo%2Fm%2Ff73cuxwgSffsJEm60Y%2FpBKm2hjfetSQd55bSILGX1Nq9vBi9PEGinACney4ZcjXkgXWL4A%3D%3D"; // 실제 서비스 키로 교체
             String apiUrl = "https://apis.data.go.kr/B551011/KorService1/areaCode1?serviceKey="
-                   + serviceKey + "&MobileApp=AppTest&MobileOS=ETC&pageNo=1&numOfRows=100&areaCode=" + areaCode;
+                   + serviceKey + "&MobileApp=AppTest&MobileOS=ETC&pageNo=1&numOfRows=" + numOfRows;
 
            logger.info("API URL: {}", apiUrl);
 
@@ -58,14 +58,14 @@ public class AreaController {
 
             // 모델에 데이터 추가
             model.addAttribute("items", items);
-            model.addAttribute("areaCode", areaCode);
+            model.addAttribute("numOfRows", numOfRows);
 
             // JSP 뷰 이름 반환
-            return "location"; // 기존 JSP 파일 이름에 맞춤
+            return "mainarea"; // 기존 JSP 파일 이름에 맞춤
         } catch (Exception e) {
             logger.error("Error fetching subregions", e);
             model.addAttribute("error", "데이터를 불러오는 데 실패했습니다: " + e.getMessage());
-            return "location";
+            return "mainarea";
         }
         
     }
