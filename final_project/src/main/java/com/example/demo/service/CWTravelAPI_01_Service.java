@@ -31,7 +31,7 @@ public class CWTravelAPI_01_Service {
     			"/B551011/KorService1/areaBasedList1?"+
     			"_type=json&"+
     			"mobileOS=ETC&MobileApp=APPtest"+
-    			//"&serviceKey=" + serviceKey +
+    			"&serviceKey=serviceKey" + //serviceKey + // 서비스키 부분
     			"&pageNo=1&numOfRows=100&"+
     			"areaCode="+areaCode+
     			"&sigunguCode="+sigunguCode;

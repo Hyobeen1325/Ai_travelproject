@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,6 @@ public class CWController {
     @Autowired
     private final CWTravelAPI_01_Service travelAPI_01_Service;
     
-
-    // 기본 페이지
-	@GetMapping("/cwtest2")
-	public String testpage2() {
-		return "/cw-test/cwAPItest2";
-	}
-	
     // 기본 페이지
 	@GetMapping("/cwtest")
 	public String testpage() {
@@ -130,7 +124,12 @@ public class CWController {
         		}
         	}
     	}
-    	model.addAttribute("areaList", areaList); // 리스트를 모델에 할당
+    	
+    	// 중복 제거
+        List<CWTravelAPI_01_Item> areaListF = new ArrayList<>(new HashSet<>(areaList));
+
+    	
+    	model.addAttribute("areaList", areaListF); // 리스트를 모델에 할당
     	
         return "/cw-test/cwAPIList";
     }
