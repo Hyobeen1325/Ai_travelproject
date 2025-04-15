@@ -12,9 +12,9 @@ router = APIRouter(
     tags=["member"] # 제목
 )
 
-# member 조회
-@router.get("/", response_model=list[Member])
-def read_members(db: Session = Depends(get_db)):
+# 유저 정보 조회
+@router.get("/")
+def read_member(db: Session = Depends(get_db)):
     return get_all_members(db)
 
 # 로그인
