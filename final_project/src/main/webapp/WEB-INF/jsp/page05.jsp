@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 응답 페이지</title>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dcd5c4bab6de479a15aa752115990e79&autoload=false"></script> <%-- TODO: 카카오 앱 키를 실제 값으로 변경하세요 --%>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dcd5c4bab6de479a15aa752115990e79&autoload=false&libraries=services"></script> <%-- TODO: 카카오 앱 키를 실제 값으로 변경하세요 --%>
     <style>
         /* 전체 스타일 (이전과 동일) */
         body {
@@ -322,41 +322,47 @@
     </div>
 
     <script>
-        // 카카오맵 로드 함수 (이전과 동일 - 하드코딩된 상태)
-        function loadKakaoMap() {
-            kakao.maps.load(function() {
-                var mapContainer = document.getElementById('map');
-                var mapOption = {
-                    center: new kakao.maps.LatLng(37.5012, 127.0396),
-                    level: 3
-                };
+		window.onload = function () {
+		        // JSP에서 전달된 위치값 확인
+		        var locationToMark = "${location}";
 
-                try {
-                    var map = new kakao.maps.Map(mapContainer, mapOption);
+		        kakao.maps.load(function () {
+		            var mapContainer = document.getElementById('map');
+		            var mapOption = {
+		                center: new kakao.maps.LatLng(37.5012, 127.0396), // 기본값
+		                level: 3
+		            };
+		            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-                    // 마커 위치 정의
-                    var positions = [
-                        { title: '강남역', latlng: new kakao.maps.LatLng(37.5012, 127.0396) },
-                        { title: '선릉역', latlng: new kakao.maps.LatLng(37.5045, 127.0492) },
-                        { title: '역삼역', latlng: new kakao.maps.LatLng(37.5004, 127.0367) }
-                    ];
-
-                    // 마커 생성
-                    positions.forEach(function(position) {
-                        var marker = new kakao.maps.Marker({ map: map, position: position.latlng, title: position.title });
-                        var infowindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;font-size:12px;">' + position.title + '</div>' });
-                        kakao.maps.event.addListener(marker, 'click', function() { infowindow.open(map, marker); });
-                    });
-                } catch (e) {
-                    console.error('지도 로드 실패:', e);
-                }
-            });
-        }
-
-        // 페이지 로드 시 지도 초기화
-        window.onload = function() {
-            loadKakaoMap();
-        };
+		            // 지역명을 기반으로 주소 검색
+		            if (locationToMark && locationToMark.trim() !== "") {
+		                var geocoder = new kakao.maps.services.Geocoder();
+		                geocoder.addressSearch(locationToMark, function (result, status) {
+		                    if (status === kakao.maps.services.Status.OK) {
+		                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+		                        var marker = new kakao.maps.Marker({ map: map, position: coords });
+		                        map.setCenter(coords);
+		                    } else {
+		                        console.warn("주소 검색 실패:", locationToMark);
+		                    }
+		                });
+		            } else {
+		                // 기본 마커 3개 (강남, 선릉, 역삼)
+		                var positions = [
+		                    { title: '강남역', latlng: new kakao.maps.LatLng(37.5012, 127.0396) },
+		                    { title: '선릉역', latlng: new kakao.maps.LatLng(37.5045, 127.0492) },
+		                    { title: '역삼역', latlng: new kakao.maps.LatLng(37.5004, 127.0367) }
+		                ];
+		                positions.forEach(function (position) {
+		                    var marker = new kakao.maps.Marker({
+		                        map: map,
+		                        position: position.latlng,
+		                        title: position.title
+		                    });
+		                });
+		            }
+		        });
+		    };
     </script>
 </body>
 </html>
