@@ -1,5 +1,6 @@
 # app/routers/member_router.py
 from fastapi import APIRouter,  HTTPException, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.sql_member import SQLMember
@@ -36,3 +37,8 @@ def login(request: LoginModel, db: Session = Depends(get_db)):
         reg_date=user.reg_date,
         upt_date=user.upt_date
     )
+
+# 로그아웃 
+@router.post("/logout")
+def logout(): # 로그아웃 성공
+    return JSONResponse(status_code=200, content={"msg":"로그아웃 성공!"})
