@@ -112,9 +112,10 @@ async def process_jh_message(request: JHRequestDto):
     try:
         # 사용자 메시지 처리
         message = request.message
+        arealistrq = request.arealistrq
         
         # 모델 서비스를 통한 응답 생성
-        result = model_service.process_chatbot_query(message)
+        result = model_service.process_chatbot_query(message, arealistrq)
         
         # 추천 목록을 문자열로 변환
         recommendations_text = "\n".join([f"- {item}" for item in result["recommendations"]])

@@ -161,13 +161,23 @@ class TravelModelService:
         except Exception as e:
             raise Exception(f"Gemini 분석 중 오류 발생: {str(e)}")
 
-    def process_chatbot_query(self, query: str) -> Dict[str, Any]:
+    def process_chatbot_query(self, query: str , arealistrq: str) -> Dict[str, Any]:
         """사용자 쿼리를 처리하여 Gemini API를 사용하여 응답 생성"""
         try:
-            # Use a thread pool to handle the request asynchronously
-            future = self.executor.submit(self.analyze_with_gemini, query)
+            # Use a thread pool to handle the request 
+            if arealistrq != "":
+                prompt = """
+                다음은 지역리스트입니다. 
+                이 지역간에 거리가 가깝고 
+                contenttypeid가 겹치지 않는 서로 다른 지역을
+                5개 추천하여 알려주세요. 지역리스트: 
+                """+ arealistrq
+            else:
+                prompt = "간단하고 짧게 대답해주세요. 질문: "+query
+            future = self.executor.submit(self.analyze_with_gemini, prompt)
             gemini_response = future.result(timeout=10)  # Set a timeout for the response
             combined_response = f"Gemini: {gemini_response}"
+            
 
             return {
                 "recommendations": [combined_response],
