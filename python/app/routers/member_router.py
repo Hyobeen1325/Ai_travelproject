@@ -4,23 +4,35 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.sql_member import SQLMember
 from app.services.member_service import get_all_members
-from app.schema.member import Member, LoginModel
+from app.schema.member import Member, LoginModel, MemberBase
 
 router = APIRouter(
-    prefix="/member", 
-    tags=["member"]
+    prefix="/login", # 기본 경로
+    tags=["member"] # 제목
 )
 
-# 조회
+# member 조회
 @router.get("/", response_model=list[Member])
 def read_members(db: Session = Depends(get_db)):
     return get_all_members(db)
 
 # 로그인
-@router.post("/login")
-def login(request: LoginModel, db: Session = Depends(get_db)):
-    # 사용자 정보 유효성 검사
+@router.post("/member", response_model=MemberBase)
+def login(request: LoginModel, db: Session = Depends(get_db)): 
+    # user 정보 조회(아이디, 비밀번호)
     user = db.query(SQLMember).filter(SQLMember.email == request.email).first()
-    if not user or user.pwd != request.pwd:
-        raise HTTPException(status_code=400, detail="아이디 또는 비밀번호가 틀립니다.")
-    return {"message": "로그인 성공!", "email": user.email} # 로그인 성공시 사용자 이름 반환
+    
+    # 입력값과 db 데이터 유효성 검사
+    if not user or user.pwd != request.pwd: # 로그인 실패
+        raise HTTPException(status_code=400, detail="아이디 또는 비밀번호가 올바르지 않습니다.") 
+    
+    # 로그인 성공 응답
+    return MemberBase(
+        email=user.email,
+        name=user.name,
+        nickname=user.nickname,
+        pwd=user.pwd,
+        phon_num=user.phon_num,
+        reg_date=user.reg_date,
+        upt_date=user.upt_date
+    )
