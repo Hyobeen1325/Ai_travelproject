@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CWTravelAPI_04_Response {
+public class CWTravelAPI_05_FinalResponse {
 
-	private CWTravelAPI_03_Header header;
-
-	private CWTravelAPI_03_Body body;
+	private CWTravelAPI_04_Response response;
 
 }

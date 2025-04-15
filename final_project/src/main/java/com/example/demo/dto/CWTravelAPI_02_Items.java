@@ -2,9 +2,6 @@ package com.example.demo.dto;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlAccessorType(XmlAccessType.FIELD)
 public class CWTravelAPI_02_Items {
 	
 	// 참고 구조
@@ -60,6 +56,5 @@ public class CWTravelAPI_02_Items {
 }
 	
 	 */
-	@XmlElement(name = "item")
 	private List<CWTravelAPI_01_Item> item;
 }
