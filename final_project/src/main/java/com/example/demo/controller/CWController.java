@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.dto.CWThemeRequest;
 import com.example.demo.dto.CWTravelAPI_00_Request;
 import com.example.demo.dto.CWTravelAPI_01_Item;
-import com.example.demo.dto.CWTravelAPI_04_Response;
+import com.example.demo.dto.CWTravelAPI_05_FinalResponse;
 import com.example.demo.service.CWTravelAPI_01_Service;
 
 import lombok.RequiredArgsConstructor;
@@ -73,7 +73,7 @@ public class CWController {
     	
     	int days = theme.getDays();
 
-		CWTravelAPI_04_Response response;
+		CWTravelAPI_05_FinalResponse response;
 		
     	if(days>1) { // 당일치기가 아닌 경우 경우
     		tapi_req.setContentTypeIdVal(32); // 숙소 타입의 여행지 탐색
@@ -82,10 +82,11 @@ public class CWController {
 				response = travelAPI_01_Service.getTravelAPIResponse(tapi_req);
 
 	    		if(response != null &&
-	    			    response.getBody() != null &&
-	    			    response.getBody().getItems() != null &&
-	    			    response.getBody().getItems().getItem() != null) { // 탐색한 값이 null 이 아니면
+	    			    response.getResponse().getBody() != null &&
+	    			    response.getResponse().getBody().getItems() != null &&
+	    			    response.getResponse().getBody().getItems().getItem() != null) { // 탐색한 값이 null 이 아니면
 	        		areaList.addAll(response // 리스트에 추가
+	        				.getResponse()
 	        				.getBody()
 	        				.getItems()
 	        				.getItem());
@@ -113,10 +114,11 @@ public class CWController {
 						response = travelAPI_01_Service.getTravelAPIResponse(tapi_req);
 
 		        		if(response != null &&
-		        			    response.getBody() != null &&
-		        			    response.getBody().getItems() != null &&
-		        			    response.getBody().getItems().getItem() != null) {
+		        			    response.getResponse().getBody() != null &&
+		        			    response.getResponse().getBody().getItems() != null &&
+		        			    response.getResponse().getBody().getItems().getItem() != null) {
 		            		areaList.addAll(response
+		            				.getResponse()
 		            				.getBody()
 		            				.getItems()
 		            				.getItem());
