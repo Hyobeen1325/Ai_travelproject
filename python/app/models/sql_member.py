@@ -1,9 +1,9 @@
 # app/models/sql_member.py
 from sqlalchemy import Column, String, DateTime
-from app.database.database import Base
+from app.database.database import Base # db 정보
 
 class SQLMember(Base):
-    __tablename__ = "member"  # member 테이블
+    __tablename__ = "member" # member 테이블
     
     email = Column(String(100), primary_key=True)  # 이메일(아이디)
     name = Column(String(30), nullable=False) # 이름
