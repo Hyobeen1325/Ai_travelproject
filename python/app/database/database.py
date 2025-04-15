@@ -25,7 +25,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base() # db 베이스 클래스 :  SQLAlchemy 모델에 사용
 
-
 def get_db(): # db 세션 관리 
     db = SessionLocal() # db 세션 생성 
     try:
