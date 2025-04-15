@@ -1,14 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.JHRequestDto;
-import com.example.demo.dto.JHResponseDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import com.example.demo.dto.JHRequestDto;
+
+import com.example.demo.dto.JHResponseDto;
 
 @Service
 public class JHService {
@@ -16,53 +14,42 @@ public class JHService {
     @Value("${fastapi.url:http://localhost:8000}")
     private String fastApiUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
-    // 기존 텍스트 응답 메서드
-    public String getJHResponse(JHRequestDto requestDto) {
-        try {
-            ResponseEntity<Map<String, Object>> response = restTemplate.postForEntity(
-                fastApiUrl + "/page04/message",
-                requestDto,
-                (Class<Map<String, Object>>) (Class<?>) Map.class
-            );
-
-            Map<String, Object> responseBody = response.getBody();
-            if (responseBody != null && responseBody.containsKey("response")) {
-                return (String) responseBody.get("response");
-            }
-        } catch (RestClientException e) {
-            e.printStackTrace();
-            return "AI 응답 중 오류가 발생했습니다.";
-        }
-        return "AI 응답이 비어 있습니다.";
+    public JHService() {
+        this.restTemplate = new RestTemplate();
     }
 
-    // 위치 정보 포함 응답 메서드
-    public JHResponseDto getJHResponseWithLocation(JHRequestDto requestDto) {
-        JHResponseDto responseDto = new JHResponseDto();
+    public String getJHResponse(JHRequestDto chatRequest) {
+        String url = fastApiUrl + "/page04/message";
 
-        try {
-            ResponseEntity<Map<String, Object>> response = restTemplate.postForEntity(
-                fastApiUrl + "/page04/message",
-                requestDto,
-                (Class<Map<String, Object>>) (Class<?>) Map.class
-            );
+        // FastAPI에 요청
+        JHResponseDto result = restTemplate.postForObject(url, chatRequest, JHResponseDto.class);
 
-            Map<String, Object> responseBody = response.getBody();
-            if (responseBody != null) {
-                responseDto.setResponse((String) responseBody.get("response"));
-                if (responseBody.containsKey("location")) {
-                    responseDto.setLocation((String) responseBody.get("location"));
-                }
-            } else {
-                responseDto.setResponse("AI 응답이 없습니다.");
-            }
-        } catch (RestClientException e) {
-            e.printStackTrace();
-            responseDto.setResponse("AI 호출 중 오류가 발생했습니다.");
+        // 응답 처리
+        String rawResponse = result != null ? result.getResponse() : "응답 없음";
+
+        // 여기서 가공 처리 시작
+        String processedResponse = processResponse(rawResponse);
+
+        return processedResponse;
+    }
+
+    private String processResponse(String response) {
+        if (response == null || response.isBlank()) {
+            return "FastAPI로부터 받은 유효한 응답이 없습니다.";
         }
 
-        return responseDto;
+        // 불필요한 공백 제거
+        String trimmed = response.trim();
+
+        // 줄바꿈 처리 (HTML에서 출력하기 위함)
+        String withLineBreaks = trimmed.replace("\n", "<br>");
+
+        // 추가 예시: 특정 키워드 강조
+        withLineBreaks = withLineBreaks.replaceAll("추천", "<strong>추천</strong>");
+
+        return withLineBreaks;
     }
 }
+

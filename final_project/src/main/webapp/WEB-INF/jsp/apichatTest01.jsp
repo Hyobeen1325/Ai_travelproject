@@ -310,7 +310,7 @@
 
             <!-- 검색 폼 (위치 조정됨) -->
             <div class="search-form-wrapper">
-                <form action="chat.do" method="get">
+                <form method="get">
                     <div class="search-container">
                         <%-- 입력값 유지 시에도 c:out 사용 --%>
                         <input type="text" name="query" class="search-input" placeholder="무엇이든 물어보세요" value="<c:out value="${param.query}"/>">
