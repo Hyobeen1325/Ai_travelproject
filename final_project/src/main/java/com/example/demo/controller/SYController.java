@@ -78,6 +78,14 @@ public class SYController { // 유저 관리 컨트롤러
    
    }
     
+    // 로그아웃 
+    @PostMapping("/logout")
+    public String logout(Model model) {
+    	String response = service.logout();
+    	model.addAttribute("msg", response);
+    	return "redirect:/login";
+    }
+    
     // 마이 페이지 (내정보 관리)
     // http://localhost:8080/login/mypage
     @GetMapping("/mypage")

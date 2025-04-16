@@ -11,9 +11,10 @@ import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 
 @Service 
-public class SYService { 
-	 private static final String FASTAPI_URL = "http://localhost:8000/login/member"; // FastAPI URL 
-	 
+public class SYService { // FastAPI URL 
+	 private static final String Login_URL = "http://localhost:8000/login/member"; 
+	 private static final String Logout_URL = "http://localhost:8000/login/logout"; 
+	 	// 로그인 
 	    public MemberDTO login(LoginDTO loginRequest) { //로그인 처리 모델
 	        RestTemplate restTemplate = new RestTemplate(); // REST API와 통신
 
@@ -26,12 +27,29 @@ public class SYService {
 	            HttpEntity<LoginDTO> requestEntity = new HttpEntity<>(loginRequest, headers); 
 
 	            // FastAPI로 POST 요청 전송
-	            ResponseEntity<MemberDTO> response = restTemplate.postForEntity(FASTAPI_URL, requestEntity, MemberDTO.class);
+	            ResponseEntity<MemberDTO> response = restTemplate.postForEntity(Login_URL, requestEntity, MemberDTO.class);
 	            return response.getBody();
 
 	        } catch (Exception e) { // 예외 처리
 	            System.err.println("FastAPI 로그인 요청 중 오류 발생: " + e.getMessage());
-	            return null;
-	        }
+	            return null; // 무효화
+	     }
+	}
+	    	
+	   // 로그아웃 
+	    public String logout() {
+	    	  RestTemplate restTemplate = new RestTemplate(); // REST API와 통신
+	    	  
+	    	  try {
+	    		 // FastAPI로 로그아웃 요청 전송
+	    		 ResponseEntity<String> response = restTemplate.postForEntity(Logout_URL, null, String.class);
+	    		 return response.getBody(); // 로그아웃 성공 메시지 반환
+	    	
+	    	  }catch (Exception e) { // 예외 처리
+	    		 System.err.println("FastAPI 로그아웃 요청 중 오류 발생: " + e.getMessage());
+	    	  	}return "로그아웃 실패!";  // 로그아웃 실패 
+	    	  
 	    }
+
+
 }
