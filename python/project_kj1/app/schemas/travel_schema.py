@@ -20,6 +20,16 @@ class JHResponse(BaseModel):
     """JH 서비스 응답 스키마 (Spring Boot 연동용)"""
     response: str  # 응답 메시지
     location: Optional[str] = None  # 위치 정보 (있는 경우)
+    
+class JHRequestDto2(BaseModel):
+    """JH 서비스 요청 스키마 (Spring Boot 연동용)"""
+    message: str  # 사용자 메시지
+
+class JHResponse2(BaseModel):
+    """JH 서비스 응답 스키마 (Spring Boot 연동용)"""
+    response: str  # 응답 메시지
+    latitude: float
+    longitude: float
 
 class TravelRecommendationResponse(BaseModel):
     """여행 추천 응답 스키마"""

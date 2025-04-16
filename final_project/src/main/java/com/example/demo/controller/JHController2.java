@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.JHRequestDto;
+import com.example.demo.dto.JHRequestDto2;
 import com.example.demo.service.JHService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class JHController2 {
@@ -567,5 +569,40 @@ public class JHController2 {
         
         // 결과 페이지인 "page05"를 반환
         return "apichatTest01";
+    }
+    @GetMapping("/areaTest")
+    public String handleAreaRequest(@RequestParam(value = "query", required = false) String query, Model model) {
+        if (query == null || query.trim().isEmpty()) {
+            model.addAttribute("aiResponse2", "질문을 입력해주세요.");
+            return "page04";
+        }
+
+        // DTO 생성
+        JHRequestDto2 requestDto = new JHRequestDto2();
+        requestDto.setMessage(query);
+
+        // FastAPI 서비스 호출 (좌표 포함된 응답 예상)
+        String responseJson = jhService.getJHResponse2(requestDto);
+        // 예: {"response": "추천 장소는 경복궁입니다.", "latitude": 37.579617, "longitude": 126.977041}
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(responseJson);
+
+            String aiResponse = rootNode.path("response").asText();
+            double latitude = rootNode.path("latitude").asDouble();
+            double longitude = rootNode.path("longitude").asDouble();
+
+            model.addAttribute("query2", query);
+            model.addAttribute("aiResponse2", aiResponse);
+            model.addAttribute("latitude", latitude);
+            model.addAttribute("longitude", longitude);
+
+        } catch (Exception e) {
+            model.addAttribute("aiResponse2", "응답 처리 중 오류 발생");
+            model.addAttribute("latitude", null);
+            model.addAttribute("longitude", null);
+        }
+
+        return "page04";
     }
 }
