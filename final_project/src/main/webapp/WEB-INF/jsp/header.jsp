@@ -160,7 +160,7 @@
         <h3>메뉴</h3>
         <ul>
             <li><a href="/project1">메인홈</a></li>
-            <li><a href="/login/mypage">마이페이지</a></li>
+            <li><a href="/login/mypage/${member.email}">마이페이지</a></li>
             <li>
                 <a href="#" onclick="document.forms['logoutForm'].submit();" class="logout-link">
                     <i class="fas fa-sign-out-alt"></i> 로그아웃

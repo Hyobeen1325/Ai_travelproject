@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.service.SYService;
 
 @Controller
@@ -24,6 +27,10 @@ public class SYController { // 유저 관리 컨트롤러
     // Redirect URI
     @Value("${kakao.redirect_uri}")
     private String redirect_uri;
+    
+    // Member service
+    @Autowired
+    private SYService service;
 
     // 로그인 페이지 
     // http://localhost:8080/login
@@ -51,24 +58,20 @@ public class SYController { // 유저 관리 컨트롤러
 
     // 회원가입 페이지
     @GetMapping("/join")
-    public String join() {
+    public String joinpage() {
         return "/Membership_managemen"; // /WEB-INF/jsp/Membership_managemen.jsp
     }
-    
-    
-    @Autowired
-    private SYService service; // member service
-    
+        
     // 로그인 유효성 검사 (아이디, 비밀번호) 
     @PostMapping("/member")
     public String login(LoginDTO loginRequest, Model model) {
-    	 MemberDTO response = service.login(loginRequest); // db 일치 여부 
+    	 MemberDTO response = service.login(loginRequest); // db 일치 여부 확인
     	 
     	 // 로그인 성공 
     	 if (response != null) {
              model.addAttribute("msg", "로그인 성공!"); // 성공 메세지 
              model.addAttribute("member", response); 
-             return "redirect:/project1"; // /WEB-INF/jsp/project1.jsp
+             return "mypage"; // /WEB-INF/jsp/project1.jsp
              
          // 로그인 실패     
          } else {
@@ -86,13 +89,50 @@ public class SYController { // 유저 관리 컨트롤러
     	return "redirect:/login";
     }
     
+    
     // 마이 페이지 (내정보 관리)
     // http://localhost:8080/login/mypage
-    @GetMapping("/mypage")
-    public String mypage() {
-        return "mypage"; // /WEB-INF/jsp/mypage.jsp
+    
+    // 내정보 조회 
+    @GetMapping("/mypage/{email}")
+    public String mypage(@PathVariable("email") String email, Model model) {
+    	MemberDTO response = service.mypage(email); // db 일치 여부 확인
+    	
+    	// 내정보 조회 성공 
+    	if (response != null) {
+    		model.addAttribute("msg", "내정보 조회 성공!");
+    		model.addAttribute("member", response);
+    		return "mypage"; //  /WEB-INF/jsp/mypage.jsp
+    	
+    	// 내정보 조회 실패 
+    	} else {
+    		model.addAttribute("msg","내정보 조회 실패!");	
+            return "redirect:/login"; // /WEB-INF/jsp/login.jsp
+    		
+    	}
+    
     }
     
+    // 내정보 수정
+    @PostMapping("/mypage/{email}")
+    public String updateMypage(@PathVariable("email") String email, 
+            @ModelAttribute MypageUpDTO updateRequest, Model model) {
+        
+    	// 수정된 member db 저장 후 정보 가져오기
+    	MemberDTO response = service.updateMypage(email, updateRequest);  
 
+        if (response != null) { // 내정보 수정 성공 
+            model.addAttribute("msg", "내정보 수정 성공!");
+            model.addAttribute("member", response); // 수정된 회원 정보 전달
+            return "mypage"; // /WEB-INF/jsp/mypage.jsp
+            
+        } else { // 내정보 수정 실패 
+            model.addAttribute("msg", "내정보 수정 실패!");
+            return "login"; 
+       }
+   }
+    
+    
+    
     
 }
