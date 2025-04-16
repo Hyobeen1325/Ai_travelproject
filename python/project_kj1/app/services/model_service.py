@@ -161,24 +161,45 @@ class TravelModelService:
         except Exception as e:
             raise Exception(f"Gemini 분석 중 오류 발생: {str(e)}")
 
-    def process_chatbot_query(self, query: str , arealistrq: str) -> Dict[str, Any]:
+    def process_chatbot_query(self, query: str) -> Dict[str, Any]:
         """사용자 쿼리를 처리하여 Gemini API를 사용하여 응답 생성"""
         try:
             # Use a thread pool to handle the request 
-            if arealistrq != "":
-                prompt = """
+            prompt = "간단하고 짧게 대답해주세요. 질문: " + query
+            future = self.executor.submit(self.analyze_with_gemini, prompt)
+            gemini_response = future.result(timeout=10)  # Set a timeout for the response
+            combined_response = f"Gemini: {gemini_response}"
+
+            return {
+                "recommendations": [combined_response],
+                "confidence_score": 0.9,
+                "additional_info": "Gemini API 응답"
+            }
+        except Exception as e:
+            return {
+                "recommendations": ["오류가 발생했습니다. 다시 시도해주세요."],
+                "confidence_score": 0.1,
+                "additional_info": f"오류: {str(e)}"
+            }
+            
+    def process_Area_query(self, query: str) -> Dict[str, Any]:
+        """사용자 쿼리를 처리하여 Gemini API를 사용하여 응답 생성"""
+        try: # Use a thread pool to handle the request 
+            prompt = """
                 다음은 지역리스트입니다. 
                 이 지역간에 거리가 가깝고 
-                contenttypeid가 겹치지 않는 서로 다른 지역을
-                5개 추천하여 알려주세요. 지역리스트: 
-                """+ arealistrq
-            else:
-                prompt = "간단하고 짧게 대답해주세요. 질문: "+query
+                contenttypeid가 겹치지 않는 서로 다른 추천여행지를
+                5개 추천하여 알려주세요. 출력형식
+                추천여행지: ai가 추천한 여행지 + 반려동물 출입허가여부
+                이동거리: ai가 생각하는 최단거리 + 이동수단 제시
+                이동지역: ai가 추천하는 이동지역
+                지역리스트: 
+                """+ query
             future = self.executor.submit(self.analyze_with_gemini, prompt)
             gemini_response = future.result(timeout=10)  # Set a timeout for the response
             combined_response = f"Gemini: {gemini_response}"
             
-
+            
             return {
                 "recommendations": [combined_response],
                 "confidence_score": 0.9,
