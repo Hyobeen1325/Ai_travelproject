@@ -190,6 +190,44 @@ class TravelModelService:
                 "confidence_score": 0.1,
                 "additional_info": f"오류: {str(e)}"
             }
+def process_Area_query(self, query: str) -> Dict[str, Any]:
+    """사용자 쿼리를 처리하여 Gemini API를 사용하고 지도 좌표 포함 응답 생성"""
+    try:
+        prompt = """다음은 지역리스트 입니다.
+                    이지역에서 가깝고 추천할만한 여행지를 골라주세요.
+                    출력형식은 
+                    이동거리: 최단거리 + 이동수단고려
+                    여행지: 추천 여행지 3~5
+                    이동지역: 여행지 관련 지역명
+        """ + query
+
+        # Gemini API 호출
+        future = self.executor.submit(self.analyze_with_gemini, prompt)
+        gemini_response = future.result(timeout=10)
+
+        # 추천 텍스트만 추출 (예: 여행지 리스트 파싱)
+        # 여기선 첫 번째 추천 여행지만 가져오는 예시로 처리
+        place_name = self.extract_first_place_name(gemini_response)  # 사용자 정의 메서드
+
+        # 좌표 추출
+        latitude, longitude = self.get_coordinates_for_place(place_name)
+
+        return {
+            "recommendations": [gemini_response],
+            "confidence_score": 0.9,
+            "additional_info": "Gemini API 응답",
+            "latitude": latitude,
+            "longitude": longitude
+        }
+
+    except Exception as e:
+        return {
+            "recommendations": ["오류가 발생했습니다. 다시 시도해주세요."],
+            "confidence_score": 0.1,
+            "additional_info": f"오류: {str(e)}",
+            "latitude": None,
+            "longitude": None
+        }
 
     def _get_general_ai_response(self, query: str) -> Dict[str, Any]:
         """Gemini API를 사용하여 일반적인 AI 응답 생성"""

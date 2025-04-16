@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.templating import Jinja2Templates
-from app.schemas.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse
+from app.schemas.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2
 from app.services.model_service import TravelModelService
 
 router = APIRouter()
@@ -131,3 +131,34 @@ async def process_jh_message(request: JHRequestDto):
         # 오류 발생 시 오류 메시지 반환
         error_message = f"오류가 발생했습니다: {str(e)}"
         return JHResponse(response=error_message) 
+    
+@router.post("/page3/message", response_model=JHResponse2)
+async def process_jh_message2(request: JHRequestDto2):
+    """
+    Spring Boot 연동용 API 엔드포인트
+    - Spring Boot에서 메시지를 받아 처리하고 응답 반환
+    """
+    try:
+        message = request.message
+        
+        # 모델 서비스를 통한 응답 생성
+        result = model_service.process_Area_query(message)
+
+        # 추천 텍스트 구성
+        recommendations_text = "\n".join([f"- {item}" for item in result["recommendations"]])
+        additional_info = result.get("additional_info", "")
+        response_text = f"{recommendations_text}\n\n{additional_info}" if additional_info else recommendations_text
+
+        # 좌표값 추출 (없으면 None)
+        latitude = result.get("latitude")
+        longitude = result.get("longitude")
+
+        # 응답 반환
+        return JHResponse2(
+            response=response_text,
+            latitude=latitude,
+            longitude=longitude
+        )
+        
+    except Exception as e:
+        return JHResponse2(response=f"오류가 발생했습니다: {str(e)}")
