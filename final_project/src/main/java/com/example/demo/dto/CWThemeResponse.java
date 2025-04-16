@@ -1,7 +1,8 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,16 +14,22 @@ import lombok.NoArgsConstructor;
 public class CWThemeResponse {
 	
 	// 선택값
-	private int chooge_val_id;
+	private int choose_id;
 	private String high_loc;
 	private String low_loc;
-	private List<String> theme1;
-	private List<String> theme2;
-	private List<String> theme3;
-	private List<String> theme4;
+	private String theme1;
+	private String theme2;
+	private String theme3;
+	private String theme4;
 	private int days;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime regdate;
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime uptdate;
+	
+    private String regdateS;
+    private String uptdateS;
 	
 
 }

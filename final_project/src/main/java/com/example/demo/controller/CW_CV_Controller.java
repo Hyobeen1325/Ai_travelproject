@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.dto.CWThemeRequest;
+import com.example.demo.dto.CWThemeCRUDRequest;
 import com.example.demo.dto.CWThemeResponse;
 import com.example.demo.service.CWThemeService;
 
@@ -28,7 +29,7 @@ public class CW_CV_Controller {
     @Autowired
     private final CWThemeService themeService;
     
-    // 기본 페이지
+    // 기본 등록 페이지
     @GetMapping
     public String choose_val_view() {
         return "cw-test/choose_val";
@@ -37,56 +38,66 @@ public class CW_CV_Controller {
     // 등록 페이지
     @PostMapping
     public String createStudent(
-    		@RequestBody CWThemeRequest request,
+    		@RequestBody CWThemeCRUDRequest request,
     		Model model
     		) {
-    	CWThemeResponse response = themeService.insertChooseVal(request);
-    	model.addAttribute("response", response);
+    	String message = themeService.insertChooseVal(request);
+    	model.addAttribute("message", message);
     	
         return "cw-test/choose_val";
     }
 
     // 전체조회 페이지
-    @GetMapping("s")
+    @GetMapping("/All")
     public String getAllStudents(Model model) {
-    	List<CWThemeResponse> response = themeService.gatAllChooseVal();
-    	model.addAttribute("response", response);
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
     	
-        return "cw-test/choose_val";
+    	List<CWThemeResponse> chooses = themeService.gatAllChooseVal();
+    	
+    	for(CWThemeResponse choose:chooses) {
+        	String formattedRegdate = choose.getRegdate().format(formatter);
+        	String formattedUptdate = choose.getUptdate().format(formatter);
+        	choose.setRegdateS(formattedRegdate);
+        	choose.setUptdateS(formattedUptdate);
+    	}
+    	
+    	model.addAttribute("chooses", chooses);
+    	
+        return "cw-test/choose_vals";
     }
 
     // 단일조회 페이지
-    @GetMapping("/{id}")
+    @GetMapping("/One")
     public String getStudent(
-    		@PathVariable int choose_id,
+    		@RequestParam("choose_id") int choose_id,
     		Model model) {
-    	CWThemeResponse response = themeService.getChooseValById(choose_id);
-    	model.addAttribute("response", response);
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+    	
+    	CWThemeResponse choose = themeService.getChooseValById(choose_id);
+    	
+    	String formattedRegdate = choose.getRegdate().format(formatter);
+    	String formattedUptdate = choose.getUptdate().format(formatter);
+    	choose.setRegdateS(formattedRegdate);
+    	choose.setUptdateS(formattedUptdate);
+    	
+    	model.addAttribute("choose", choose);
     	
         return "cw-test/choose_val";
     }
 
     // 수정페이지
-    @PutMapping("/{id}")
+    @PutMapping
     public String updateStudent(
-    		@PathVariable int choose_id,
-    		@RequestBody CWThemeRequest request,
-    		Model model) {
-    	CWThemeResponse response = themeService.updateChooseVal(choose_id, request);
-    	model.addAttribute("response", response);
-    	
-        return "cw-test/choose_val";
+    		@RequestParam("choose_id") int choose_id,
+    		@RequestBody CWThemeCRUDRequest request) {
+        return themeService.updateChooseVal(choose_id, request);
     }
 
     //삭제 페이지
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public String deleteStudent(
-    		@PathVariable int id,
-    		Model model) {
-    	String deleteMessage = themeService.deleteChooseVal(id);
-    	model.addAttribute("deleteMessage", deleteMessage);
-    	
-        return "cw-test/choose_val";
+    		@RequestParam("choose_id") int choose_id) {
+        return themeService.deleteChooseVal(choose_id);
     }
     
 }

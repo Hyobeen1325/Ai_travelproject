@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.dto.CWThemeRequest;
+import com.example.demo.dto.CWThemeCRUDRequest;
 import com.example.demo.dto.CWThemeResponse;
 
 @Service
@@ -23,8 +23,10 @@ public class CWThemeService {
     }
 
     // 선택값 등록
-    public CWThemeResponse insertChooseVal(CWThemeRequest themeRequest) {
-        return restTemplate.postForObject(fastApiUrl + "/choose_val", themeRequest, CWThemeResponse.class);
+    public String insertChooseVal(CWThemeCRUDRequest themeRequest) {
+    	CWThemeResponse response = restTemplate.postForObject(fastApiUrl + "/choose_val", themeRequest, CWThemeResponse.class);
+    	
+    	return response!=null?"등록 성공":"등록 실패";
     }
 
     // 선택값 전체 조회
@@ -39,15 +41,17 @@ public class CWThemeService {
     }
 
     // 선택값 수정
-    public CWThemeResponse updateChooseVal(int choose_id, CWThemeRequest themeRequest) {
+    public String updateChooseVal(int choose_id, CWThemeCRUDRequest themeRequest) {
     	restTemplate.put(fastApiUrl + "/choose_val/" + choose_id, themeRequest);
-    	return getChooseValById(choose_id);
+    	CWThemeResponse response = getChooseValById(choose_id);
+    	return response!=null?"수정 성공":"수정 실패";
     }
 
     // 선택값 삭제
     public String deleteChooseVal(int choose_id) {
     	restTemplate.delete(fastApiUrl + "/choose_val/" + choose_id);
-        return "Deleted choose_val with ID: " + choose_id;
+    	CWThemeResponse choose_val = getChooseValById(choose_id);
+        return choose_val!=null?"삭제 성공\n삭제된 선택값 ID: " + choose_id:"삭제실패";
     }
 
 }
