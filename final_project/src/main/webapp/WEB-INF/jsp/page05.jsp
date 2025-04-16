@@ -126,6 +126,23 @@
             color: #4a4a4a;
             cursor: pointer;
         }
+		
+		.search-history-scroll {
+		    max-height: 200px;  /* 높이 제한 */
+		    overflow-y: auto;   /* 스크롤 생김 */
+		    padding-right: 10px;
+		}
+
+		.history-group {
+		    margin-bottom: 15px;
+		}
+
+		.reg-date {
+		    font-weight: bold;
+		    font-size: 14px;
+		    color: #555;
+		    margin-bottom: 5px;
+		}
 
         /* 이전 버튼 (이전과 동일) */
         .back-button {
@@ -272,22 +289,23 @@
                     </div>
                 </div>
 
-                <!-- 이전 검색 기록 섹션 (하드코딩 유지) -->
-                <div class="search-history-section">
-                    <h3>이전 검색 기록</h3>
-                    <ul class="search-history-list">
-                        <li>검색어 1</li>
-                        <li>검색어 2</li>
-                        <li>검색어 3</li>
-                        <li>검색어 4</li>
-                        <li>검색어 5</li>
-                        <li>검색어 6</li>
-                        <li>검색어 7</li>
-                        <li>검색어 8</li>
-                        <li>검색어 9</li>
-                        <li>검색어 10</li>
-                    </ul>
-                </div>
+				<!-- 이전 검색 기록 섹션 -->
+				<div class="search-history-section">
+				    <h3>이전 검색 기록</h3>
+
+				    <div class="search-history-scroll">
+				        <c:forEach var="history" items="${historyList}">
+				            <div class="history-group">
+				                <div class="reg-date">${history.regDate}</div>
+				                <ul class="search-history-list">
+				                    <c:forEach var="title" items="${history.titles}">
+				                        <li><c:out value="${title}" /></li>
+				                    </c:forEach>
+				                </ul>
+				            </div>
+				        </c:forEach>
+				    </div>
+				</div>
 
                 <!-- 이전 화면 버튼 -->
                 <button class="back-button" onclick="location.href='index.jsp'">

@@ -1,5 +1,9 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,53 +25,49 @@ public class JHService {
         this.restTemplate = new RestTemplate();
     }
 
-    public String getJHResponse(JHRequestDto chatRequest) {
+    public JHResponseDto getJHResponse(JHRequestDto chatRequest) {
         String url = fastApiUrl + "/page04/message";
 
-        // FastAPI에 요청
+        // FastAPI에 POST 요청
         JHResponseDto result = restTemplate.postForObject(url, chatRequest, JHResponseDto.class);
 
-        // 응답 처리
-        String rawResponse = result != null ? result.getResponse() : "응답 없음";
+        if (result == null) {
+            JHResponseDto emptyResult = new JHResponseDto();
+            emptyResult.setResponse("FastAPI 응답 없음");
+            return emptyResult;
+        }
 
-        // 여기서 가공 처리 시작
-        String processedResponse = processResponse(rawResponse);
+        // 응답 문자열 가공
+        String processed = processResponse(result.getResponse());
+        result.setResponse(processed); // 가공한 response로 덮어쓰기
 
-        return processedResponse;
+        return result;
     }
-
-    public String getJHResponse2(JHRequestDto2 chatRequest) {
+    public Map<String, Object> getJHResponse2(JHRequestDto2 chatRequest) {
         String url = fastApiUrl + "/page3/message";
 
-        // FastAPI에 요청
         JHResponseDto2 result = restTemplate.postForObject(url, chatRequest, JHResponseDto2.class);
 
-        // null 체크 및 기본 처리
         if (result == null) {
             result = new JHResponseDto2();
             result.setResponse("응답 없음");
             result.setLatitude(null);
             result.setLongitude(null);
         } else {
-            // 필요한 경우 응답 문자열 전처리
             String processedResponse = processResponse(result.getResponse());
             result.setResponse(processedResponse);
         }
 
-        // 응답을 String으로 변환하여 반환
-        String responseText = result.getResponse();
-        Double latitude = result.getLatitude();
-        Double longitude = result.getLongitude();
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("response", result.getResponse());
+        responseMap.put("latitude", result.getLatitude());
+        responseMap.put("longitude", result.getLongitude());
+        responseMap.put("titles", result.getTitle() != null ? result.getTitle() : new ArrayList<>());
+        responseMap.put("upt_dates", result.getUpt_date() != null ? result.getUpt_date() : new ArrayList<>());
+        responseMap.put("questions", result.getQuestion() != null ? result.getQuestion() : new ArrayList<>());
+        responseMap.put("answers", result.getAnswer() != null ? result.getAnswer() : new ArrayList<>());
 
-        // 문자열로 결합하여 반환
-        StringBuilder responseBuilder = new StringBuilder();
-        responseBuilder.append("{")
-                .append("\"response\": \"").append(responseText).append("\", ")
-                .append("\"latitude\": ").append(latitude != null ? latitude : "null").append(", ")
-                .append("\"longitude\": ").append(longitude != null ? longitude : "null")
-                .append("}");
-
-        return responseBuilder.toString();
+        return responseMap;
     }
 
     
@@ -87,5 +87,7 @@ public class JHService {
 
         return withLineBreaks;
     }
+
+
 }
 
