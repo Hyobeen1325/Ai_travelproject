@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JHRequestDto {
     private String message;
-    private String arealistrq;
+    private String email;
 }
