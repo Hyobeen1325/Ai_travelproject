@@ -240,39 +240,41 @@ body {
 <body>
 
   <!-- 로고 -->
-  <div class="logo-container">
-
-  </div>
 
   <!-- 마이페이지 박스 -->
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>
-
-    <c:if test="${not empty message}">
-      <p class="error-message">${message}</p>
-    </c:if>
-
+    
+    <!-- 내정보 조회 -->
     <form class="mypage-form" id="mainForm">
-      <input type="text" placeholder="이름" class="mypage-input" name="name" value="${sessionScope.userName}" readonly>
-      <input type="text" placeholder="닉네임" class="mypage-input" name="nickname" value="${sessionScope.userNickname}">
-      <input type="tel" placeholder="전화번호" class="mypage-input" name="phone" value="${sessionScope.userPhone}">
-      <input type="text" placeholder="아이디" class="mypage-input" name="id" value="${sessionScope.userId}">
+      <label>이름</label>
+      <input type="text" placeholder="이름" class="mypage-input" name="name" value="${member.name}" readonly>
+      <label>닉네임</label>
+      <input type="text" placeholder="닉네임" class="mypage-input" name="nickname" value="${member.nickname}" readonly>
+      <label>전화번호</label>
+      <input type="text" placeholder="전화번호" class="mypage-input" name="phone" value="${member.phon_num}" readonly>
+      <label>아이디</label>
+      <input type="email" placeholder="아이디" class="mypage-input" name="id" value="${member.email}" readonly>
       <button type="button" class="mypage-button" onclick="openModal()">수정</button>
     </form>
   </div>
 
-  <!-- 모달 -->
+  <!-- 모달 : 내정보 수정 -->
   <div class="modal" id="editModal">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal()">&times;</button>
       <div class="modal-title">내정보 수정</div>
-      <form class="modal-form" id="editForm" action="<c:url value='/login/update-profile'/>" method="post">
-        <input type="text" class="modal-input" id="editNickname" name="nickname" placeholder="닉네임">
-        <input type="tel" class="modal-input" id="editPhone" name="phone" placeholder="전화번호">
-        <input type="text" class="modal-input" id="editId" name="id" placeholder="아이디">
-        <div class="modal-buttons">
-          <button type="button" class="modal-button modal-cancel" onclick="closeModal()">취소</button>
-          <button type="submit" class="modal-button modal-save">저장</button>
+      
+      <form class="modal-form" id="editForm" action="<c:url value='/login/mypage/${member.email}'/>" method="post">
+       <label>이메일</label>
+        <input type="email" class="modal-input" id="editEmail" name="email" placeholder="이메일" value="${member.email}">
+        <label>닉네임</label>
+    	<input type="text" class="modal-input" id="editNickname" name="nickname" placeholder="닉네임" value="${member.nickname}">
+    	<label>전화번호</label>
+    	<input type="tel" class="modal-input" id="editPhone" name="phon_num" placeholder="전화번호" value="${member.phon_num}">
+    <div class="modal-buttons">
+        <button type="button" class="modal-button modal-cancel" onclick="closeModal()">취소</button>
+        <button type="submit" class="modal-button modal-save">저장</button>
         </div>
       </form>
     </div>
@@ -283,43 +285,25 @@ body {
     const mainForm = document.querySelector('.mypage-form');
     const editForm = document.getElementById('editForm');
 
+    // 모달 열기
     function openModal() {
-      const inputs = mainForm.querySelectorAll('.mypage-input');
-      document.getElementById('editNickname').value = inputs[1].value;
-      document.getElementById('editPhone').value = inputs[2].value;
-      document.getElementById('editId').value = inputs[3].value;
       modal.style.display = 'flex';
     }
 
+    // 모달 닫기
     function closeModal() {
       modal.style.display = 'none';
     }
 
+    // 폼 제출 시 확인 메시지
     editForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-
-      fetch('<c:url value="/login/update-profile"/>', {
-        method: 'POST',
-        body: formData
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            const mainInputs = mainForm.querySelectorAll('.mypage-input');
-            mainInputs[1].value = document.getElementById('editNickname').value;
-            mainInputs[2].value = document.getElementById('editPhone').value;
-            mainInputs[3].value = document.getElementById('editId').value;
-            closeModal();
-          } else {
-            alert('업데이트에 실패했습니다.');
-          }
-        })
-        .catch(() => {
-          alert('오류가 발생했습니다.');
-        });
+      const confirmUpdate = confirm('수정된 정보를 저장하시겠습니까?');
+      if (!confirmUpdate) {
+        e.preventDefault();
+      }
     });
 
+    // 모달 외부 클릭 시 닫기
     window.onclick = function (event) {
       if (event.target === modal) {
         closeModal();
