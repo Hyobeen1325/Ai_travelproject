@@ -12,7 +12,6 @@ router = APIRouter(
     tags=["member"] # 제목
 )
 
-
 # 유저 정보 조회 = 테스트용
 @router.get("/")
 def read_member(db: Session=Depends(get_db)):

@@ -149,6 +149,7 @@
     </div>
 
     <script>
+  		let selectedRnum = null;
         let selectedLocation = null;
 
         // 지역 선택 이벤트 리스너 추가
@@ -185,7 +186,7 @@
                 alert('지역을 선택해 주세요.');
                 return;
             }
-	
+            
             const areaCode = selectedLocation.getAttribute('data-code');
             const page = document.querySelector('.page');
             page.classList.add('slide-out');
@@ -196,6 +197,7 @@
             setTimeout(() => {
                 location.href = '/area/subregions?areaCode='+ areaCode;
             }, 500);
+                    
         });
 
         // 이전 버튼 클릭 이벤트

@@ -190,8 +190,9 @@
 	            }
 	
 	            const areaCode = selectedLocation.getAttribute('data-code');
-	            localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
-	
+	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
+	            localStorage.setItem('selectedAreaCode',areaCode );
+	            	
 	            // 이동 처리
 	            window.location.href = '/page2';
 	        });

@@ -27,7 +27,7 @@ public class AreaController {
     private static final Logger logger = LoggerFactory.getLogger(AreaController.class);
 
     @GetMapping("/subregions")
-    public String getSubregions(@RequestParam(value = "areaCode", defaultValue = "32") int areaCode, Model model) {
+    public String getSubregions(@RequestParam(value = "areaCode") int areaCode, Model model) {
         try {
             String serviceKey = "zobQk13tnvYbo%2Fm%2Ff73cuxwgSffsJEm60Y%2FpBKm2hjfetSQd55bSILGX1Nq9vBi9PEGinACney4ZcjXkgXWL4A%3D%3D"; // 실제 서비스 키로 교체
             String apiUrl = "https://apis.data.go.kr/B551011/KorService1/areaCode1?serviceKey="
@@ -69,4 +69,5 @@ public class AreaController {
         }
         
     }
+    
 }
