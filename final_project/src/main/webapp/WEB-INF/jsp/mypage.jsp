@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
-  <jsp:include page="header.jsp" />
+<!--헤더1 -->
+<jsp:include page="header.jsp" />
 <head>
   <meta charset="UTF-8">
   <title>My Page</title>
@@ -62,7 +63,6 @@ body {
   gap: 14px;
 }
 
-/* ✅ 로그인 스타일과 통일된 입력창 스타일 */
 .mypage-input,
 .modal-input {
   width: 100%;
@@ -243,7 +243,7 @@ body {
 	 if (message && message !== "") {
 	     alert(message); // 메세지 출력 
 	 }
-    </script>
+</script>
   <!-- 마이페이지 박스 -->
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>
@@ -257,17 +257,18 @@ body {
       <label>전화번호</label>
       <input type="text" placeholder="전화번호" class="mypage-input" name="phone" value="${member.phon_num}" readonly>
       <label>아이디</label>
-      <input type="email" placeholder="아이디" class="mypage-input" name="id" value="${member.email}" readonly>
+      <input type="email" placeholder="아이디" class="mypage-input" name="email" value="${member.email}" readonly>
       <button type="button" class="mypage-button" onclick="openModal()">수정</button>
     </form>
   </div>
 
-  <!-- 모달 : 내정보 수정 -->
+  <!-- 모달창 버튼 -->
   <div class="modal" id="editModal">
     <div class="modal-content">
       <button class="close-button" onclick="closeModal()">&times;</button>
       <div class="modal-title">내정보 수정</div>
       
+<!-- 내정보 입력창 --> 
       <form class="modal-form" id="editForm" action="<c:url value='/login/mypage/${member.email}'/>" method="post">
        <label>이메일</label>
         <input type="email" class="modal-input" id="editEmail" name="email" placeholder="이메일" value="${member.email}">
@@ -284,9 +285,9 @@ body {
   </div>
 
   <script>
-    const modal = document.getElementById('editModal');
-    const mainForm = document.querySelector('.mypage-form');
-    const editForm = document.getElementById('editForm');
+    const modal = document.getElementById('editModal'); // 내정보 수정 버튼 
+    const mainForm = document.querySelector('.mypage-form'); // 내정보 조회 form 
+    const editForm = document.getElementById('editForm'); // 모달창 : 내정보 수정데이터 제출 form 
 
     // 모달 열기
     function openModal() {
@@ -299,8 +300,8 @@ body {
     }
 
     // 폼 제출 시 확인 메시지
-    editForm.addEventListener('submit', function (e) {
-      const confirmUpdate = confirm('수정된 정보를 저장하시겠습니까?');
+    editForm.addEventListener('submit', function (e) { // 메세지 
+      const confirmUpdate = confirm("내정보를 수정하시겠습니까?'); 
       if (!confirmUpdate) {
         e.preventDefault();
       }
@@ -313,6 +314,7 @@ body {
       }
     };
   </script>
-<jsp:include page="header2.jsp" />
+<!-- 헤더2 -->
+<jsp:include page="header2.jsp" /> 
 </body>
 </html>
