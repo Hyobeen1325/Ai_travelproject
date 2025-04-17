@@ -16,6 +16,8 @@ import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.service.SYService;
 
+import jakarta.servlet.http.HttpSession; // spring boot 3.0 버전 이상
+
 @Controller
 @RequestMapping("/login")  // 클래스 공통 경로
 public class SYController { // 유저 관리 컨트롤러
@@ -64,13 +66,14 @@ public class SYController { // 유저 관리 컨트롤러
         
     // 로그인 유효성 검사 (아이디, 비밀번호) 
     @PostMapping("/member")
-    public String login(LoginDTO loginRequest, Model model) {
+    public String login(LoginDTO loginRequest, HttpSession session, Model model) {
     	 MemberDTO response = service.login(loginRequest); // db 일치 여부 확인
     	 
     	 // 로그인 성공 
     	 if (response != null) {
              model.addAttribute("msg", "로그인 성공!"); // 성공 메세지 
              model.addAttribute("member", response); 
+             session.setAttribute("SessionMember", response);  // 세션에 member 저장
              return "mypage"; // /WEB-INF/jsp/project1.jsp
              
          // 로그인 실패     
@@ -83,51 +86,67 @@ public class SYController { // 유저 관리 컨트롤러
     
     // 로그아웃 
     @PostMapping("/logout")
-    public String logout(Model model) {
-    	String response = service.logout();
+    public String logout(HttpSession session, Model model) {
+    	String response = service.logout(); 
+    	model.addAttribute("msg","로그아웃 성공! 로그인 창으로 이동합니다.");
     	model.addAttribute("msg", response);
+    	session.invalidate(); // 세션으로 member 무효화
     	return "redirect:/login";
     }
     
     
     // 마이 페이지 (내정보 관리)
     // http://localhost:8080/login/mypage
-    
     // 내정보 조회 
     @GetMapping("/mypage/{email}")
-    public String mypage(@PathVariable("email") String email, Model model) {
-    	MemberDTO response = service.mypage(email); // db 일치 여부 확인
+    public String mypage(@PathVariable("email") String email, HttpSession session, Model model) {
     	
-    	// 내정보 조회 성공 
-    	if (response != null) {
-    		model.addAttribute("msg", "내정보 조회 성공!");
-    		model.addAttribute("member", response);
-    		return "mypage"; //  /WEB-INF/jsp/mypage.jsp
-    	
-    	// 내정보 조회 실패 
-    	} else {
-    		model.addAttribute("msg","내정보 조회 실패!");	
-            return "redirect:/login"; // /WEB-INF/jsp/login.jsp
+    	// header 마이페이지 버튼 클릭 시, 세션 유지
+    	MemberDTO SessionMember = (MemberDTO) session.getAttribute("SessionMember"); // 세션에 member 정보 저장 
+    	if (SessionMember != null &&  SessionMember.getEmail().equals(email)) {
+    		model.addAttribute("member", SessionMember); // 세션으 member 유지
+    		return "mypage"; // /WEB-INF/jsp/mypage.jsp
     		
-    	}
+    	} else { 
+    		
+    		// 마이페이지 안의 내정보 데이터 처리 
+	    	MemberDTO response = service.mypage(email); // db 일치 여부 확인
+	    	// 내정보 조회 성공 
+	    	if (response != null) {
+	    		model.addAttribute("msg", "내정보 조회 성공!");
+	    		model.addAttribute("member", response);
+	    		session.setAttribute("SessionMember", response); // 세션 유지
+	    		return "mypage"; // /WEB-INF/jsp/login.jsp
+	    	
+	    	// 내정보 조회 실패 
+	    	} else {
+	    		model.addAttribute("msg","내정보 조회 실패!"); // 로그아웃
+	    		session.invalidate(); // 세션으로 member 무효화
+	            return "redirect:/login"; // /WEB-INF/jsp/login.jsp 
+	    		
+	    	}
+	    
+	     }
     
-    }
-    
+  }
     // 내정보 수정
     @PostMapping("/mypage/{email}")
     public String updateMypage(@PathVariable("email") String email, 
-            @ModelAttribute MypageUpDTO updateRequest, Model model) {
-        
+            		@ModelAttribute MypageUpDTO updateRequest, HttpSession session,
+            		Model model) {
     	// 수정된 member db 저장 후 정보 가져오기
     	MemberDTO response = service.updateMypage(email, updateRequest);  
+
 
         if (response != null) { // 내정보 수정 성공 
             model.addAttribute("msg", "내정보 수정 성공!");
             model.addAttribute("member", response); // 수정된 회원 정보 전달
+            session.setAttribute("SessionMember", response); // 세션 유지
             return "mypage"; // /WEB-INF/jsp/mypage.jsp
             
         } else { // 내정보 수정 실패 
             model.addAttribute("msg", "내정보 수정 실패!");
+            session.invalidate(); // 세션으로 member 무효화
             return "login"; 
        }
    }

@@ -238,9 +238,12 @@ body {
   </style>
 </head>
 <body>
-
-  <!-- 로고 -->
-
+<script>
+	 var message = "${msg}";
+	 if (message && message !== "") {
+	     alert(message); // 메세지 출력 
+	 }
+    </script>
   <!-- 마이페이지 박스 -->
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>

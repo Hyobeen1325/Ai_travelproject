@@ -47,13 +47,14 @@ public class SYService { // FastAPI URL
 	    public String logout() {
 	    	  
 	    	  try {
-	    		 // FastAPI로 로그아웃 요청 전송
+	    		 // FastAPI로 로그아웃 POST 요청 전송 (body 사용 x) 
 	    		 ResponseEntity<String> response = restTemplate.postForEntity(Logout_URL, null, String.class);
 	    		 return response.getBody(); // 로그아웃 성공 메시지 반환
 	    	
 	    	  } catch (Exception e) { // 예외 처리
 	    		 System.err.println("FastAPI 로그아웃 요청 중 오류 발생: " + e.getMessage());
-	    	  	}return "로그아웃 실패!";  // 로그아웃 실패 
+	    		 
+	    	} return "로그아웃 실패!";  // 로그아웃 실패 
 	    	  
 	    }
 
