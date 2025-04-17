@@ -44,7 +44,7 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
 # 로그아웃 
 @router.post("/logout")
 def logout(request: Request):
-    request.session.clear()  # 세션 초기화
+    request.session.clear() # 세션 초기화
     return {"msg": "로그아웃 성공!"}
 
 
