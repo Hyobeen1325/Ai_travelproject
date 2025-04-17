@@ -137,7 +137,7 @@
 		    margin-bottom: 15px;
 		}
 
-		.reg-date {
+		.chatList-title {
 		    font-weight: bold;
 		    font-size: 14px;
 		    color: #555;
@@ -146,8 +146,8 @@
 
         /* 이전 버튼 (이전과 동일) */
         .back-button {
-            position: absolute;
-            bottom: 20px;
+            position: relative;
+            bottom: 0px;
             right: 20px;
             padding: 10px 20px;
             background-color: #f0f0f0;
@@ -294,19 +294,15 @@
 				    <h3>이전 검색 기록</h3>
 
 				    <div class="search-history-scroll">
-				        <c:forEach var="history" items="${historyList}">
-				            <div class="history-group">
-				                <div class="reg-date">${history.regDate}</div>
-				                <ul class="search-history-list">
-				                    <c:forEach var="title" items="${history.titles}">
-				                        <li><c:out value="${title}" /></li>
-				                    </c:forEach>
-				                </ul>
-				            </div>
-				        </c:forEach>
+						<c:forEach var="chatList" items="${chatList}">
+						    <div class="qna-box">
+								<div class="chatList-date"><c:out value="${chatList.upt_date}" /></div>
+						        <div class="chatList-title"><c:out value="${chatList.title}" /></div>						           
+						    </div>
+						</c:forEach>
 				    </div>
 				</div>
-
+		
                 <!-- 이전 화면 버튼 -->
                 <button class="back-button" onclick="location.href='index.jsp'">
                     이전

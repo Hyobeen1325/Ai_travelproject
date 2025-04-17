@@ -52,7 +52,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>여행 추천 시스템</title>
     <%-- 카카오 지도 API 키. 실제 키로 교체해야 합니다. --%>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAP_API_KEY&autoload=false"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dcd5c4bab6de479a15aa752115990e79&autoload=false"></script>
     <style>
         /* 전체 스타일 */
         body {
@@ -395,33 +395,31 @@
                 <!-- 이전 검색 기록 섹션 -->
                 <div class="search-history-section">
                     <h3>이전 검색 기록</h3>
-                    <div class="search-history-scroll">
-                        <%-- JSTL을 사용하여 historyList 반복 처리 --%>
-                        <c:forEach var="history" items="${historyList}">
-                            <div class="history-group">
-                                <div class="reg-date">${history.regDate}</div>
-                                <ul class="search-history-list">
-                                    <c:forEach var="title" items="${history.titles}">
-                                        <%-- XSS 방지를 위해 c:out 사용 권장 --%>
-                                        <li onclick="searchHistoryItem('${title}')"><c:out value="${title}" /></li>
-                                    </c:forEach>
-                                </ul>
-                            </div>
-                        </c:forEach>
+					<div class="search-history-scroll">
+											<c:forEach var="chatlog" items="${chatList}">
+											    <div class="qna-box">
+											        <div class="chatlog-title"><c:out value="${chatlog.title}" /></div>
+											        <div class="chatlog-date"><c:out value="${chatlog.uptDate}" /></div>   
+											    </div>
+											</c:forEach>
+									    </div>
+									</div>
                         <%-- 기록이 없을 경우 메시지 표시 (선택적) --%>
                         <c:if test="${empty historyList}">
                             <p style="text-align: center; color: #888; font-size: 14px;">검색 기록이 없습니다.</p>
                         </c:if>
                     </div>
+					<%-- 이전 화면 버튼은 travel-info의 일부가 아닌 left-section의 마지막 요소로 이동 --%>
+								<div class="back-button-container">
+								                <button class="back-button" onclick="goBack()">
+								                    이전
+								                </button>
+				</div>
                 </div>
 
-                <%-- 이전 화면 버튼은 travel-info의 일부가 아닌 left-section의 마지막 요소로 이동 --%>
+               
             </div>
-             <div class="back-button-container">
-                <button class="back-button" onclick="goBack()">
-                    이전
-                </button>
-             </div>
+             
         </div>
 
         <!-- 챗봇 섹션 -->
@@ -439,7 +437,7 @@
     </div>
 
     <script>
-        // 카카오 지도 초기화 함수
+       /* // 카카오 지도 초기화 함수
         function initMap() {
             var mapContainer = document.getElementById('map');
             if (!mapContainer) {
@@ -513,7 +511,42 @@
             console.log('카카오 지도 SDK 로드 완료');
             initMap();
         });
+*/
+		// 카카오맵 로드 함수 (이전과 동일 - 하드코딩된 상태)
+        function loadKakaoMap() {
+            kakao.maps.load(function() {
+                var mapContainer = document.getElementById('map');
+                var mapOption = {
+                    center: new kakao.maps.LatLng(37.5012, 127.0396),
+                    level: 3
+                };
 
+                try {
+                    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+                    // 마커 위치 정의
+                    var positions = [
+                        { title: '강남역', latlng: new kakao.maps.LatLng(37.5012, 127.0396) },
+                        { title: '선릉역', latlng: new kakao.maps.LatLng(37.5045, 127.0492) },
+                        { title: '역삼역', latlng: new kakao.maps.LatLng(37.5004, 127.0367) }
+                    ];
+
+                    // 마커 생성
+                    positions.forEach(function(position) {
+                        var marker = new kakao.maps.Marker({ map: map, position: position.latlng, title: position.title });
+                        var infowindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;font-size:12px;">' + position.title + '</div>' });
+                        kakao.maps.event.addListener(marker, 'click', function() { infowindow.open(map, marker); });
+                    });
+                } catch (e) {
+                    console.error('지도 로드 실패:', e);
+                }
+            });
+        }
+
+        // 페이지 로드 시 지도 초기화
+        window.onload = function() {
+            loadKakaoMap();
+        };
         // 뒤로 가기 함수
         function goBack() {
             history.back();
