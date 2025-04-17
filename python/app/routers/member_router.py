@@ -30,7 +30,7 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
     
     # 이메일 세션 처리 
     request.session["user_email"] = user.email
-     # 응답 데이터 반환
+    # 응답 데이터 반환
     return MemberBase( # 응답 데이터
         email=user.email,
         name=user.name,
@@ -44,7 +44,7 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
 # 로그아웃 
 @router.post("/logout")
 def logout(request: Request):
-    request.session.clear()  # 세션 초기화
+    request.session.clear() # 세션 초기화
     return {"msg": "로그아웃 성공!"}
 
 
@@ -52,7 +52,6 @@ def logout(request: Request):
 # 내정보 조회
 @router.get("/mypage/{email}", response_model=MypageModel) # SQLMember
 def read_mypage(email: str, request: Request, db: Session=Depends(get_db)):
-    
     # 이메일 세션 처리
     user_email = request.session.get("user_email")
     
@@ -63,7 +62,7 @@ def read_mypage(email: str, request: Request, db: Session=Depends(get_db)):
     # member 정보 조회 
     user =  db.query(SQLMember).filter(SQLMember.email == email).first() # 이메일로 member 조회
     if not user:
-        raise HTTPException(status_code=404, detail="존재하지 않는 회원정보입니다.") # 예외 처리
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
     
     return MypageModel( # 응답 데이터
         email=user.email,
@@ -73,34 +72,34 @@ def read_mypage(email: str, request: Request, db: Session=Depends(get_db)):
     )
 
 # 내정보 수정   
-@router.put("/mypage/{email}") # 일부만 수정
-def update_mypage(email: str, request: Request, data: UpdateModel, db: Session=Depends(get_db)):
-    
-    # 이메일 세션 처리
-    user_email = request.session.get("user_email")
-    # 세션 유지x
-    if not user_email or user_email != email:
-        raise HTTPException(status_code=401, detail="로그인이 필요합니다.")
-    
-    # member 정보 조회 
-    user =  db.query(SQLMember).filter(SQLMember.email == email).first() # 이메일로 member 조회
-    # 예외 처리
-    if not user: 
-        raise HTTPException(status_code=404, detail="존재하지 않는 회원정보입니다.")
-    
-    # 입력값과 db 데이터 유효성 검사
-    # data : 입력값, user : db 저장값
-    if data.nickname:  
-        user.nickname = data.nickname 
-    if data.phon_num:
-        user.phon_num = data.phon_num
-    
-    db.commit() # db에 저장
-    db.refresh(user) # 새로고침
-    
-    # 응답 데이터
-    return MypageModel( # 수정값 MypageModel에게 반환
-        email=user.email,
-        nickname=user.nickname,
-        phon_num=user.phon_num,
-    )
+@router.put("/mypage/{email}", response_model=MypageModel) # 일부만 수정
+def update_mypage(email: str, data: UpdateModel, db: Session=Depends(get_db)):
+        # member 정보 조회
+        user =  db.query(SQLMember).filter(SQLMember.email == email).first() # 이메일로 member 조회
+        if not user: # 예외 처리 
+            raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") 
+
+        # 이메일 중복 검사
+        if data.email:
+            exist_user = db.query(SQLMember).filter(SQLMember.email == data.email).first() # 유효성 검사
+            if exist_user and exist_user.email != email: # 예외 처리
+                raise HTTPException(status_code=400, detail="이미 사용 중인 이메일입니다.")
+            
+            # 입력값과 db 데이터 유효성 검사
+            # data : 입력값, user : db 저장값
+            user.email = data.email
+            if data.nickname is not None: # 기존 데이터인 경우 : 무효화
+                user.nickname = data.nickname
+            if data.phon_num is not None:
+                user.phon_num = data.phon_num
+        
+        db.commit() # db에 업데이트로 저장
+        db.refresh(user) # user 새로고침
+        
+        # 응답 데이터
+        return MypageModel( # 수정값 MypageModel에게 반환
+            email=user.email, 
+            name=user.name,
+            nickname=user.nickname,
+            phon_num=user.phon_num,
+        )

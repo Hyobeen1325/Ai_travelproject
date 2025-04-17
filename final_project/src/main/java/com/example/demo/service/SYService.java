@@ -20,6 +20,7 @@ public class SYService { // FastAPI URL
 	 
 	 // REST API(FastAPI)와 통신
 	 private final RestTemplate restTemplate = new RestTemplate(); 
+	 
 	 	
 	 	// 로그인 
 	    public MemberDTO login(LoginDTO loginRequest) { //로그인 처리 모델
@@ -46,13 +47,14 @@ public class SYService { // FastAPI URL
 	    public String logout() {
 	    	  
 	    	  try {
-	    		 // FastAPI로 로그아웃 요청 전송
+	    		 // FastAPI로 로그아웃 POST 요청 전송 (body 사용 x) 
 	    		 ResponseEntity<String> response = restTemplate.postForEntity(Logout_URL, null, String.class);
 	    		 return response.getBody(); // 로그아웃 성공 메시지 반환
 	    	
 	    	  } catch (Exception e) { // 예외 처리
 	    		 System.err.println("FastAPI 로그아웃 요청 중 오류 발생: " + e.getMessage());
-	    	  	}return "로그아웃 실패!";  // 로그아웃 실패 
+	    		 
+	    	} return "로그아웃 실패!";  // 로그아웃 실패 
 	    	  
 	    }
 
@@ -82,7 +84,7 @@ public class SYService { // FastAPI URL
 	            headers.setContentType(MediaType.APPLICATION_JSON); // JSON 형식으로 반환
 
 	            // 요청 데이터(body)와 헤더(header)를 포함한 엔티티 생성
-	            HttpEntity<MypageUpDTO> requestEntity = new HttpEntity<>(updateRequest, headers);
+	            HttpEntity<MypageUpDTO> requestEntity = new HttpEntity<>(updateRequest, headers); 
 
 	            // FastAPI로 PUT 요청 전송
 	            ResponseEntity<MemberDTO> response = restTemplate.exchange(Mypaga_URL, HttpMethod.PUT, requestEntity, MemberDTO.class, email);

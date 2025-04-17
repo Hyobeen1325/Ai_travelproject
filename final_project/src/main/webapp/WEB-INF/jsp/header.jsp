@@ -143,7 +143,8 @@
     </style>
 </head>
 <body>
-
+<script>
+    </script>
     <nav>
         <div class="nav-container">
             <a href="/project1"><img src="<c:url value='/image/logo.png'/>" alt="Logo" class="logo-img"></img></a>
@@ -162,7 +163,7 @@
             <li><a href="/project1">메인홈</a></li>
             <li><a href="/login/mypage/${member.email}">마이페이지</a></li>
             <li>
-                <a href="#" onclick="document.forms['logoutForm'].submit();" class="logout-link">
+                <a onclick="document.forms['logoutForm'].submit();" class="logout-link">
                     <i class="fas fa-sign-out-alt"></i> 로그아웃
                 </a>
                 <form name="logoutForm" action="<c:url value='/login/logout'/>" method="post" style="display: none;"></form>
