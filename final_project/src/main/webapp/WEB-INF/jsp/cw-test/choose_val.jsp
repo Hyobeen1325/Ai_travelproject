@@ -41,14 +41,14 @@
 	        if (!response.ok) {
 	            throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
 	        }
-	        return response.json();
+	        return response.text();
 	    })
         .then(data => {
           alert('서버 응답:'+ data);
-       	  href.location="/All"
+          location.href = "/choose_val/All";
         })
         .catch(error => {
-          console.error('에러 발생:'+ error);
+          console.log('에러 발생:'+ error);
         });
     }
 

@@ -152,6 +152,8 @@
 	</div>
 
 	<script>
+    	const areaCodeP = "${param.areaCode}"
+        //const sigunguCodeP = "${param.sigunguCode}"
 	    window.addEventListener('load', function () {
 	        let selectedLocation = null;
 	
@@ -188,19 +190,23 @@
 	                alert('지역을 선택해 주세요.');
 	                return;
 	            }
-	
-	            const areaCode = selectedLocation.getAttribute('data-code');
+	            const sigunguCode = selectedLocation.getAttribute('data-code');
 	            localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
 	
 	            // 이동 처리
-	            window.location.href = '/page2';
+                setTimeout(() => {
+                    location.href = '/page2?areaCode='+ areaCodeP +'&sigunguCode='+sigunguCode;
+                }, 500);
 	        });
 	
 	        // 이전 버튼 클릭 시
 	        document.getElementById('prevBtn').addEventListener('click', function () {
 	        	//const numOfRows = localStorage.getItem('selectedDetailLocation');
-	        	const numOfRows = '${numOfRows}';
-	        	window.location.href = '/mainarea/regions?numOfRows=' + numOfRows;
+	        	//const numOfRows = '${numOfRows}';
+                setTimeout(() => {
+                    location.href = '/mainarea/regions';
+                }, 500);
+	        	// window.location.href = '/mainarea/regions?numOfRows=' + numOfRows;
 	        });
 	    });
 	</script>

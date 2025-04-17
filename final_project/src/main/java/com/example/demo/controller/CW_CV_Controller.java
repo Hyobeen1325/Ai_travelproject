@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.CWThemeCRUDRequest;
 import com.example.demo.dto.CWThemeResponse;
@@ -37,14 +39,13 @@ public class CW_CV_Controller {
 
     // 등록 페이지
     @PostMapping
-    public String createStudent(
-    		@RequestBody CWThemeCRUDRequest request,
-    		Model model
+    @ResponseBody
+    public ResponseEntity<?> createStudent(
+    		@RequestBody CWThemeCRUDRequest request
     		) {
     	String message = themeService.insertChooseVal(request);
-    	model.addAttribute("message", message);
     	
-        return "cw-test/choose_val";
+        return ResponseEntity.ok(message);
     }
 
     // 전체조회 페이지
@@ -87,17 +88,21 @@ public class CW_CV_Controller {
 
     // 수정페이지
     @PutMapping
-    public String updateStudent(
+    @ResponseBody
+    public ResponseEntity<?> updateStudent(
     		@RequestParam("choose_id") int choose_id,
     		@RequestBody CWThemeCRUDRequest request) {
-        return themeService.updateChooseVal(choose_id, request);
+        String message = themeService.updateChooseVal(choose_id, request);
+        return ResponseEntity.ok(message);
     }
 
     //삭제 페이지
     @DeleteMapping
-    public String deleteStudent(
+    @ResponseBody
+    public ResponseEntity<?> deleteStudent(
     		@RequestParam("choose_id") int choose_id) {
-        return themeService.deleteChooseVal(choose_id);
+    	String message = themeService.deleteChooseVal(choose_id);
+        return ResponseEntity.ok(message);
     }
     
 }

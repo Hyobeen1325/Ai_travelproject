@@ -151,15 +151,21 @@
                 <h3 class="subtitle">(최소 2개 ~ 최대 4개)</h3>
 
                 <div class="location-grid">
-                    <div class="location-item">산</div>
-                    <div class="location-item">실내 여행지</div>
+                    <div class="location-item">자연</div>
                     <div class="location-item">액티비티</div>
-                    <div class="location-item">문화,역사</div>
-                    <div class="location-item">테마파크</div>
-                    <div class="location-item">카페</div>
-                    <div class="location-item">전통 시장</div>
                     <div class="location-item">축제</div>
+                    <div class="location-item">쇼핑</div>
+                    <div class="location-item">음식점</div>
+                    <div class="location-item">문화예술역사</div>
+                    <div class="location-item">캠핑</div>
+                    <div class="location-item">가족</div>
+                    <div class="location-item">나홀로</div>
                 </div>
+                <form id="choose_form" action="/cwtestAPIre" method="post">
+                	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
+                	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
+                	<input type="hidden" name="days" value="${param.days}"/>
+                </form>
 
                 <div class="navigation">
                     <button class="nav-button" id="prevBtn">이전</button>
@@ -170,6 +176,9 @@
     </div>
 
     <script>
+    	const areaCodeP = "${param.areaCode}"
+        const sigunguCodeP = "${param.sigunguCode}"
+        const daysP = "${param.days}"
         let selectedThemes = new Set();
 
         // 테마 선택 이벤트 리스너 추가
@@ -183,6 +192,9 @@
                         this.classList.remove('deselecting');
                     }, 300);
                     selectedThemes.delete(this.textContent);
+                    
+                    
+                    
                 } else {
                     // 새로운 테마 선택
                     if (selectedThemes.size >= 4) {
@@ -203,22 +215,114 @@
                 return;
             }
 
+            const form = document.getElementById('choose_form'); // 전송할 폼
+            
             const page = document.querySelector('.page');
             page.classList.add('slide-out');
             
-            // 선택된 테마 정보를 localStorage에 저장
-            localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
+            selectedThemes.forEach(function(theme){
+            	//자연 액티비티 축제 쇼핑 음식점 문화예술역사 캠핑 가족 나홀로
+            	if(theme=="자연"){
+                    const input1 = document.createElement("input"); // 추가할 내용
+                    input1.name = "theme"
+            		input1.value = "A01"
+            		form.appendChild(input1)
+            	}
+            	if(theme=="액티비티"){
+                    const input2 = document.createElement("input"); // 추가할 내용
+                    input2.name = "theme"
+            		input2.value = "A03"
+            		form.appendChild(input2)
+            	}
+            	if(theme=="축제"){
+                    const input3 = document.createElement("input"); // 추가할 내용
+                    input3.name = "theme"
+            		input3.value = "A0207"
+            		form.appendChild(input3)
+            		
+                    const input4 = document.createElement("input"); // 추가할 내용
+                    input4.name = "theme"
+            		input4.value = "A0208"
+            		form.appendChild(input4)
+            	}
+            	if(theme=="쇼핑"){
+                    const input5 = document.createElement("input"); // 추가할 내용
+                    input5.name = "theme"
+            		input5.value = "A04"
+            		form.appendChild(input5)
+            	}
+            	if(theme=="음식점"){
+            		const input6 = document.createElement("input"); // 추가할 내용
+                    input6.name = "theme"
+            		input6.value = "A05"
+            		form.appendChild(input6)
+            		const input7 = document.createElement("input"); // 추가할 내용
+                    input7.name = "theme"
+            		input7.value = "C0117"
+            		form.appendChild(input7)
+            	}
+            	if(theme=="문화예술역사"){
+            		const input8 = document.createElement("input"); // 추가할 내용
+                    input8.name = "theme"
+            		input8.value = "A0201"
+            		form.appendChild(input8)
+            		const input9 = document.createElement("input"); // 추가할 내용
+                    input9.name = "theme"
+            		input9.value = "A0202"
+            		form.appendChild(input9)
+            		const input10 = document.createElement("input"); // 추가할 내용
+                    input10.name = "theme"
+            		input10.value = "A0203"
+            		form.appendChild(input10)
+            		const input11 = document.createElement("input"); // 추가할 내용
+                    input11.name = "theme"
+            		input11.value = "A0204"
+            		form.appendChild(input11)
+            		const input12 = document.createElement("input"); // 추가할 내용
+                    input12.name = "theme"
+            		input12.value = "A0205"
+            		form.appendChild(input12)
+            		const input13 = document.createElement("input"); // 추가할 내용
+                    input13.name = "theme"
+            		input13.value = "A0206"
+            		form.appendChild(input13)
+            	}
+            	if(theme=="캠핑"){
+            		const input14 = document.createElement("input"); // 추가할 내용
+                    input14.name = "theme"
+            		input14.value = "C0116"
+            		form.appendChild(input14)
+            	}
+            	if(theme=="가족"){
+            		const input15 = document.createElement("input"); // 추가할 내용
+                    input15.name = "theme"
+            		input15.value = "C0112"
+            		form.appendChild(input15)
+            	}
+            	if(theme=="나홀로"){
+            		const input16 = document.createElement("input"); // 추가할 내용
+                    input16.name = "theme"
+            		input16.value = "C0113"
+            		form.appendChild(input16)
+            	}
+
+        		form.submit();
+            })
             
-            setTimeout(() => {
-                location.href = '/ask';
-            }, 500);
+            // 선택된 테마 정보를 localStorage에 저장
+            // localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
+            
+            // setTimeout(() => {
+            //     location.href = '/ask';
+            // }, 500);
         });
 
         // 이전 버튼 클릭 이벤트
         document.getElementById('prevBtn').addEventListener('click', function() {
-            location.href = '/page2';
+            location.href = '/page2?areaCode='+areaCodeP
+            		+'&sigunguCode='+sigunguCodeP
+            		+'&days='+daysP;
         });
-
 /*         // 페이지 로드 시 이전에 선택한 테마가 있다면 표시
         window.addEventListener('load', function() {
             const savedThemes = JSON.parse(localStorage.getItem('selectedThemes') || '[]');

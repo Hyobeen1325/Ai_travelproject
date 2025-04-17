@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.dto.CWThemeCRUDRequest;
@@ -13,7 +14,7 @@ import com.example.demo.dto.CWThemeResponse;
 @Service
 public class CWThemeService {
 	// 선택한 테마값 저장하는 서비스단
-	 @Value("${fastapi.url:http://192.168.0.64:8586}")
+	 @Value("${fastapi.url:http://192.168.0.64:8000}")
     private String fastApiUrl;
 
     private final RestTemplate restTemplate;
@@ -50,8 +51,14 @@ public class CWThemeService {
     // 선택값 삭제
     public String deleteChooseVal(int choose_id) {
     	restTemplate.delete(fastApiUrl + "/choose_val/" + choose_id);
-    	CWThemeResponse choose_val = getChooseValById(choose_id);
-        return choose_val!=null?"삭제 성공\n삭제된 선택값 ID: " + choose_id:"삭제실패";
+    	try {
+    		CWThemeResponse choose_val = getChooseValById(choose_id);
+    		return "삭제실패\n 삭제정보 조회됨";
+		} catch (HttpClientErrorException e) {
+			return "삭제 성공\n삭제된 선택값 ID: " + choose_id;
+		} catch (Exception e) {
+			return "삭제실패\n 사유: "+e.getMessage();
+		}
     }
 
 }

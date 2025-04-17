@@ -14,10 +14,7 @@ public class CWThemeRequest {
 	// 선택값
 	private String high_loc;
 	private String low_loc;
-	private List<String> theme1;
-	private List<String> theme2;
-	private List<String> theme3;
-	private List<String> theme4;
+	private List<String> theme;
 	private int days;
 	
 

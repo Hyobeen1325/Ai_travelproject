@@ -126,7 +126,7 @@
                 <div class="location-grid">
                     <div class="location-item">당일 여행</div>
                     <div class="location-item">1박 2일</div>
-                    <div class="location-item">2박 3일 이상</div>
+                    <div class="location-item">2박 3일</div>
                 </div>
 
                 <div class="navigation">
@@ -139,6 +139,8 @@
 
     <script>
         let selectedLocation = null;
+    	const areaCodeP = "${param.areaCode}"
+        const sigunguCodeP = "${param.sigunguCode}"
 
         // 지역 선택 이벤트 리스너 추가
         document.querySelectorAll('.location-item').forEach(item => {
@@ -164,6 +166,7 @@
                     this.classList.remove('deselecting');
                     this.classList.add('selected');
                     selectedLocation = this;
+                    //console.log(selectedLocation.textContent)
                 }
             });
         });
@@ -174,25 +177,45 @@
                 alert('일정을 선택해 주세요.');
                 return;
             }
-
             const page = document.querySelector('.page');
             page.classList.add('slide-out');
             
+            let days = 0;
+            if(selectedLocation.textContent=="당일 여행"){
+            	days = 1;
+            }else if(selectedLocation.textContent=="1박 2일"){
+            	days = 2;
+            }else if(selectedLocation.textContent=="2박 3일"){
+            	days = 3;
+            }
+            
             // 선택된 일정 정보를 localStorage에 저장
-            localStorage.setItem('selectedDuration', selectedLocation.textContent);
+            //localStorage.setItem('selectedDuration', selectedLocation.textContent);
             
             setTimeout(() => {
-                location.href = '/page3';
+                location.href = '/page3?areaCode='+areaCodeP+"&sigunguCode="
+                		+sigunguCodeP+"&days="+days;
             }, 500);
         });
 
         // 이전 버튼 클릭 이벤트
         document.getElementById('prevBtn').addEventListener('click', function () {
-            const areaCode = localStorage.getItem('selectedMainAreaCode');
-            window.location.href = '/area/subregions?areaCode=' + areaCode;
+            //const areaCode = localStorage.getItem('selectedMainAreaCode');
+
+            if(sigunguCodeP){
+                setTimeout(() => {
+                	location.href = '/area/subregions?areaCode='
+                			+ areaCodeP + "&sigunguCode" + sigunguCodeP;
+                }, 500);
+            }else{
+                setTimeout(() => {
+                	location.href = '/mainarea/regions?areaCode='+ areaCodeP;
+                }, 500);
+            }
         });
 
          // 페이지 로드 시 이전에 선택한 일정이 있다면 표시
+        /*
         window.addEventListener('load', function() {
             const savedDuration = localStorage.getItem('selectedDuration');
             if (savedDuration) {
@@ -204,6 +227,7 @@
                 });
             }
         }); 
+         */
     </script>
 </body>
 </html> 

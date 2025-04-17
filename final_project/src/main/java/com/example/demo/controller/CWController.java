@@ -45,22 +45,7 @@ public class CWController {
     	String high_loc = theme.getHigh_loc();
     	String low_loc = theme.getLow_loc();
     	
-    	List<String> theme1 = theme.getTheme1();
-    	List<List> themes = new ArrayList<>();
-    	
-    	themes.add(theme1);
-    	if(theme.getTheme2()!=null) {
-    		List<String> theme2 = theme.getTheme2();
-        	themes.add(theme2);
-    	}
-    	if(theme.getTheme3()!=null) {
-    		List<String> theme3 = theme.getTheme3();
-        	themes.add(theme3);
-    	}
-    	if(theme.getTheme4()!=null) {
-    		List<String> theme4 = theme.getTheme4();
-        	themes.add(theme4);
-    	}
+    	List<String> themes = theme.getTheme();
     	
     	tapi_req.setAreaCodeVal(high_loc);
     	tapi_req.setSigunguCodeVal(low_loc);
@@ -94,40 +79,37 @@ public class CWController {
         	tapi_req.setContentTypeIdVal(0); // 검색 후 초기화
     	}
     	
-    	for(List<String> th:themes) {
-        	for(String t:th) {
-        		if(t != null) {
-        			if(t.length()==3) {
-        				tapi_req.setCat1Val(t);
-        			}else if(t.length()==5) {
-        				tapi_req.setCat1Val(t.substring(0, 3));
-        				tapi_req.setCat2Val(t);
-        			}
-	
-					try {
-						response = travelAPI_01_Service.getTravelAPIResponse(tapi_req);
+    	for(String t:themes) {
+    		if(t != null) {
+    			if(t.length()==3) {
+    				tapi_req.setCat1Val(t);
+    			}else if(t.length()==5) {
+    				tapi_req.setCat1Val(t.substring(0, 3));
+    				tapi_req.setCat2Val(t);
+    			}
 
-		        		if(response != null &&
-		        			    response.getResponse().getBody() != null &&
-		        			    response.getResponse().getBody().getItems() != null &&
-		        			    response.getResponse().getBody().getItems().getItem() != null) {
-		            		areaList.addAll(response
-		            				.getResponse()
-		            				.getBody()
-		            				.getItems()
-		            				.getItem());
-		            	}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        		}
-        	}
+				try {
+					response = travelAPI_01_Service.getTravelAPIResponse(tapi_req);
+
+	        		if(response != null &&
+	        			    response.getResponse().getBody() != null &&
+	        			    response.getResponse().getBody().getItems() != null &&
+	        			    response.getResponse().getBody().getItems().getItem() != null) {
+	            		areaList.addAll(response
+	            				.getResponse()
+	            				.getBody()
+	            				.getItems()
+	            				.getItem());
+	            	}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
     	}
     	
     	// 중복 제거
         List<CWTravelAPI_01_Item> areaListF = new ArrayList<>(new HashSet<>(areaList));
-
     	
     	model.addAttribute("areaList", areaListF); // 리스트를 모델에 할당
     	
