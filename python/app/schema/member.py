@@ -22,7 +22,7 @@ class MypageModel(BaseModel): # 마이페이지 조회 모델
     nickname: str # 닉네임
     phon_num: str # 전화번호
 
-class UpdateModel(BaseModel): # 마이페이지 수정 모델
+class UpdateModel(BaseModel): # 마이페이지 수정 모델 (선택적)
     email: str | None = None # 이메일(아이디)
     nickname: str | None = None # 닉네임
     phon_num: str | None = None # 전화번호
