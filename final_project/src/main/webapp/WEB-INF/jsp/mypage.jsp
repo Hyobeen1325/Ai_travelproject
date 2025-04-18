@@ -238,12 +238,6 @@ body {
   </style>
 </head>
 <body>
-<script>
-	 var message = "${msg}";
-	 if (message && message !== "") {
-	     alert(message); // 메세지 출력 
-	 }
-</script>
   <!-- 마이페이지 박스 -->
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>
@@ -276,15 +270,17 @@ body {
     	<input type="text" class="modal-input" id="editNickname" name="nickname" placeholder="닉네임" value="${member.nickname}">
     	<label>전화번호</label>
     	<input type="tel" class="modal-input" id="editPhone" name="phon_num" placeholder="전화번호" value="${member.phon_num}">
-    <div class="modal-buttons">
+    	<div class="modal-buttons">
         <button type="button" class="modal-button modal-cancel" onclick="closeModal()">취소</button>
         <button type="submit" class="modal-button modal-save">저장</button>
         </div>
       </form>
     </div>
   </div>
-
-  <script>
+<!-- 헤더2 -->
+<jsp:include page="header2.jsp" /> 
+</body>
+ <script type="text/javascript">
     const modal = document.getElementById('editModal'); // 내정보 수정 버튼 
     const mainForm = document.querySelector('.mypage-form'); // 내정보 조회 form 
     const editForm = document.getElementById('editForm'); // 모달창 : 내정보 수정데이터 제출 form 
@@ -301,7 +297,7 @@ body {
 
     // 폼 제출 시 확인 메시지
     editForm.addEventListener('submit', function (e) { // 메세지 
-      const confirmUpdate = confirm("내정보를 수정하시겠습니까?'); 
+      const confirmUpdate = confirm("내정보를 수정하시겠습니까?"); 
       if (!confirmUpdate) {
         e.preventDefault();
       }
@@ -313,8 +309,10 @@ body {
         closeModal();
       }
     };
-  </script>
-<!-- 헤더2 -->
-<jsp:include page="header2.jsp" /> 
-</body>
+    
+    var message = "${msg}";
+    if (message != "") {
+        alert(message); 
+    };
+</script>
 </html>

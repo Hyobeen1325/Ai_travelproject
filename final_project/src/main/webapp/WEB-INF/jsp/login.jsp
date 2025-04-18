@@ -188,7 +188,6 @@
   </style>
 </head>
 <body>
-
  <!-- 소담 로고 -->
 <div class="logo-container">
   <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
@@ -226,5 +225,11 @@
 </div>
 <!-- 헤더2 -->
 <jsp:include page="header2.jsp" />
+<script type="text/javascript">
+    var message = "${msg}";
+    if (message != "") {
+      alert(message);
+    };
+</script>
 </body>
 </html>
