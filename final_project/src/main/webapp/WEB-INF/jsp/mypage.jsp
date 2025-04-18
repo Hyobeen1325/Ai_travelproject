@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
-<!--헤더1 -->
 <jsp:include page="header.jsp" />
 <head>
   <meta charset="UTF-8">
@@ -235,14 +234,31 @@ body {
   }
 }
 
+  .password-change-button {
+    align-self: flex-end;
+    padding: 12px 24px;
+    background-color: #28a745; /* 초록색 */
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+
+  .password-change-button:hover {
+    background-color: #1e7e34; /* 좀 더 진한 초록색 */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+  }
   </style>
 </head>
 <body>
-  <!-- 마이페이지 박스 -->
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>
-    
-    <!-- 내정보 조회 -->
+
     <form class="mypage-form" id="mainForm">
       <label>이름</label>
       <input type="text" placeholder="이름" class="mypage-input" name="name" value="${member.name}" readonly>
@@ -252,17 +268,17 @@ body {
       <input type="text" placeholder="전화번호" class="mypage-input" name="phone" value="${member.phon_num}" readonly>
       <label>아이디</label>
       <input type="email" placeholder="아이디" class="mypage-input" name="email" value="${member.email}" readonly>
-      <button type="button" class="mypage-button" onclick="openModal()">수정</button>
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" class="password-change-button" onclick="openPasswordModal()">비밀번호 변경</button>
+        <button type="button" class="mypage-button" onclick="openEditModal()">수정</button>
+      </div>
     </form>
   </div>
 
-  <!-- 모달창 버튼 -->
   <div class="modal" id="editModal">
     <div class="modal-content">
-      <button class="close-button" onclick="closeModal()">&times;</button>
+      <button class="close-button" onclick="closeEditModal()">&times;</button>
       <div class="modal-title">내정보 수정</div>
-      
-<!-- 내정보 입력창 --> 
       <form class="modal-form" id="editForm" action="<c:url value='/login/mypage/${member.email}'/>" method="post">
        <label>이메일</label>
         <input type="email" class="modal-input" id="editEmail" name="email" placeholder="이메일" value="${member.email}">
@@ -271,48 +287,92 @@ body {
     	<label>전화번호</label>
     	<input type="tel" class="modal-input" id="editPhone" name="phon_num" placeholder="전화번호" value="${member.phon_num}">
     	<div class="modal-buttons">
-        <button type="button" class="modal-button modal-cancel" onclick="closeModal()">취소</button>
+        <button type="button" class="modal-button modal-cancel" onclick="closeEditModal()">취소</button>
         <button type="submit" class="modal-button modal-save">저장</button>
         </div>
       </form>
     </div>
   </div>
-<!-- 헤더2 -->
-<jsp:include page="header2.jsp" /> 
+
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <button class="close-button" onclick="closePasswordModal()">&times;</button>
+      <div class="modal-title">비밀번호 변경</div>
+      <form class="modal-form" id="passwordForm" action="<c:url value='/login/updatePassword'/>" method="post">
+        <label for="currentPassword">현재 비밀번호</label>
+        <input type="password" class="modal-input" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호" required>
+        <label for="newPassword">새 비밀번호</label>
+        <input type="password" class="modal-input" id="newPassword" name="newPassword" placeholder="새 비밀번호" required>
+        <label for="confirmNewPassword">새 비밀번호 확인</label>
+        <input type="password" class="modal-input" id="confirmNewPassword" name="confirmNewPassword" placeholder="새 비밀번호 확인" required>
+        <div class="modal-buttons">
+          <button type="button" class="modal-button modal-cancel" onclick="closePasswordModal()">취소</button>
+          <button type="submit" class="modal-button modal-change" style="background-color: #28a745; color: white;">변경</button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+<jsp:include page="header2.jsp" />
 </body>
  <script type="text/javascript">
-    const modal = document.getElementById('editModal'); // 내정보 수정 버튼 
-    const mainForm = document.querySelector('.mypage-form'); // 내정보 조회 form 
-    const editForm = document.getElementById('editForm'); // 모달창 : 내정보 수정데이터 제출 form 
+    const editModal = document.getElementById('editModal');
+    const passwordModal = document.getElementById('passwordModal');
+    const mainForm = document.querySelector('.mypage-form');
+    const editForm = document.getElementById('editForm');
+    const passwordForm = document.getElementById('passwordForm');
 
-    // 모달 열기
-    function openModal() {
-      modal.style.display = 'flex';
+    function openEditModal() {
+      editModal.style.display = 'flex';
     }
 
-    // 모달 닫기
-    function closeModal() {
-      modal.style.display = 'none';
+    function closeEditModal() {
+      editModal.style.display = 'none';
     }
 
-    // 폼 제출 시 확인 메시지
-    editForm.addEventListener('submit', function (e) { // 메세지 
-      const confirmUpdate = confirm("내정보를 수정하시겠습니까?"); 
+    function openPasswordModal() {
+      passwordModal.style.display = 'flex';
+    }
+
+    function closePasswordModal() {
+      passwordModal.style.display = 'none';
+    }
+
+    editForm.addEventListener('submit', function (e) {
+      const confirmUpdate = confirm("내정보를 수정하시겠습니까?");
       if (!confirmUpdate) {
         e.preventDefault();
       }
     });
 
-    // 모달 외부 클릭 시 닫기
+    passwordForm.addEventListener('submit', function (e) {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword !== confirmNewPassword) {
+        alert("새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
+        e.preventDefault();
+        return;
+      }
+
+      const confirmChange = confirm("비밀번호를 변경하시겠습니까?");
+      if (!confirmChange) {
+        e.preventDefault();
+      }
+    });
+
     window.onclick = function (event) {
-      if (event.target === modal) {
-        closeModal();
+      if (event.target === editModal) {
+        closeEditModal();
+      }
+      if (event.target === passwordModal) {
+        closePasswordModal();
       }
     };
-    
+
     var message = "${msg}";
     if (message != "") {
-        alert(message); 
+        alert(message);
     };
 </script>
 </html>
