@@ -258,36 +258,15 @@
                     <!-- 원형 일정 (하드코딩 유지) -->
                     <div class="schedule-circle">당일</div>
 
-                    <!-- 파란색 여행 코스 박스 -->
-                    <div class="course-box">
-                        <%-- EL과 JSTL을 사용하여 사용자 이름 표시 (없으면 '사용자') --%>
-                        <h2>
-                            <c:choose>
-                                <c:when test="${not empty sessionScope.username}">
-                                    <c:out value="${sessionScope.username}"/>님을 위한 여행 코스
-                                </c:when>
-                                <c:otherwise>
-                                    사용자님을 위한 여행 코스
-                                </c:otherwise>
-                            </c:choose>
-                        </h2>
-                        <!-- 여행 상세 정보 (하드코딩 유지) -->
-                        <div class="travel-details">
-                            <div class="detail-item">
-                                <span>총 이동거리:</span>
-                                <span>4.2km</span>
-                            </div>
-                            <div class="detail-item">
-                                <span>이동 지역:</span>
-                                <span>서울시 강남구 역삼동</span>
-                            </div>
-                            <div class="detail-item">
-                                <span>추천 여행지:</span>
-                                <span>강남역, 선릉역, 역삼역</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+					<!-- 파란색 여행 코스 박스 -->
+					                    <div class="course-box">
+					                        <h2>${username}님을 위한 여행 코스</h2>
+					                        <div class="travel-details">
+					                            <%-- 컨트롤러에서 전달된 AI 응답 (여행 코스 관련) --%>
+					                            <pre>${aiResponse2}</pre>
+					                        </div>
+					                    </div>
+					                </div>
 
 				<!-- 이전 검색 기록 섹션 -->
 				<div class="search-history-section">
