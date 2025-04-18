@@ -21,4 +21,10 @@ public class HB2Controller {
 	public String transit() {
 		return "transit";
 	}
+
+	@RequestMapping("/viewAPI")
+	// http://localhost:8080/viewAPI
+	public String viewAPI() {
+		return "viewAPI";
+	}
 }
