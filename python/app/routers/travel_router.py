@@ -1,25 +1,30 @@
-from fastapi import APIRouter, HTTPException, Request
+# app/routers/travel_router.py
+from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.templating import Jinja2Templates
-from app.schemas.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2
+from app.schema.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2
 from app.services.model_service import TravelModelService
 from app.services.chat_service import ChatService
 from app.services.qna_service import QnaService
-from app.schemas.chat_schema import ChatLogCreate, ChatLogUpdate, ChatLogResponse
-from datetime import date
-from typing import List, Optional
+from app.database.database import get_db
+from sqlalchemy.orm import Session
+from typing import List
 
 router = APIRouter()
 model_service = TravelModelService()
-chat_service = ChatService()
-qna_service = QnaService()
 templates = Jinja2Templates(directory="app/templates")
+
+def get_chat_service(db: Session = Depends(get_db)):
+    return ChatService(db)
+
+def get_qna_service(db: Session = Depends(get_db)):
+    return QnaService(db)
 
 @router.get("/")
 async def travel_page(request: Request):
     """메인 여행 추천 페이지 렌더링"""
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "username": "사용자",  # 실제로는 로그인된 사용자 이름
+        "username": "사용자",
         "total_distance": "0",
         "locations": "선택된 지역 없음",
         "recommended_places": "추천 장소 없음",
@@ -33,20 +38,16 @@ async def get_travel_recommendations(request: TravelKeywordRequest):
     - 지역, 일정, 테마 키워드를 받아서 추천 생성
     """
     try:
-        # 모델 서비스를 통한 추천 생성
         recommendations, confidence = model_service.get_recommendations(
             location=request.location,
             schedule=request.schedule,
             theme=request.theme
         )
-        
-        # 응답 생성
         return TravelRecommendationResponse(
             recommendations=recommendations,
             confidence_score=confidence,
             additional_info=f"키워드: {request.location}, {request.schedule}, {request.theme}"
         )
-        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -57,7 +58,6 @@ async def chat_page(request: Request, query: str = None):
     - 자연어 쿼리를 받아 응답 제공
     """
     if not query:
-        # 쿼리가 없는 경우 빈 페이지 렌더링
         return templates.TemplateResponse("index2.html", {
             "request": request,
             "query": "",
@@ -65,23 +65,16 @@ async def chat_page(request: Request, query: str = None):
         })
     
     try:
-        # 모델 서비스를 통한 챗봇 응답 생성
         result = model_service.process_chatbot_query(query)
-        
-        # 추천 목록을 문자열로 변환
         recommendations_text = "\n".join([f"- {item}" for item in result["recommendations"]])
         additional_info = result.get("additional_info", "")
-        
-        # 응답 생성
         ai_response = f"{recommendations_text}\n\n{additional_info}" if additional_info else recommendations_text
         
-        # 페이지 렌더링
         return templates.TemplateResponse("index2.html", {
             "request": request,
             "query": query,
             "ai_response": ai_response
         })
-        
     except Exception as e:
         return templates.TemplateResponse("index2.html", {
             "request": request,
@@ -97,21 +90,17 @@ async def chatbot_api(request: ChatbotRequest):
     - Spring Boot 백엔드와 연동
     """
     try:
-        # Process the chatbot query using the model service
         result = model_service.process_chatbot_query(request.query)
-
-        # 응답 생성
         return TravelRecommendationResponse(
             recommendations=result["recommendations"],
             confidence_score=result["confidence_score"],
             additional_info=result.get("additional_info", "")
         )
-        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/page04/message", response_model=JHResponse)
-async def process_jh_message(request: JHRequestDto):
+async def process_jh_message(request: JHRequestDto, chat_service: ChatService = Depends(get_chat_service), qna_service: QnaService = Depends(get_qna_service)):
     """
     Spring Boot 연동용 API 엔드포인트
     - 메시지와 이메일 처리
@@ -129,18 +118,18 @@ async def process_jh_message(request: JHRequestDto):
         response_text = f"{recommendations_text}\\n\\n{additional_info}" if additional_info else recommendations_text
 
         response_data = {"response": response_text}
-        processed_chat_log_id = None # 현재 처리된 chat_log_id 저장용
+        processed_chat_log_id = None
 
         if email:
             try:
                 title = result["recommendations"][0] if result["recommendations"] else "일반 대화"
 
-                # Chat Log 처리 (Update or Insert or Ignore)
+                # Chat Log 처리
                 chat_result = chat_service.update_chat_log(email, title)
                 if chat_result:
                     processed_chat_log_id = chat_result.get("chat_log_id")
 
-                # QNA 처리 (Update or Insert or Ignore)
+                # QNA 처리
                 if processed_chat_log_id:
                     qna_service.create_or_update_qna(
                         chat_log_id=processed_chat_log_id,
@@ -148,24 +137,23 @@ async def process_jh_message(request: JHRequestDto):
                         answer=response_text
                     )
 
-                # --- 모든 데이터 조회 및 리스트 생성 ---
+                # 모든 데이터 조회 및 리스트 생성
                 all_chat_logs = chat_service.get_chat_logs_by_email(email)
-                all_qna_for_email = qna_service.get_qna_by_email(email) # 이메일에 대한 모든 QNA
+                all_qna_for_email = qna_service.get_qna_by_email(email)
 
                 if all_chat_logs:
                     response_data["titles"] = [log.get("title") for log in all_chat_logs if log.get("title")]
                     response_data["upt_dates"] = [log.get("upt_date") for log in all_chat_logs if log.get("upt_date")]
-                    response_data["chat_logs"] = all_chat_logs # 전체 로그 데이터
+                    response_data["chat_logs"] = all_chat_logs
 
                 if all_qna_for_email:
                     response_data["questions"] = [qna.get("question") for qna in all_qna_for_email if qna.get("question")]
                     response_data["answers"] = [qna.get("answer") for qna in all_qna_for_email if qna.get("answer")]
 
-                # 현재 로그와 관련된 QNA 데이터 (선택적)
                 if processed_chat_log_id:
                     current_qna_data = qna_service.get_qna_by_chat_log_id(processed_chat_log_id)
                     if current_qna_data:
-                         response_data["qna_data"] = current_qna_data
+                        response_data["qna_data"] = current_qna_data
 
             except Exception as e:
                 print(f"데이터 처리/조회 실패: {str(e)}")
@@ -177,7 +165,7 @@ async def process_jh_message(request: JHRequestDto):
         return JHResponse(response=error_message)
 
 @router.post("/page3/message", response_model=JHResponse2)
-async def process_jh_message2(request: JHRequestDto2):
+async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService = Depends(get_chat_service), qna_service: QnaService = Depends(get_qna_service)):
     """
     Spring Boot 연동용 API 엔드포인트 (위치 정보 포함)
     - 메시지와 이메일 처리
@@ -194,7 +182,6 @@ async def process_jh_message2(request: JHRequestDto2):
         additional_info = result.get("additional_info", "")
         response_text = f"{recommendations_text}\\n\\n{additional_info}" if additional_info else recommendations_text
 
-        # 기본 응답 데이터 구성 (response, latitude, longitude)
         response_data = {"response": response_text}
         if result.get("latitude"):
             response_data["latitude"] = result["latitude"]
@@ -220,7 +207,7 @@ async def process_jh_message2(request: JHRequestDto2):
                         answer=response_text
                     )
 
-                # --- 모든 데이터 조회 및 리스트 생성 ---
+                # 모든 데이터 조회 및 리스트 생성
                 all_chat_logs = chat_service.get_chat_logs_by_email(email)
                 all_qna_for_email = qna_service.get_qna_by_email(email)
 
@@ -233,7 +220,6 @@ async def process_jh_message2(request: JHRequestDto2):
                     response_data["questions"] = [qna.get("question") for qna in all_qna_for_email if qna.get("question")]
                     response_data["answers"] = [qna.get("answer") for qna in all_qna_for_email if qna.get("answer")]
 
-                # 현재 로그와 관련된 QNA 데이터
                 if processed_chat_log_id:
                     current_qna_data = qna_service.get_qna_by_chat_log_id(processed_chat_log_id)
                     if current_qna_data:

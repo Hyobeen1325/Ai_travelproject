@@ -198,7 +198,7 @@
             </div>
         </div>       
         <div><h3></h3></div>
-        <button class="start-button" onclick="location.href='/mainarea/regions?numOfRows=20'">
+        <button class="start-button" onclick="location.href='/mainarea/regions'">
     		START
 		</button>
     </div>

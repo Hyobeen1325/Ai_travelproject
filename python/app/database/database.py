@@ -17,7 +17,13 @@ SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{db.get('user')}:{db.get('password')
 # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://<유저명>:<비밀번호>@<호스트>:<포트>/<DB이름>"?utf8 인코딩 
 
 engine = create_engine( # 인코딩  
-    SQLALCHEMY_DATABASE_URL
+    SQLALCHEMY_DATABASE_URL,
+    
+    pool_size=5, # 데이터베이스 연결 풀의 기본 크기 (5명이 동시에 사용 가능)
+    max_overflow=10, # 최대 초과 연결 수 (10명이 더 사용 가능)
+    pool_timeout=30, # 연결 풀에서 대기 시간 (30초)
+    pool_recycle=1800 # 연결 풀에서 재사용 가능한 최대 시간 (1800초 = 30분)
+
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) 

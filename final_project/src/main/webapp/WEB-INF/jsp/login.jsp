@@ -188,14 +188,8 @@
   </style>
 </head>
 <body>
- <script>
-	 var message = "${msg}";
-	 if (message && message !== "") {
-	     alert(message); // 메세지 출력 
-	 }
-    </script>
-    
-<!-- 로고 -->
+
+ <!-- 소담 로고 -->
 <div class="logo-container">
   <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
 </div>
@@ -211,7 +205,7 @@
     <input type="password" name="pwd" id="pwd" placeholder="비밀번호" class="login-input" required>
     <button type="submit" class="login-button">로그인</button>
 
-    <!-- 구분선 -->
+    <!-- 로그인 구분선 -->
     <div class="divider">
       <span class="divider-text">또는</span>
     </div>
@@ -230,6 +224,7 @@
    	<!-- ("/join") : 컨트롤러로 설정 url -->
   </div>
 </div>
+<!-- 헤더2 -->
 <jsp:include page="header2.jsp" />
 </body>
 </html>

@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
+import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
@@ -9,10 +12,21 @@ public class JHResponseDto2 {
     private String response;
     private Double latitude;
     private Double longitude;
-    private String upt_date;
-    private String title;
-    private String question;
-    private String answer;
-    private List<ChatLogItemDto> chatLogs; // FastAPI의 chat_logs (해당 이메일의 모든 채팅 로그 리스트)
-    private List<QnaItemDto> qnaData;      // FastAPI의 qna_data (현재 로그와 관련된 모든 QNA 리스트)
+    @JsonProperty("titles")
+    private List<String> titles;
+
+    @JsonProperty("upt_dates")
+    private List<Date> uptDates;
+
+    @JsonProperty("chat_logs")
+    private List<ChatLogItemDto> chatLogs;
+
+    @JsonProperty("qna_data")
+    private List<QnaItemDto> qnaData;
+
+    @JsonProperty("questions")
+    private List<String> questions;
+
+    @JsonProperty("answers")
+    private List<String> answers;
 }

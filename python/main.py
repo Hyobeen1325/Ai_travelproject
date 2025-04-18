@@ -18,6 +18,21 @@ from app.routers import member_router,auth_router # member router
 app.include_router(member_router.router) 
 app.include_router(auth_router.router) 
 
+"""유찬우"""
+# 선택값 CRUD 라우터
+from app.routers import choose_val_router
+from app.database.database import engine, Base
+
+# 데이터베이스 테이블 생성
+Base.metadata.create_all(bind=engine)
+app.include_router(choose_val_router.choose_router)
+"""유찬우 끝"""
+"""권정현"""
+from app.routers import travel_router
+app.include_router(travel_router.router, prefix="/api/v1/travel", tags=["travel"])
+app.include_router(travel_router.router, prefix="/api/v1/chatbot", tags=["chatbot"])
+app.include_router(travel_router.router, prefix="")  # UI 라우터
+"""권정현 끝"""
 # FAST 실행명령어 자동 실행 (main 함수)   
 # http://127.0.0.1:8000/docs
 if __name__ == "__main__":

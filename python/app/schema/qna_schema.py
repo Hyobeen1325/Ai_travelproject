@@ -1,5 +1,5 @@
+# app/schema/qna_schema.py
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
 
 class QnaCreate(BaseModel):
@@ -8,10 +8,10 @@ class QnaCreate(BaseModel):
     qna_id: str
     question: str
     answer: str
-    reg_date: datetime
-    upt_date: datetime
+    reg_date: str
+    upt_date: str
 
 class QnaResponse(BaseModel):
     """QNA 응답 스키마"""
     question: str
-    answer: str 
+    answer: str

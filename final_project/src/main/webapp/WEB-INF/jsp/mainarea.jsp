@@ -150,6 +150,7 @@
 
     <script>
   		let selectedRnum = null;
+		const areaCodeP = "${param.areaCode}"
         let selectedLocation = null;
 
         // 지역 선택 이벤트 리스너 추가
@@ -192,25 +193,32 @@
             page.classList.add('slide-out');
             
             // 선택된 지역 정보를 localStorage에 저장
-            localStorage.setItem('selectedDetailLocation',selectedLocation.textContent);
-            
-            setTimeout(() => {
-                location.href = '/area/subregions?areaCode='+ areaCode;
-            }, 500);
-                    
+            // localStorage.setItem('selectedDetailLocation',selectedLocation.textContent);
+            if(areaCode<9){
+                setTimeout(() => {
+                    location.href = '/page2?areaCode='+areaCode;
+                }, 500);
+            }else{
+                setTimeout(() => {
+                    location.href = '/area/subregions?areaCode='+ areaCode;
+                }, 500);
+            }
         });
 
         // 이전 버튼 클릭 이벤트
         document.getElementById('prevBtn').addEventListener('click', function() {
-            location.href = '/project1';
+            setTimeout(() => {
+            	location.href = '/project1';
+            }, 500);
+            //location.href = '/project1';
         });
 
         // 페이지 로드 시 이전에 선택한 지역이 있다면 표시
         window.addEventListener('load', function() {
-            const savedLocation = localStorage.getItem('selectedDetailLocation');
-            if (savedLocation) {
+             const savedLocation = localStorage.getItem('selectedDetailLocation');
+             if (savedLocation) {
                 document.querySelectorAll('.location-item').forEach(item => {
-                    if (item.textContent === savedLocation) {
+                    if (item.textContent.trim() === savedLocation.trim()) {
                         item.classList.add('selected');
                         selectedLocation = item;
                     }

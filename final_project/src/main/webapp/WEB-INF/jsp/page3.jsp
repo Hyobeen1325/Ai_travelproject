@@ -50,13 +50,6 @@ body {
 .title {
 	text-align: center;
 	font-size: 24px;
-	margin-bottom: 10px;
-	color: #333;
-}
-
-.subtitle {
-	text-align: center;
-	font-size: 20px;
 	margin-bottom: 40px;
 	color: #333;
 }
@@ -74,16 +67,17 @@ body {
 	border-radius: 15px;
 	text-align: center;
 	cursor: pointer;
-	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: all 0.3s ease;
 	border: 1px solid #e0e0e0;
 	position: relative;
 	overflow: hidden;
 }
 
 .location-item:hover {
-	transform: translateY(-3px);
-	background-color: rgba(74, 144, 226, 0.1);
-	box-shadow: 0 3px 10px rgba(74, 144, 226, 0.2);
+	transform: translateY(-5px);
+	background-color: #4a90e2;
+	color: white;
+	box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
 }
 
 .location-item.selected {
@@ -101,113 +95,8 @@ body {
 	right: 5px;
 	font-size: 12px;
 	color: #fff;
-	opacity: 0;
-	transform: scale(0);
-	transition: all 0.3s ease;
 }
 
-.location-item.selected::after {
-	opacity: 1;
-	transform: scale(1);
-}
-
-.location-item.deselecting {
-	animation: deselect 0.3s ease forwards;
-}
-
-@
-keyframes deselect { 0% {
-	transform: translateY(-5px);
-}
-
-100
-
-
-
-
-%
-{
-transform
-
-
-
-
-:
-
-
-
-
-translateY
-
-
-(
-
-
-
-
-0
-
-
-
-
-)
-
-
-;
-background-color
-
-
-
-
-:
-
-
-
-
-white
-
-
-;
-color
-
-
-
-
-:
-
-
-
-
-initial
-
-
-;
-border
-
-
-
-
-:
-
-
-
-
-1px
-
-
-
-
-solid
-
-
-
-
-#e0e0e0
-
-
-;
-}
-}
 .navigation {
 	display: flex;
 	justify-content: space-between;
@@ -254,67 +143,29 @@ solid
 				<h1 class="title">여행에서 원하는 테마를 지정해 주세요.</h1>
 				<h3 class="subtitle">(최소 2개 ~ 최대 4개)</h3>
 
-				<div class="location-grid">
-					<div class="location-item" data-name="자연" data-value="A01">자연</div>
-					<div class="location-item" data-name="액티비티" data-value="A03">액티비티</div>
-					<div class="location-item" data-name="축제" data-value="A0207,A0208">축제</div>
-					<div class="location-item" data-name="쇼핑" data-value="A04">쇼핑</div>
-					<div class="location-item" data-name="음식점" data-value="A05,C0117">음식점</div>
-					<div class="location-item" data-name="문화예술역사"
-						data-value="A0201,A0202,A0203,A0204,A0205,A0206">문화예술역사</div>
-					<div class="location-item" data-name="캠핑" data-value="C0116">캠핑</div>
-					<div class="location-item" data-name="가족" data-value="C0112">가족</div>
-					<div class="location-item" data-name="나홀로" data-value="C0113">나홀로</div>
-				</div>
+                <div class="location-grid">
+                    <div class="location-item">자연</div>
+                    <div class="location-item">액티비티</div>
+                    <div class="location-item">축제</div>
+                    <div class="location-item">쇼핑</div>
+                    <div class="location-item">음식점</div>
+                    <div class="location-item">문화예술역사</div>
+                    <div class="location-item">캠핑</div>
+                    <div class="location-item">가족</div>
+                    <div class="location-item">나홀로</div>
+                </div>
+                <form id="choose_form" action="/cwtestAPIre" method="post">
+                	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
+                	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
+                	<input type="hidden" name="days" value="${param.days}"/>
+                </form>
 
 				<input type="hidden" id="selectedThemes" name="themes" value="">
 
-				<script>
-				    const locationItems = document.querySelectorAll('.location-item');
-				    const selectedThemesInput = document.getElementById('selectedThemes');
-				    const selectedKeywords = []; // 선택된 키워드 (이름) 저장
-				    const selectedValues = [];   // 선택된 값 (API 코드) 저장
-				
-				    locationItems.forEach(item => {
-				        item.addEventListener('click', function() {
-				            const name = this.dataset.name;
-				            const value = this.dataset.value;
-				
-				            const index = selectedKeywords.indexOf(name);
-				
-				            if (index === -1) {
-				                // 선택되지 않은 경우 추가
-				                selectedKeywords.push(name);
-				                selectedValues.push(value);
-				                this.classList.add('selected'); // 선택된 스타일 적용 (CSS에서 정의해야 함)
-				            } else {
-				                // 이미 선택된 경우 제거
-				                selectedKeywords.splice(index, 1);
-				                selectedValues.splice(index, 1);
-				                this.classList.remove('selected'); // 선택 해제 스타일 제거
-				            }
-				
-				            // hidden input 필드에 value들을 쉼표로 구분된 문자열로 저장
-				            selectedThemesInput.value = selectedValues.join(',');
-				
-				            console.log('선택된 키워드:', selectedKeywords);
-				            console.log('선택된 값:', selectedValues);
-				            console.log('전송될 값:', selectedThemesInput.value);
-				            // 필요에 따라 서버로 데이터를 전송하는 로직 (AJAX 등)을 추가할 수 있습니다.
-				        });
-				    });
-				</script>
-
-
-				<div class="navigation">
-					<button class="nav-button" id="prevBtn">이전</button>
-					<button class="nav-button" id="nextBtn">다음</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<script>
+    <script>
+    	const areaCodeP = "${param.areaCode}"
+        const sigunguCodeP = "${param.sigunguCode}"
+        const daysP = "${param.days}"
         let selectedThemes = new Set();
 
         // 테마 선택 이벤트 리스너 추가
@@ -328,6 +179,9 @@ solid
                         this.classList.remove('deselecting');
                     }, 300);
                     selectedThemes.delete(this.textContent);
+                    
+                    
+                    
                 } else {
                     // 새로운 테마 선택
                     if (selectedThemes.size >= 4) {
@@ -348,22 +202,114 @@ solid
                 return;
             }
 
+            const form = document.getElementById('choose_form'); // 전송할 폼
+            
             const page = document.querySelector('.page');
             page.classList.add('slide-out');
             
-            // 선택된 테마 정보를 localStorage에 저장
-            localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
+            selectedThemes.forEach(function(theme){
+            	//자연 액티비티 축제 쇼핑 음식점 문화예술역사 캠핑 가족 나홀로
+            	if(theme=="자연"){
+                    const input1 = document.createElement("input"); // 추가할 내용
+                    input1.name = "theme"
+            		input1.value = "A01"
+            		form.appendChild(input1)
+            	}
+            	if(theme=="액티비티"){
+                    const input2 = document.createElement("input"); // 추가할 내용
+                    input2.name = "theme"
+            		input2.value = "A03"
+            		form.appendChild(input2)
+            	}
+            	if(theme=="축제"){
+                    const input3 = document.createElement("input"); // 추가할 내용
+                    input3.name = "theme"
+            		input3.value = "A0207"
+            		form.appendChild(input3)
+            		
+                    const input4 = document.createElement("input"); // 추가할 내용
+                    input4.name = "theme"
+            		input4.value = "A0208"
+            		form.appendChild(input4)
+            	}
+            	if(theme=="쇼핑"){
+                    const input5 = document.createElement("input"); // 추가할 내용
+                    input5.name = "theme"
+            		input5.value = "A04"
+            		form.appendChild(input5)
+            	}
+            	if(theme=="음식점"){
+            		const input6 = document.createElement("input"); // 추가할 내용
+                    input6.name = "theme"
+            		input6.value = "A05"
+            		form.appendChild(input6)
+            		const input7 = document.createElement("input"); // 추가할 내용
+                    input7.name = "theme"
+            		input7.value = "C0117"
+            		form.appendChild(input7)
+            	}
+            	if(theme=="문화예술역사"){
+            		const input8 = document.createElement("input"); // 추가할 내용
+                    input8.name = "theme"
+            		input8.value = "A0201"
+            		form.appendChild(input8)
+            		const input9 = document.createElement("input"); // 추가할 내용
+                    input9.name = "theme"
+            		input9.value = "A0202"
+            		form.appendChild(input9)
+            		const input10 = document.createElement("input"); // 추가할 내용
+                    input10.name = "theme"
+            		input10.value = "A0203"
+            		form.appendChild(input10)
+            		const input11 = document.createElement("input"); // 추가할 내용
+                    input11.name = "theme"
+            		input11.value = "A0204"
+            		form.appendChild(input11)
+            		const input12 = document.createElement("input"); // 추가할 내용
+                    input12.name = "theme"
+            		input12.value = "A0205"
+            		form.appendChild(input12)
+            		const input13 = document.createElement("input"); // 추가할 내용
+                    input13.name = "theme"
+            		input13.value = "A0206"
+            		form.appendChild(input13)
+            	}
+            	if(theme=="캠핑"){
+            		const input14 = document.createElement("input"); // 추가할 내용
+                    input14.name = "theme"
+            		input14.value = "C0116"
+            		form.appendChild(input14)
+            	}
+            	if(theme=="가족"){
+            		const input15 = document.createElement("input"); // 추가할 내용
+                    input15.name = "theme"
+            		input15.value = "C0112"
+            		form.appendChild(input15)
+            	}
+            	if(theme=="나홀로"){
+            		const input16 = document.createElement("input"); // 추가할 내용
+                    input16.name = "theme"
+            		input16.value = "C0113"
+            		form.appendChild(input16)
+            	}
+
+        		form.submit();
+            })
             
-            setTimeout(() => {
-                location.href = '/ask';
-            }, 500);
+            // 선택된 테마 정보를 localStorage에 저장
+            // localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
+            
+            // setTimeout(() => {
+            //     location.href = '/ask';
+            // }, 500);
         });
 
         // 이전 버튼 클릭 이벤트
         document.getElementById('prevBtn').addEventListener('click', function() {
-            location.href = '/page2';
+            location.href = '/page2?areaCode='+areaCodeP
+            		+'&sigunguCode='+sigunguCodeP
+            		+'&days='+daysP;
         });
-
 /*         // 페이지 로드 시 이전에 선택한 테마가 있다면 표시
         window.addEventListener('load', function() {
             const savedThemes = JSON.parse(localStorage.getItem('selectedThemes') || '[]');

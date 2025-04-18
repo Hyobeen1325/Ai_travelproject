@@ -1,21 +1,21 @@
-from pydantic import BaseModel
-from datetime import datetime
+# app/schema/chat_schema.py
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class ChatLogCreate(BaseModel):
     """채팅 로그 생성 스키마"""
-    mem_email: str
-    mem_log_id: str
+    mem_email: EmailStr
+    chat_log_id: str
     title: str
-    reg_date: datetime
-    upt_date: datetime
+    reg_date: str
+    upt_date: str
 
 class ChatLogUpdate(BaseModel):
     """채팅 로그 업데이트 스키마"""
-    new_mem_log_id: str
+    chat_log_id: str
     title: str
 
 class ChatLogResponse(BaseModel):
     """채팅 로그 응답 스키마"""
-    reg_date: datetime
-    title: str 
+    reg_date: str
+    title: str
