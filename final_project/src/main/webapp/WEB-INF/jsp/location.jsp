@@ -153,15 +153,18 @@
 
 	<script>
     	const areaCodeP = "${param.areaCode}"
-        //const sigunguCodeP = "${param.sigunguCode}"
+        const areaCodeSP = "${param.areaCodeS}"
+        const sigunguCodeSP = "${param.sigunguCodeS}"
+        
 	    window.addEventListener('load', function () {
 	        let selectedLocation = null;
 	
 	        // 이전에 선택한 지역 표시
-	        const savedLocation = localStorage.getItem('selectedDetailLocation');
-	        if (savedLocation) {
+	        // const savedLocation = localStorage.getItem('selectedDetailLocation');
+	        // if (savedLocation) {
+	        if (sigunguCodeSP) {
 	            document.querySelectorAll('.location-item').forEach(item => {
-	                if (item.textContent.trim() === savedLocation.trim()) {
+	                if (item.textContent.trim() === sigunguCodeSP.trim()) { // savedLocation.trim()
 	                    item.classList.add('selected');
 	                    selectedLocation = item;
 	                }
@@ -191,11 +194,13 @@
 	                return;
 	            }
 	            const sigunguCode = selectedLocation.getAttribute('data-code');
-	            localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
+	            const sigunguCodeS = selectedLocation.textContent;
+	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
 	
 	            // 이동 처리
                 setTimeout(() => {
-                    location.href = '/page2?areaCode='+ areaCodeP +'&sigunguCode='+sigunguCode;
+                    location.href = '/page2?areaCode='+ areaCodeP + "&areaCodeS=" + areaCodeSP
+                    		+'&sigunguCode='+sigunguCode +'&sigunguCodeS='+sigunguCodeS;
                 }, 500);
 	        });
 	
@@ -203,9 +208,9 @@
 	        document.getElementById('prevBtn').addEventListener('click', function () {
 	        	//const numOfRows = localStorage.getItem('selectedDetailLocation');
 	        	//const numOfRows = '${numOfRows}';
-                setTimeout(() => {
-                    location.href = '/mainarea/regions';
-                }, 500);
+                //setTimeout(() => {
+                    location.href = '/mainarea/regions?areaCodeS=' + areaCodeSP;
+                //}, 500);
 	        	// window.location.href = '/mainarea/regions?numOfRows=' + numOfRows;
 	        });
 	    });

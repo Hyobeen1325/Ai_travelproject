@@ -36,8 +36,7 @@ public class SYController { // 유저 관리 컨트롤러
 
     
     // 로그인 페이지 
-    // http://localhost:8080/login
-    
+    // http://localhost:8080/login 
     // kakao 통합 로그인 
     @GetMapping("")
     public String loginpage(Model model) {
@@ -46,10 +45,10 @@ public class SYController { // 유저 관리 컨트롤러
                         + "&client_id=" + client_id // REST API 키
                         + "&redirect_uri=" + redirect_uri; // Redirect URI
         model.addAttribute("location", location); // location로 생성된 URL 전달
-        return "test2"; // /WEB-INF/jsp/login.jsp
+        return "login"; // /WEB-INF/jsp/login.jsp
     }
     
- // kakao 통합로그인 계정 정보 
+    // kakao 통합로그인 계정 정보 
     // http://localhost:8080/login/kakaologin?code=...
     @GetMapping("/kakaologin")
     public String kakaologin(@RequestParam("code") String code, HttpSession session, Model model) {
@@ -58,7 +57,7 @@ public class SYController { // 유저 관리 컨트롤러
         model.addAttribute("msg", "카카오 로그인 성공! 받은 code: " + code);
         session.setAttribute("kakaologin", true); // 세션에 kakako 계정 정보 저장
         // 메인 페이지로 이동 
-        return "mypage"; //  /WEB-INF/jsp//project1.jsp
+        return "test2"; //  /WEB-INF/jsp//project1.jsp
     }
     
 
@@ -107,15 +106,6 @@ public class SYController { // 유저 관리 컨트롤러
     // 내정보 조회 
     @GetMapping("/mypage/{email}")
     public String mypage(@PathVariable("email") String email, HttpSession session, Model model) {
-    	// kakako 계정 마이페이지 접근 거부 설정 
-    	Boolean kakaologin = (Boolean) session.getAttribute("kakaologin"); // 세션에 저장된 kakao 계정 정보 확인  
-	    	if (kakaologin) {
-	    		System.out.print("kakao 계정으로 마이페이지 접근 거부"); // 확인 메세지
-	            model.addAttribute("msg", "kakao 계정은 마이페이지에 대한 접근 권한이 없습니다.");
-	        	session.invalidate(); // 세션 초기화 : 로그아웃 
-	            return "login"; // /WEB-INF/jsp/login.jsp
-	        }
-	    	
     	// header 마이페이지 버튼 클릭 시, 세션 유지
     	MemberDTO SessionMember = (MemberDTO) session.getAttribute("SessionMember"); // 세션에 member 정보 저장 
     	if (SessionMember != null &&  SessionMember.getEmail().equals(email)) {

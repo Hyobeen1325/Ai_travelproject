@@ -279,7 +279,8 @@ body {
   </div>
 <!-- 헤더2 -->
 <jsp:include page="header2.jsp" /> 
-  <script>
+</body>
+ <script type="text/javascript">
     const modal = document.getElementById('editModal'); // 내정보 수정 버튼 
     const mainForm = document.querySelector('.mypage-form'); // 내정보 조회 form 
     const editForm = document.getElementById('editForm'); // 모달창 : 내정보 수정데이터 제출 form 
@@ -310,9 +311,8 @@ body {
     };
     
     var message = "${msg}";
-    if (message && message !== "") {
-        alert(message); // 메세지 출력 
+    if (message != "") {
+        alert(message); 
     };
 </script>
-</body>
 </html>
