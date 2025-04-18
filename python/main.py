@@ -2,7 +2,7 @@
 
 # FastAPI
 from fastapi import FastAPI
-from app.database import Base,engine
+from app.database.database import Base,engine
 import uvicorn # server
 app = FastAPI()
 
@@ -15,8 +15,8 @@ app.add_middleware(SessionMiddleware, secret_key=SESSION_KEY) # 세션 지정
 
 # router 
 from app.routers import member_router,auth_router # member router
-app.include_router(member_router.router,auth_router.router) 
-
+app.include_router(member_router.router) 
+app.include_router(auth_router.router) 
 
 # FAST 실행명령어 자동 실행 (main 함수)   
 # http://127.0.0.1:8000/docs

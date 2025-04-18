@@ -28,13 +28,14 @@ class UpdateModel(BaseModel): # 마이페이지 수정 모델
     phon_num: str | None = None # 전화번호
 
 
-class Member(MemberBase): # member 테이블의 전체 스키마(MemberBase) 데이터 지정
-    class Config: # Pydantic 모델 설정
-        from_attributes = True # SQLAlchemy 모델(SQLMember)과 호환
-        
 class MemberCreate(BaseModel):
     email: str
     name: str
     nickname: str
     pwd: str
     phon_num: str
+
+class Member(MemberBase): # member 테이블의 전체 스키마(MemberBase) 데이터 지정
+    class Config: # Pydantic 모델 설정
+        from_attributes = True # SQLAlchemy 모델(SQLMember)과 호환
+        
