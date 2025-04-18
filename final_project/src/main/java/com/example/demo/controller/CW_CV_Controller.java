@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.CWThemeCRUDRequest;
+import com.example.demo.dto.CWThemeRequest;
 import com.example.demo.dto.CWThemeResponse;
 import com.example.demo.service.CWThemeService;
 
@@ -41,9 +42,37 @@ public class CW_CV_Controller {
     @PostMapping
     @ResponseBody
     public ResponseEntity<?> createStudent(
-    		@RequestBody CWThemeCRUDRequest request
+    		@RequestBody CWThemeRequest request
     		) {
-    	String message = themeService.insertChooseVal(request);
+    	CWThemeCRUDRequest requestF = new CWThemeCRUDRequest();
+    	requestF.setHigh_loc(request.getHigh_loc());
+    	if(request.getLow_loc().equals("")) {
+    		requestF.setLow_loc("");
+    	}else {
+    		requestF.setLow_loc(request.getLow_loc());
+    	}
+    	requestF.setDays(request.getDays());
+    	List<String> themes = request.getTheme();
+    	for(int idx=0; idx<4; idx+=1) {
+    		if(idx==0){
+    			requestF.setTheme1(themes.get(idx));
+    		}else if(idx==1) {
+    			requestF.setTheme2(themes.get(idx));
+    		}else if(idx==2) {
+    			if(themes.size()<=2) {
+    				requestF.setTheme3("");
+    			}else {
+    				requestF.setTheme3(themes.get(idx));
+    			}
+    		}else if(idx==3) {
+    			if(themes.size()<=3) {
+    				requestF.setTheme4("");
+    			}else {
+    				requestF.setTheme4(themes.get(idx));
+    			}
+    		}
+    	}
+    	String message = themeService.insertChooseVal(requestF);
     	
         return ResponseEntity.ok(message);
     }
