@@ -82,7 +82,7 @@ def update_mypage(email: str, data: UpdateModel, db: Session=Depends(get_db)):
         # 이메일 중복 검사
         if data.email:
             exist_user = db.query(SQLMember).filter(SQLMember.email == data.email).first() # 유효성 검사
-            if exist_user and exist_user.email != email: # 예외 처리
+            if exist_user and exist_user.email != email: # 예외 처리 
                 raise HTTPException(status_code=400, detail="이미 사용 중인 이메일입니다.")
             
             # 입력값과 db 데이터 유효성 검사

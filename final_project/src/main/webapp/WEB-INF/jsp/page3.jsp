@@ -161,7 +161,7 @@
                     <div class="location-item">가족</div>
                     <div class="location-item">나홀로</div>
                 </div>
-                <form id="choose_form" action="/cwtestAPIre" method="post">
+                <form id="choose_form" action="/combinedAreaAI" method="post">
                 	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
                 	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
                 	<input type="hidden" name="days" value="${param.days}"/>

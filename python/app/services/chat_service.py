@@ -8,55 +8,63 @@ class ChatService:
     def __init__(self, db: Session):
         self.db = db
 
-    def update_chat_log(self, mem_email: str, title: str) -> Optional[Dict[str, Any]]:
-        """기존 로그 확인 후 업데이트 또는 삽입. 같은 날 같은 제목은 무시."""
+    def update_chat_log(self, mem_email: str, answer: str) -> Optional[Dict[str, Any]]:
+        """
+        답변 내용(answer)을 기반으로 chat_log title을 자동 생성하여 삽입 또는 업데이트
+        - 같은 날, 같은 title이면 무시
+        - title은 answer의 앞 100자 사용
+        """
         try:
             current_date = date.today()
-            
-            # 1. 같은 이메일, 같은 제목의 가장 최근 로그 조회
+
+            # 1. 답변으로부터 title 생성 (100자 제한)
+            if answer:
+                trimmed_title = answer.strip().replace("\n", " ")[:100]
+            else:
+                trimmed_title = "No Title"
+
+            # 2. 기존 로그 확인
             existing_log = self.db.query(ChatLog).filter(
                 ChatLog.mem_email == mem_email,
-                ChatLog.title == title
+                ChatLog.title == trimmed_title
             ).order_by(ChatLog.upt_date.desc()).first()
-            
-            # 2. 로직 분기
+
             if existing_log:
                 existing_upt_date = existing_log.upt_date
                 if current_date == existing_upt_date:
-                    # 같은 날 같은 제목: 아무 작업 안함, 기존 정보 반환
+                    # 같은 날, 같은 제목: 업데이트 없이 반환
                     return {
                         "chat_log_id": existing_log.chat_log_id,
-                        "title": title,
+                        "title": trimmed_title,
                         "upt_date": existing_upt_date.strftime("%Y-%m-%d")
                     }
                 else:
-                    # 다른 날 같은 제목: upt_date만 갱신
+                    # 날짜만 갱신
                     existing_log.upt_date = current_date
                     self.db.commit()
                     return {
                         "chat_log_id": existing_log.chat_log_id,
-                        "title": title,
+                        "title": trimmed_title,
                         "upt_date": current_date.strftime("%Y-%m-%d")
                     }
             else:
-                # 새로운 제목: 신규 삽입 (최신 chat_log_id 확인 후 순차적으로 생성)
+                # 새로운 title이면 새 로그 생성
                 last_log = self.db.query(ChatLog.chat_log_id).order_by(ChatLog.chat_log_id.desc()).first()
 
                 if last_log and last_log.chat_log_id.startswith('a'):
-                    last_chat_log_id = last_log.chat_log_id
                     try:
-                        last_id_num = int(last_chat_log_id[1:])
+                        last_id_num = int(last_log.chat_log_id[1:])
                         new_id_num = last_id_num + 1
                         new_chat_log_id = f"a{new_id_num:04d}"
                     except ValueError:
-                        new_chat_log_id = 'a0001' # 파싱 오류 시 초기값으로 설정
+                        new_chat_log_id = 'a0001'
                 else:
                     new_chat_log_id = 'a0001'
 
                 new_log = ChatLog(
                     chat_log_id=new_chat_log_id,
                     mem_email=mem_email,
-                    title=title,
+                    title=trimmed_title,
                     reg_date=current_date,
                     upt_date=current_date
                 )
@@ -64,7 +72,7 @@ class ChatService:
                 self.db.commit()
                 return {
                     "chat_log_id": new_chat_log_id,
-                    "title": title,
+                    "title": trimmed_title,
                     "upt_date": current_date.strftime("%Y-%m-%d")
                 }
 
@@ -72,6 +80,7 @@ class ChatService:
             self.db.rollback()
             print(f"Error in update_chat_log: {e}")
             raise e
+
         
     def get_chat_logs_by_email(self, mem_email: str) -> List[Dict[str, Any]]:
         """특정 이메일의 모든 채팅 로그 가져오기"""

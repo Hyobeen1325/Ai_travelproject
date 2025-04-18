@@ -11,29 +11,28 @@ class QnaService:
 
     def create_or_update_qna(self, chat_log_id: str, question: str, answer: str) -> Dict[str, Any]:
         """기존 QNA 확인 후 업데이트 또는 삽입. 같은 날 같은 내용은 무시."""
+        from sqlalchemy.exc import IntegrityError
+        from time import sleep
+
         try:
             current_date = date.today()
-            
-            # 1. 같은 chat_log_id, question, answer의 가장 최근 QNA 조회
+
+            # 1. 기존 동일 QnA 찾기
             existing_qna = self.db.query(Qna).filter(
                 Qna.chat_log_id == chat_log_id,
                 Qna.question == question,
                 Qna.answer == answer
             ).order_by(Qna.upt_date.desc()).first()
-            
-            # 2. 로직 분기
+
             if existing_qna:
-                existing_upt_date = existing_qna.upt_date
-                if current_date == existing_upt_date:
-                    # 같은 날 같은 내용: 아무 작업 안함, 기존 정보 반환
+                if existing_qna.upt_date == current_date:
                     return {
                         "qna_id": existing_qna.qna_id,
                         "question": question,
                         "answer": answer,
-                        "upt_date": existing_upt_date.strftime("%Y-%m-%d")
+                        "upt_date": existing_qna.upt_date.strftime("%Y-%m-%d")
                     }
                 else:
-                    # 다른 날 같은 내용: upt_date만 갱신
                     existing_qna.upt_date = current_date
                     self.db.commit()
                     return {
@@ -42,17 +41,18 @@ class QnaService:
                         "answer": answer,
                         "upt_date": current_date.strftime("%Y-%m-%d")
                     }
-            else:
-                # 새로운 내용: 신규 삽입 (qna_id 순차적으로 생성)
-                last_qna = self.db.query(Qna.qna_id).order_by(Qna.qna_id.desc()).first()
 
-                if last_qna and last_qna.qna_id.startswith('b'):
-                    last_qna_id = last_qna.qna_id
+            # 2. 새로운 QnA 삽입 (중복 방지 로직 포함)
+            for _ in range(3):  # 최대 3번 재시도
+                last_qna = self.db.query(Qna.qna_id).filter(Qna.qna_id.like('b%')) \
+                    .order_by(Qna.qna_id.desc()).first()
+
+                if last_qna:
                     try:
-                        current_num = int(last_qna_id.replace('b', ''))
+                        current_num = int(last_qna.qna_id.replace('b', ''))
                         new_qna_id = f'b{str(current_num + 1).zfill(4)}'
                     except ValueError:
-                        new_qna_id = 'b0001' # 파싱 오류 시 초기값으로 설정
+                        new_qna_id = 'b0001'
                 else:
                     new_qna_id = 'b0001'
 
@@ -64,19 +64,28 @@ class QnaService:
                     reg_date=current_date,
                     upt_date=current_date
                 )
+
                 self.db.add(new_qna)
-                self.db.commit()
-                return {
-                    "qna_id": new_qna_id,
-                    "question": question,
-                    "answer": answer,
-                    "upt_date": current_date.strftime("%Y-%m-%d")
-                }
+                try:
+                    self.db.commit()
+                    return {
+                        "qna_id": new_qna_id,
+                        "question": question,
+                        "answer": answer,
+                        "upt_date": current_date.strftime("%Y-%m-%d")
+                    }
+                except IntegrityError:
+                    self.db.rollback()
+                    sleep(0.1)  # 잠시 대기 후 재시도
+
+            # 3회 실패 시 에러
+            raise Exception("Failed to generate unique qna_id after multiple attempts.")
 
         except Exception as e:
             self.db.rollback()
             print(f"Error in create_or_update_qna: {e}")
             raise e
+
 
     def get_qna_by_chat_log_id(self, chat_log_id: str) -> List[Dict[str, Any]]:
         """특정 chat_log_id에 해당하는 모든 QNA 데이터 가져오기"""

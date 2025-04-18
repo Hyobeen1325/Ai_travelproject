@@ -188,7 +188,12 @@
   </style>
 </head>
 <body>
-
+<script>
+var message = "${msg}";
+if (message && message !== "") {
+    alert(message); // 메세지 출력 
+}
+</script>
  <!-- 소담 로고 -->
 <div class="logo-container">
   <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">

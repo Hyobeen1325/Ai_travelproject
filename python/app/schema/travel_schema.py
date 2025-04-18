@@ -46,7 +46,7 @@ class JHResponse(BaseModel):
 
 class JHRequestDto2(BaseModel):
     """JH 서비스 요청 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
-    message: str  # 사용자 메시지 (필수)
+    message: str # 사용자 메시지 (필수)
     email: Optional[str] = None # 사용자 이메일 (선택)
 
 class JHResponse2(BaseModel):
