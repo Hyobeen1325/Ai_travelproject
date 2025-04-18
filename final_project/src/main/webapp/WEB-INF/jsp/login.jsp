@@ -188,14 +188,7 @@
   </style>
 </head>
 <body>
-<%
-  String error = request.getParameter("error");
-  if (error != null && error.equals("true")) {
-    request.setAttribute("errorMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-  }
-%>
-
-<!-- 로고 -->
+ <!-- 소담 로고 -->
 <div class="logo-container">
   <img src="<c:url value='/image/logo.png' />" alt="Logo" class="logo">
 </div>
@@ -206,22 +199,12 @@
   <p class="welcome-message">
     국내여행지 추천 AI, <span class="highlight">소담여행</span>
   </p>
-
-  <!-- 에러 메시지 -->
-  <% if (request.getAttribute("errorMsg") != null) { %>
-    <p class="error-message">
-      <%= request.getAttribute("errorMsg") %>
-    </p>
-  <% } %>
-
-  <form class="login-form" action="<c:url value='/user/login'/>" method="post">
-    <input type="text" name="id" placeholder="아이디" class="login-input" required value="${param.id}">
-    <input type="password" name="password" placeholder="비밀번호" class="login-input" required>
-
-    <!-- 원래 크기의 로그인 버튼 -->
+  <form class="login-form" action="<c:url value='/login/member'/>" method="post">
+    <input type="email" name="email" id="email" placeholder="아이디" class="login-input" required>
+    <input type="password" name="pwd" id="pwd" placeholder="비밀번호" class="login-input" required>
     <button type="submit" class="login-button">로그인</button>
 
-    <!-- 구분선 -->
+    <!-- 로그인 구분선 -->
     <div class="divider">
       <span class="divider-text">또는</span>
     </div>
@@ -236,8 +219,17 @@
 
   <div class="signup-wrapper">
     <span class="signup-text">계정이 없으신가요?</span>
-    <a href="<c:url value='/user/signup'/>" class="signup-link">회원가입</a>
+     <a href="/join" class="signup-link">회원가입</a> 
+   	<!-- ("/join") : 컨트롤러로 설정 url -->
   </div>
 </div>
+<!-- 헤더2 -->
+<jsp:include page="header2.jsp" />
+<script type="text/javascript">
+    var message = "${msg}";
+    if (message != "") {
+      alert(message);
+    };
+</script>
 </body>
 </html>

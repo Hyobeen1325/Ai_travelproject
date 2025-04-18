@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.dto.CWTravelAPI_05_ResponseRequest;
+import com.example.demo.dto.CWTravelAPI_04_Response;
 
 @Service
 public class CWTravelAPI_02_Service {
@@ -18,7 +18,7 @@ public class CWTravelAPI_02_Service {
         this.restTemplate = new RestTemplate();
     }
 
-    public String getChatResponse(CWTravelAPI_05_ResponseRequest areaRequest) {
+    public String getChatResponse(CWTravelAPI_04_Response areaRequest) {
         String url = fastApiUrl + "/cw/areachoose";
         return restTemplate.postForObject(url, areaRequest, CWTravelAPI_02_Response.class).getResponse();
     }

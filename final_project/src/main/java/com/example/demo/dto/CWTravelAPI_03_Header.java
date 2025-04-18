@@ -1,7 +1,5 @@
 package com.example.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CWTravelAPI_03_ItemsRequest {
+public class CWTravelAPI_03_Header {
 	
 	// 참고 구조
 	/*
@@ -56,6 +54,9 @@ public class CWTravelAPI_03_ItemsRequest {
 }
 	
 	 */
-	@JsonProperty("item")
-	private CWTravelAPI_02_ItemRequest item;
+	private String resultCode;
+
+	private String resultMsg;
+	
+
 }

@@ -34,7 +34,7 @@ public class JHController {
         // DTO 생성
         JHRequestDto requestDto = new JHRequestDto();
         requestDto.setMessage(message);
-        
+         
         // FastAPI 서비스 호출
         String response = jhService.getJHResponse(requestDto);
         

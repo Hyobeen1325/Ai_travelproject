@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/area")
 public class AreaController {
-
+ //http://localhost:8080/area/subregions?areaCode=32
     private static final Logger logger = LoggerFactory.getLogger(AreaController.class);
 
     @GetMapping("/subregions")

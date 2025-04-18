@@ -124,9 +124,9 @@
                 <h1 class="title">여행을 떠나고 싶은 일자를 선택해 주세요</h1>
 
                 <div class="location-grid">
-                    <div class="location-item">당일 여행</div>
-                    <div class="location-item">1박 2일</div>
-                    <div class="location-item">2박 3일 이상</div>
+                    <div id="oneDay" class="location-item">당일 여행</div>
+                    <div id="twoDay" class="location-item">1박 2일</div>
+                    <div id="triDay" class="location-item">2박 3일</div>
                 </div>
 
                 <div class="navigation">
@@ -139,6 +139,11 @@
 
     <script>
         let selectedLocation = null;
+    	const areaCodeP = "${param.areaCode}"
+        const areaCodeSP = "${param.areaCodeS}"
+        const sigunguCodeP = "${param.sigunguCode}"
+        const sigunguCodeSP = "${param.sigunguCodeS}"
+        const daysP = "${param.days}"
 
         // 지역 선택 이벤트 리스너 추가
         document.querySelectorAll('.location-item').forEach(item => {
@@ -164,6 +169,7 @@
                     this.classList.remove('deselecting');
                     this.classList.add('selected');
                     selectedLocation = this;
+                    //console.log(selectedLocation.textContent)
                 }
             });
         });
@@ -174,35 +180,67 @@
                 alert('일정을 선택해 주세요.');
                 return;
             }
-
             const page = document.querySelector('.page');
             page.classList.add('slide-out');
             
+            let days = 0;
+        	const daysS = selectedLocation.textContent
+            if(selectedLocation.textContent=="당일 여행"){
+            	days = 1;
+            }else if(selectedLocation.textContent=="1박 2일"){
+            	days = 2;
+            }else if(selectedLocation.textContent=="2박 3일"){
+            	days = 3;
+            }
+            
             // 선택된 일정 정보를 localStorage에 저장
-            localStorage.setItem('selectedDuration', selectedLocation.textContent);
+            //localStorage.setItem('selectedDuration', selectedLocation.textContent);
             
             setTimeout(() => {
-                location.href = '/page3';
+                location.href = '/page3?areaCode='+areaCodeP+"&areaCodeS="+areaCodeSP
+                		+"&sigunguCode="+sigunguCodeP+"&sigunguCodeS="+sigunguCodeSP
+                		+"&days="+days;
             }, 500);
         });
 
         // 이전 버튼 클릭 이벤트
-        document.getElementById('prevBtn').addEventListener('click', function() {
-            location.href = '/page1';
+        document.getElementById('prevBtn').addEventListener('click', function () {
+            //const areaCode = localStorage.getItem('selectedMainAreaCode');
+
+            if(sigunguCodeSP){
+                setTimeout(() => {
+                	location.href = '/area/subregions?areaCode='+ areaCodeP
+        					+ "&areaCodeS=" + areaCodeSP
+                			+ "&sigunguCodeS=" + sigunguCodeSP;
+                }, 500);
+            }else{
+                setTimeout(() => {
+                	location.href = '/mainarea/regions?areaCodeS='+ areaCodeSP;
+                }, 500);
+            }
         });
 
-        // 페이지 로드 시 이전에 선택한 일정이 있다면 표시
+         // 페이지 로드 시 이전에 선택한 일정이 있다면 표시
         window.addEventListener('load', function() {
-            const savedDuration = localStorage.getItem('selectedDuration');
+            //const savedDuration = localStorage.getItem('selectedDuration');
+            if (daysP==1) {
+            	document.getElementById("oneDay").classList.add('selected');
+            }else if (daysP==2) {
+            	document.getElementById("twoDay").classList.add('selected');
+            }else if (daysP==3) {
+            	document.getElementById("triDay").classList.add('selected');
+            }
+            /*
             if (savedDuration) {
                 document.querySelectorAll('.location-item').forEach(item => {
-                    if (item.textContent === savedDuration) {
+                    if (item.textContent.trim() === daysSP.trim()) {//savedDuration
                         item.classList.add('selected');
                         selectedLocation = item;
                     }
                 });
             }
-        });
+            */
+        }); 
     </script>
 </body>
 </html> 
