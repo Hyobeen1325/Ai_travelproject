@@ -182,7 +182,7 @@
     <div class="background-overlay"></div>
     
     <div class="header">
-        <img src="image/logo.png" class="logo" alt="대한민국 구석구석">
+        <img src="image/logo.png" class="logo" alt="로고">
         <button class="logout-btn" onclick="location.href='<c:url value='/login.jsp'/>'">로그아웃</button>
     </div>
 

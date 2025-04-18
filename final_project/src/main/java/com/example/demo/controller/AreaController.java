@@ -50,7 +50,8 @@ public class AreaController {
             AreaResponse areaResponse = (AreaResponse) unmarshaller.unmarshal(reader);
 
             // Items에서 Item 리스트 추출
-            List<Item> items = (areaResponse.getBody() != null && areaResponse.getBody().getItems() != null)
+            List<Item> items = (areaResponse.getBody()
+            		!= null && areaResponse.getBody().getItems() != null)
                     ? areaResponse.getBody().getItems().getItem()
                     : Collections.emptyList();
 
