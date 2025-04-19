@@ -1,15 +1,9 @@
 package com.example.demo.service;
 
-import java.util.List;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.SignupDTO;
 
 
@@ -22,7 +16,7 @@ public class CHBService { // FastAPI URL
 		 
 		 	
 		 	// 회원 가입 
-		    public String register(SignupDTO registerRequest) { //로그인 처리 모델
+		    /*public String register(SignupDTO registerRequest) { //로그인 처리 모델
 
 		        try {
 		            // HTTP 요청 헤더 설정
@@ -40,8 +34,13 @@ public class CHBService { // FastAPI URL
 		            System.err.println("FastAPI 회원가입 요청 중 오류 발생: " + e.getMessage());
 		            return null; // 무효화
 		     }
-		}
+		 
+		 
+		}*/
 	    	
-	  
+		 public String register(SignupDTO registerRequest) {
+		    		restTemplate.postForObject(Register_URL , registerRequest, MemberDTO.class);
+		    		return "등록성공";
+		    }
 	    
 }

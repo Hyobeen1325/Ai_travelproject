@@ -38,4 +38,5 @@ class MemberCreate(BaseModel):
 class Member(MemberBase): # member 테이블의 전체 스키마(MemberBase) 데이터 지정
     class Config: # Pydantic 모델 설정
         from_attributes = True # SQLAlchemy 모델(SQLMember)과 호환
+        orm_mode = True
         

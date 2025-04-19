@@ -198,16 +198,10 @@
 	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
 	            //localStorage.setItem('selectedAreaCode',areaCode );
 	            const sigunguCode = selectedLocation.getAttribute('data-code');
-<<<<<<< HEAD
-	            localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
-	            
-                // 이동 처리
-=======
 	            const sigunguCodeS = selectedLocation.textContent;
 	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
 	
 	            // 이동 처리
->>>>>>> branch 'develop' of https://github.com/Hyobeen1325/Ai_travelproject.git
                 setTimeout(() => {
                     location.href = '/page2?areaCode='+ areaCodeP + "&areaCodeS=" + areaCodeSP
                     		+'&sigunguCode='+sigunguCode +'&sigunguCodeS='+sigunguCodeS;

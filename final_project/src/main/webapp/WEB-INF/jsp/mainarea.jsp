@@ -149,12 +149,9 @@
     </div>
 
     <script>
-<<<<<<< HEAD
   		let selectedRnum = null;
 		const areaCodeP = "${param.areaCode}"
-=======
 		const areaCodeSP = "${param.areaCodeS}"
->>>>>>> branch 'develop' of https://github.com/Hyobeen1325/Ai_travelproject.git
         let selectedLocation = null;
 
         // 지역 선택 이벤트 리스너 추가

@@ -122,7 +122,6 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
@@ -133,7 +132,7 @@
         <h1>회원가입</h1>
         
         <div class="signup-box">
-            <form action="signupProcess" method="post">
+            <form action="" method="post" id="my_form">
                 <div class="input-group">
                     <label for="email">이메일(아이디)</label>
                     <div class="email-group">
@@ -164,10 +163,42 @@
                 
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="location.href='login'">취소</button>
-                    <button type="submit" class="submit-btn">완료</button>
+                    <button type="button" class="submit-btn" onclick="fetchFunc()">완료</button>
                 </div>
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+	     function fetchFunc() {
+	        const form = document.getElementById('my_form');
+	        const formData = new FormData(form); // 폼의 모든 input 데이터를 수집
+	        const jsonData = {}; // 제이슨 생성
+			formData.forEach((value, key) => { // 폼 데이터만큼 반복
+				//console.log(JSON.stringify(jsonData)) // 전송된 데이터
+				jsonData[key] = value; // 제이슨에 담기
+	        });
+	    	fetch("http://localhost:8000/auth/register", {
+				method: "POST",
+				headers: {
+				  "Content-Type": "application/json"
+				},
+				body: JSON.stringify(jsonData) // 해당 제이슨을 패치로 전송
+	       	})
+	        .then(response => {
+		        if (!response.ok) {
+		            throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+		        }
+		        return response.json(); // response model이 json 형태로 반환
+		    })
+	        .then(data => {
+	        	alert("회원가입이 성공적으로 완료되었습니다!")
+	        	console.log('서버 응답:'+ data);	        	
+	          location.href = "/login";
+	        })
+	        .catch(error => {
+	          console.log('에러 발생:'+ error);
+	        });
+	    } 
+    </script>
 </body>
 </html> 
