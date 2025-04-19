@@ -27,6 +27,9 @@ class UpdateModel(BaseModel): # 마이페이지 수정 모델 (선택적)
     nickname: str | None = None # 닉네임
     phon_num: str | None = None # 전화번호
 
+class UpdatePwd(BaseModel): # 비밀번호 변경 모델
+    new_pwd : str | None = None # 새 비밀번호
+    pwd : str | None = None # 비밀번호 
 
 class Member(MemberBase): # member 테이블의 전체 스키마(MemberBase) 데이터 지정
     class Config: # Pydantic 모델 설정
