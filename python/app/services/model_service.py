@@ -191,21 +191,27 @@ class TravelModelService:
                 contenttypeid가 겹치지 않는 서로 다른 추천여행지를
                 5곳 추천해주세요
                 출력형식은 받은 형식을 참고하여 다음 json형식을 지켜서 출력해주세요
-                [
-                    {
-                        "title": ,
-                        "mapx": ,
-                        "mapy": ,
-                        "contenttypeid": ,
-                        "firstimage": ,
-                        "firstimage2":,
-                        "tel":,
-                        "addr1":,
-                        "addr2":
-                    },...
-                ]
+                {
+                    "items": {
+                        "item":     [
+                            {
+                                "title": "",
+                                "mapx": "",
+                                "mapy": "",
+                                "contenttypeid": "",
+                                "firstimage": "",
+                                "firstimage2": "",
+                                "tel": "",
+                                "addr1": "",
+                                "addr2": ""
+                            },...
+                        ]
+                    }
+                }
+                모든 json의 벨류값은 String타입으로 보내주세요.
                 지역리스트: 
                 """+ query
+                # 만약 받은 데이터에 null값이 있다면 공백문자열("")로 보내주세요
                 # 당일여행일때 3곳 1박2일일때 5곳 2박3일일때 10곳만 추천하여 알려주세요.
                 # 날짜가 지역리스트에 포함이 안되었다면 5개를 출력하고 포함안됨을 출력해주세요
             future = self.executor.submit(self.analyze_with_gemini, prompt)
