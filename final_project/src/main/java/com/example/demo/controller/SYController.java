@@ -58,13 +58,13 @@ public class SYController { // 유저 관리 컨트롤러
         System.out.print("kakao 로그인 성공"); // 확인 메세지
         model.addAttribute("msg", "카카오 로그인 성공! 받은 code: " + code); // code 확인 메세지
         session.setAttribute("kakaologin", true); // 세션에 kakako 계정 정보 저장
-        return "test2"; //  /WEB-INF/jsp//project1.jsp
+        return "project1"; //  /WEB-INF/jsp//project1.jsp
     }
 
     // 회원가입 페이지
-    @GetMapping("/join")
+    @GetMapping("/register")
     public String joinpage() {
-        return "Membership_managemen"; // /WEB-INF/jsp/Membership_managemen.jsp
+        return "register"; // /WEB-INF/jsp/register.jsps
     }
 
     // 로그인 유효성 검사 (아이디, 비밀번호)
