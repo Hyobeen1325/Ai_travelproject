@@ -28,6 +28,7 @@ class UpdateModel(BaseModel): # 마이페이지 수정 모델 (선택적)
     phon_num: str | None = None # 전화번호
 
 class UpdatePwd(BaseModel): # 비밀번호 변경 모델
+    email : str # 이메일(아이디) 
     new_pwd : str | None = None # 새 비밀번호
     pwd : str | None = None # 비밀번호 
 

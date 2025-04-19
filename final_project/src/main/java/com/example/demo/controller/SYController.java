@@ -56,12 +56,10 @@ public class SYController { // 유저 관리 컨트롤러
     public String kakaologin(@RequestParam("code") String code, HttpSession session, Model model) {
         // 카카오 access_token 요청 및 사용자 정보 처리
         System.out.print("kakao 로그인 성공"); // 확인 메세지
-        model.addAttribute("msg", "카카오 로그인 성공! 받은 code: " + code);
+        model.addAttribute("msg", "카카오 로그인 성공! 받은 code: " + code); // code 확인 메세지
         session.setAttribute("kakaologin", true); // 세션에 kakako 계정 정보 저장
-        // 메인 페이지로 이동
         return "test2"; //  /WEB-INF/jsp//project1.jsp
     }
-
 
     // 회원가입 페이지
     @GetMapping("/join")
@@ -72,7 +70,7 @@ public class SYController { // 유저 관리 컨트롤러
     // 로그인 유효성 검사 (아이디, 비밀번호)
     @PostMapping("/member")
     public String login(LoginDTO loginRequest, HttpSession session, Model model) {
-        MemberDTO response = service.login(loginRequest); // db 일치 여부 확인
+        MemberDTO response = service.login(loginRequest); 
 
         // 로그인 성공
         if (response != null) {
@@ -80,10 +78,10 @@ public class SYController { // 유저 관리 컨트롤러
             model.addAttribute("msg", "로그인 성공!"); // 성공 메세지
             model.addAttribute("member", response); // member 정보
             session.setAttribute("SessionMember", response);  // 세션에 member 저장
-            session.setAttribute("kakaologin", false); // kakao 계정 로그인 거부
-            return "project1"; // /WEB-INF/jsp/project1.jsp
+            session.setAttribute("kakaologin", false); // kakao 계정 일반로그인 거부 설정
+            return "mypage"; // /WEB-INF/jsp/project1.jsp
 
-            // 로그인 실패
+        // 로그인 실패
         } else {
             model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
             return "login"; // /WEB-INF/jsp/login.jsp
@@ -94,6 +92,7 @@ public class SYController { // 유저 관리 컨트롤러
     @PostMapping("/logout")
     public String logout(HttpSession session, Model model) {
         String response = service.logout();
+        
         System.out.print("로그아웃 성공"); // 확인 메세지
         model.addAttribute("msg", "로그아웃 성공! 로그인 창으로 이동합니다."); // 성공 메세지
         model.addAttribute("msg", response); // member 정보
@@ -124,7 +123,7 @@ public class SYController { // 유저 관리 컨트롤러
                 session.setAttribute("SessionMember", response); // 세션 유지
                 return "mypage";
                 
-             // 조회 실패 
+            // 조회 실패 
             } else { 
                 System.out.print("내정보 조회 실패"); // 확인 메세지 
                 model.addAttribute("msg", "내정보 조회 실패!"); // 적절한 실패 메시지
@@ -136,28 +135,29 @@ public class SYController { // 유저 관리 컨트롤러
 
     // 내정보 수정
     @PostMapping("/mypage/{email}")
-    public String updateMypage(@PathVariable("email") String email,
-                               @ModelAttribute MypageUpDTO updateRequest,
+    public String updateMypage(@PathVariable("email") String email, @ModelAttribute MypageUpDTO updateRequest,
                                HttpSession session, Model model) {
 
-        // 현재 로그인 중인 member 세션 유지 (수정 후에도 member 정보 유지 
+        // 수정 후에도 현재 로그인 중인 member 세션 유지 
         MemberDTO SessionMember = (MemberDTO) session.getAttribute("SessionMember");
-        if (SessionMember == null || !SessionMember.getEmail().equals(email)) {
+        if (SessionMember == null || !SessionMember.getEmail().equals(email)) { // 세션이 유효하지 않은 경우 
             model.addAttribute("msg", "다시 로그인해주세요.");
             return "redirect:/login";
         }
 
-        // 내정보 수정 서비스 호출
         MemberDTO response = service.updateMypage(email, updateRequest);
-
-        if (response == null) { // 수정 실패 (이메일 중복 등)
+        
+        // 이메일 중복 확인 
+        if (response == null) { // 이메일 수정 실패
             model.addAttribute("msg", "이미 사용 중인 이메일 입니다. 다른 이메일을 입력해주세요.");
             model.addAttribute("member", SessionMember); // 기존 정보 유지
             return "mypage";
-        } else { // 수정 성공
-            System.out.print("마이페이지 수정 성공");
-            model.addAttribute("msg", "내정보 수정 성공!");
-            model.addAttribute("member", response); // 수정된 정보 갱신
+            
+        // 수정 성공
+        } else { 
+            System.out.print("내정보 수정 성공"); // 확인 메세지 
+            model.addAttribute("msg", "내정보 수정 성공!"); // 알림 메세지
+            model.addAttribute("member", response); // 수정 정보 갱신
             session.setAttribute("SessionMember", response); // 세션 갱신
             return "mypage";
         }
@@ -165,14 +165,13 @@ public class SYController { // 유저 관리 컨트롤러
 
     // 비밀번호 변경
     @PostMapping("/mypage/{email}/pwd")
-    public String updatePwd(@PathVariable("email") String email,
-                            @ModelAttribute UpdatePwdDTO updateRequest,
+    public String updatePwd(@PathVariable("email") String email,@ModelAttribute UpdatePwdDTO updateRequest,
                             HttpSession session, Model model) {
         // 현재 로그인 중인 member 세션 유지
         MemberDTO SessionMember = (MemberDTO) session.getAttribute("SessionMember");
 
         // 로그인 변경 대상 member 유효성 검사
-        if (SessionMember == null || !SessionMember.getEmail().equals(email)) {
+        if (SessionMember == null || !SessionMember.getEmail().equals(email)) { // 세션이 유효하지 않을 경우
             model.addAttribute("msg", "다시 로그인해주세요.");
             return "login";
         }
@@ -180,13 +179,14 @@ public class SYController { // 유저 관리 컨트롤러
         // 비밀번호 변경 서비스 호출
         MemberDTO response = service.updatePwd(email, updateRequest);
 
-        if (response != null) {
+        if (response != null) { // 비밀번호 변경 성공 
             System.out.print("비밀번호 변경 성공");
             model.addAttribute("msg", "비밀번호 수정 성공");
-            model.addAttribute("member", response); // 변경된 정보 갱신 (이름, 닉네임, 전화번호는 그대로)
+            model.addAttribute("member", response); // 변경된 정보 갱신 (이름, 닉네임, 전화번호 그대로 유지)
             session.setAttribute("SessionMember", response); // 세션 갱신
             return "mypage";
-        } else {
+             
+        } else { // 비밀번호 변경 실패 
             System.out.print("비밀번호 변경 실패");
             model.addAttribute("msg", "현재 비밀번호가 일치하지 않거나, 비밀번호 변경에 실패했습니다.");
             model.addAttribute("member", SessionMember); // 기존 정보 유지
