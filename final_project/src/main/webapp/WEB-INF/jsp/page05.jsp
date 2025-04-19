@@ -255,8 +255,7 @@
             <div class="travel-info">
                 <!-- 여행 코스 컨테이너 -->
                 <div class="course-container">
-                    <!-- 원형 일정 (하드코딩 유지) -->
-                    <div class="schedule-circle">당일</div>
+                    
 
 					<!-- 파란색 여행 코스 박스 -->
 					                    <div class="course-box">
