@@ -118,6 +118,7 @@ public class JHController2 {
             queryBuilder.append("\n"); // 항목 간 줄바꿈
         }
         String query = queryBuilder.toString().replaceAll(", $", "");
+        query = query+"날짜:"+days;
 
         // ✅ AI에 질문 보내기
         JHRequestDto2 requestDto = new JHRequestDto2();
