@@ -145,9 +145,9 @@ body {
 					<input type="hidden" id="selectedDuration" name="duration" value="">
 
                 <div class="location-grid">
-                    <div class="location-item">당일 여행</div>
-                    <div class="location-item">1박 2일</div>
-                    <div class="location-item">2박 3일</div>
+                    <div id="oneDay" class="location-item">당일 여행</div>
+                    <div id="twoDay" class="location-item">1박 2일</div>
+                    <div id="triDay" class="location-item">2박 3일</div>
                 </div>
 
 					<script>
@@ -168,7 +168,10 @@ body {
 	<script>
         let selectedLocation = null;
     	const areaCodeP = "${param.areaCode}"
+        const areaCodeSP = "${param.areaCodeS}"
         const sigunguCodeP = "${param.sigunguCode}"
+        const sigunguCodeSP = "${param.sigunguCodeS}"
+        const daysP = "${param.days}"
 
         // 지역 선택 이벤트 리스너 추가
         document.querySelectorAll('.location-item').forEach(item => {
@@ -209,6 +212,7 @@ body {
             page.classList.add('slide-out');
             
             let days = 0;
+        	const daysS = selectedLocation.textContent
             if(selectedLocation.textContent=="당일 여행"){
             	days = 1;
             }else if(selectedLocation.textContent=="1박 2일"){
@@ -222,8 +226,9 @@ body {
             localStorage.setItem('selectedAreaCode', selectedLocation.textContent);
             //localStorage.setItem('selectedAreaCode', areaCode);
             setTimeout(() => {
-                location.href = '/page3?areaCode='+areaCodeP+"&sigunguCode="
-                		+sigunguCodeP+"&days="+days;
+                location.href = '/page3?areaCode='+areaCodeP+"&areaCodeS="+areaCodeSP
+                		+"&sigunguCode="+sigunguCodeP+"&sigunguCodeS="+sigunguCodeSP
+                		+"&days="+days;
             }, 500);
         });
 
@@ -231,32 +236,40 @@ body {
         document.getElementById('prevBtn').addEventListener('click', function () {
             //const areaCode = localStorage.getItem('selectedMainAreaCode');
 
-            if(sigunguCodeP){
+            if(sigunguCodeSP){
                 setTimeout(() => {
-                	location.href = '/area/subregions?areaCode='
-                			+ areaCodeP + "&sigunguCode" + sigunguCodeP;
+                	location.href = '/area/subregions?areaCode='+ areaCodeP
+        					+ "&areaCodeS=" + areaCodeSP
+                			+ "&sigunguCodeS=" + sigunguCodeSP;
                 }, 500);
             }else{
                 setTimeout(() => {
-                	location.href = '/mainarea/regions?areaCode='+ areaCodeP;
+                	location.href = '/mainarea/regions?areaCodeS='+ areaCodeSP;
                 }, 500);
             }
         });
 
          // 페이지 로드 시 이전에 선택한 일정이 있다면 표시
-        /*
         window.addEventListener('load', function() {
-            const savedDuration = localStorage.getItem('selectedDuration');
+            //const savedDuration = localStorage.getItem('selectedDuration');
+            if (daysP==1) {
+            	document.getElementById("oneDay").classList.add('selected');
+            }else if (daysP==2) {
+            	document.getElementById("twoDay").classList.add('selected');
+            }else if (daysP==3) {
+            	document.getElementById("triDay").classList.add('selected');
+            }
+            /*
             if (savedDuration) {
                 document.querySelectorAll('.location-item').forEach(item => {
-                    if (item.textContent === savedDuration) {
+                    if (item.textContent.trim() === daysSP.trim()) {//savedDuration
                         item.classList.add('selected');
                         selectedLocation = item;
                     }
                 });
             }
+            */
         }); 
-         */
     </script>
 </body>
 </html>

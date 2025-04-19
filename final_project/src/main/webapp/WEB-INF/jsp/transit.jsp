@@ -23,7 +23,7 @@
 	//지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
 	var map = new kakao.maps.Map(mapContainer, mapOption); 
 	
-	var sx = 126.93737555322481;
+	var sx = 126.83737555322481;
 	var sy = 37.55525165729346;
 	var ex = 126.88265238619182;
 	var ey = 37.481440035175375;

@@ -8,7 +8,6 @@
     <title>메뉴</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        /* 상단 네비게이션 */
         nav {
             position: fixed;
             top: 0;
@@ -161,7 +160,17 @@
         <h3>메뉴</h3>
         <ul>
             <li><a href="/project1">메인홈</a></li>
-            <li><a href="/login/mypage/${member.email}">마이페이지</a></li>
+            <li>
+            <!-- kakako 계정 마이페이지 접근 거부 설정 -->
+                <c:choose>
+                    <c:when test="${sessionScope.kakaologin == true}">
+                        <a onclick="alert('kakao 계정은 마이페이지에 대한 접근 권한이 없습니다.'); location.href='/login'; return false;">마이페이지</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/login/mypage/${sessionScope.SessionMember.email}">마이페이지</a>
+                    </c:otherwise>
+                </c:choose>
+            </li>
             <li>
                 <a onclick="document.forms['logoutForm'].submit();" class="logout-link">
                     <i class="fas fa-sign-out-alt"></i> 로그아웃
@@ -171,7 +180,6 @@
         </ul>
         <button class="button" style="color: white;" onclick="togglePopup()">닫기</button>
     </div>
-
     <script>
         function togglePopup() {
             const popup = document.getElementById('popup');
@@ -190,8 +198,8 @@
                     overlay.style.display = 'none';
                 }, 300);
             }
-        }
-    </script>
+        };
 
+    </script>
 </body>
 </html>
