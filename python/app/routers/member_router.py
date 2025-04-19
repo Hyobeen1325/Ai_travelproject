@@ -4,14 +4,12 @@ from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
 from app.models.sql_member import SQLMember # SQLAlchemy 모델
 from app.services.member_service import get_all_members # 유저 정보 조회
-from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel # DTO
-
+from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd # DTO
 
 router = APIRouter(
     prefix="/login", # 클래스 공통 경로
     tags=["member"] # 제목
 )
-
 
 # 유저 정보 조회 = 테스트용
 @router.get("/")
@@ -54,7 +52,6 @@ def logout(request: Request):
 def read_mypage(email: str, request: Request, db: Session=Depends(get_db)):
     # 이메일 세션 처리
     user_email = request.session.get("user_email")
-    
     # 세션 유지x
     if not user_email or user_email != email:
         raise HTTPException(status_code=401, detail="로그인이 필요합니다.")
@@ -103,3 +100,38 @@ def update_mypage(email: str, data: UpdateModel, db: Session=Depends(get_db)):
             nickname=user.nickname,
             phon_num=user.phon_num,
         )
+
+# app/routers/member_router.py
+@router.put("/mypage/{email}/pwd", response_model=MypageModel) # 비밀번호만 변경
+def update_pwd(email: str, request: Request, data: UpdatePwd, db: Session=Depends(get_db)):
+    # 이메일 세션 처리
+    user_email = request.session.get("user_email")
+    # 세션 유지x
+    if not user_email or user_email != email:
+        raise HTTPException(status_code=401, detail="로그인이 필요합니다.")
+
+    # member 정보 조회
+    user = db.query(SQLMember).filter(SQLMember.email == email).first() # 이메일로 member 조회
+    if not user: # 예외 처리
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.")
+
+    # 현재 비밀번호 확인
+    if user.pwd != data.pwd:
+        raise HTTPException(status_code=400, detail="현재 비밀번호가 일치하지 않습니다.")
+
+    # 비밀번호 유효성 검사
+    if not data.new_pwd:
+        raise HTTPException(status_code=400, detail="새 비밀번호를 입력해주세요.")
+
+    # 새 비밀번호를 DB에 업데이트
+    user.pwd = data.new_pwd # 텍스트 비밀번호 저장
+    db.commit() # db에 업데이트로 저장
+    db.refresh(user) # user 새로고침
+
+    # 응답 데이터
+    return MypageModel(
+        email=user.email,
+        name=user.name,
+        nickname=user.nickname,
+        phon_num=user.phon_num,
+    )
