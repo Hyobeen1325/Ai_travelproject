@@ -129,6 +129,7 @@ public class JHController2 {
 			query = "알 수 없는 오류";
 			System.out.println(e.getMessage());
 		}
+        query = query+"날짜:"+days;
 
         // ✅ AI에 질문 보내기
         JHRequestDto2 requestDto = new JHRequestDto2();
