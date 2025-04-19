@@ -437,7 +437,7 @@
     </div>
 
     <script>
-       /* // 카카오 지도 초기화 함수
+        // 카카오 지도 초기화 함수
         function initMap() {
             var mapContainer = document.getElementById('map');
             if (!mapContainer) {
@@ -511,8 +511,8 @@
             console.log('카카오 지도 SDK 로드 완료');
             initMap();
         });
-*/
-		// 카카오맵 로드 함수 (이전과 동일 - 하드코딩된 상태)
+
+/*		// 카카오맵 로드 함수 (이전과 동일 - 하드코딩된 상태)
         function loadKakaoMap() {
             kakao.maps.load(function() {
                 var mapContainer = document.getElementById('map');
@@ -562,7 +562,7 @@
                 // document.getElementById('chatbot-form').submit();
             }
         }
-
+*/
     </script>
 </body>
 </html>

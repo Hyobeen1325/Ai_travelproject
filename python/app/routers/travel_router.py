@@ -104,11 +104,12 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
         additional_info = result.get("additional_info", "")
         response_text = f"{recommendations_text}\\n\\n{additional_info}" if additional_info else recommendations_text
 
-        response_data = {"response": response_text}
-        if result.get("latitude"):
-            response_data["latitude"] = result["latitude"]
-        if result.get("longitude"):
-            response_data["longitude"] = result["longitude"]
+         # 응답 데이터 초기화
+        response_data = {
+            "response": response_text,
+            "latitude": result.get("latitude"),
+            "longitude": result.get("longitude"),
+        }
 
         processed_chat_log_id = None
 

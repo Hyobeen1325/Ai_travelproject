@@ -255,8 +255,7 @@
             <div class="travel-info">
                 <!-- 여행 코스 컨테이너 -->
                 <div class="course-container">
-                    <!-- 원형 일정 (하드코딩 유지) -->
-                    <div class="schedule-circle">당일</div>
+                    
 
 					<!-- 파란색 여행 코스 박스 -->
 					                    <div class="course-box">
@@ -283,8 +282,8 @@
 				</div>
 		
                 <!-- 이전 화면 버튼 -->
-                <button class="back-button" onclick="location.href='index.jsp'">
-                    이전
+                <button class="back-button" onclick="location.href='project1'">
+                    메인페이지로 이동
                 </button>
             </div>
         </div>
@@ -315,6 +314,82 @@
     </div>
 
     <script>
+		// 카카오 지도 초기화 함수
+		      
+		  function initMap() {
+		            var mapContainer = document.getElementById('map');
+		            if (!mapContainer) {
+		                console.error('지도 컨테이너를 찾을 수 없습니다.');
+		                return;
+		            }
+
+		            // 컨트롤러에서 넘어온 좌표값 (JSP Expression 사용, null 처리 강화)
+		            var latitude = ${latitude != null ? latitude : 'null'};
+		            var longitude = ${longitude != null ? longitude : 'null'};
+
+		            // 좌표값이 유효하지 않으면 기본 위치(예: 서울 시청) 또는 메시지 표시
+		            if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+		                console.warn('유효한 좌표값이 없습니다. 기본 위치로 지도를 표시하거나 메시지를 출력합니다.');
+		                // 예: 기본 위치 설정
+		                latitude = 37.5665;
+		                longitude = 126.9780;
+		                 mapContainer.innerHTML = '<p style="text-align:center; padding-top: 80px; color: #777;">표시할 위치 정보가 없습니다.</p>';
+		                 return; // 지도를 로드하지 않음
+
+		                // 또는 메시지만 표시
+		                // mapContainer.innerHTML = '<p style="text-align:center; padding-top: 80px; color: #777;">표시할 위치 정보가 없습니다.</p>';
+		                // return;
+		            }
+
+		            var mapOption = {
+		                center: new kakao.maps.LatLng(latitude, longitude), // 유효한 좌표로 중심 설정
+		                level: 7 // 레벨 조정 (값이 클수록 넓은 지역 표시)
+		            };
+
+		            try {
+		                var map = new kakao.maps.Map(mapContainer, mapOption);
+
+		                // 마커 생성
+		                var markerPosition = new kakao.maps.LatLng(latitude, longitude);
+		                var marker = new kakao.maps.Marker({
+		                    position: markerPosition,
+		                    map: map,
+		                    // title: '추천 위치' // title 속성은 기본적으로 표시되지 않음
+		                });
+
+		                // 인포윈도우 내용 (간단하게)
+		                var iwContent = '<div style="padding:5px; font-size:12px; text-align:center; width: 150px;">추천 위치</div>';
+		                var iwPosition = new kakao.maps.LatLng(latitude, longitude);
+
+		                // 인포윈도우 생성
+		                var infowindow = new kakao.maps.InfoWindow({
+		                    position : iwPosition,
+		                    content : iwContent
+		                });
+
+		                // 마커 위에 인포윈도우 표시 (마우스오버 이벤트 등 제거하고 바로 표시)
+		                infowindow.open(map, marker);
+
+		                // 지도 컨트롤 추가
+		                var mapTypeControl = new kakao.maps.MapTypeControl();
+		                map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+		                var zoomControl = new kakao.maps.ZoomControl();
+		                map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+		                console.log('지도 로드 완료. 중심 좌표:', latitude, longitude);
+
+		            } catch (error) {
+		                console.error('지도 초기화 중 오류 발생:', error);
+		                 mapContainer.innerHTML = '<p style="text-align:center; padding-top: 80px; color: #777;">지도를 불러오는 중 오류가 발생했습니다.</p>';
+		            }
+		        }
+
+		        // 카카오맵 SDK 로드 후 지도 초기화
+		        kakao.maps.load(function () {
+		            console.log('카카오 지도 SDK 로드 완료');
+		            initMap();
+		        });
+/*
         // 카카오맵 로드 함수 (이전과 동일 - 하드코딩된 상태)
         function loadKakaoMap() {
             kakao.maps.load(function() {
@@ -350,6 +425,7 @@
         window.onload = function() {
             loadKakaoMap();
         };
+		*/
     </script>
 </body>
 </html>

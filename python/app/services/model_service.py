@@ -1,9 +1,10 @@
 from sentence_transformers import SentenceTransformer
 import torch
 import numpy as np
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any ,Optional
 import requests
-import json
+import re
+import random
 import os
 from concurrent.futures import ThreadPoolExecutor
 
@@ -184,43 +185,82 @@ class TravelModelService:
             
     def process_Area_query(self, query: str) -> Dict[str, Any]:
         """사용자 쿼리를 처리하여 Gemini API를 사용하여 응답 생성"""
-        try: # Use a thread pool to handle the request 
+        try:
             prompt = """
                 다음은 지역리스트입니다. 
                 이 지역간에 거리가 가깝고 
                 contenttypeid가 겹치지 않는 서로 다른 추천여행지를
-                5곳 추천해주세요
+                날짜가 당일이면 3곳만, 1박2일이면 5곳만 , 2박3일이상이면 10곳만 추천해주세요
                 출력형식은 받은 형식을 참고하여 다음 json형식을 지켜서 출력해주세요
-                [
-                    {
-                        "title": ,
-                        "mapx": ,
-                        "mapy": ,
-                        "contenttypeid": ,
-                        "firstimage": ,
-                        "firstimage2":,
-                        "tel":,
-                        "addr1":,
-                        "addr2":
-                    },...
-                ]
+                {
+                    "items": {
+                        "item":     [
+                            {
+                                "title": "",
+                                "mapx": "",
+                                "mapy": "",
+                                "contenttypeid": "",
+                                "firstimage": "",
+                                "firstimage2": "",
+                                "tel": "",
+                                "addr1": "",
+                                "addr2": ""
+                            },...
+                        ]
+                    }
+                }
+                모든 json의 벨류값은 String타입으로 보내주세요.
                 지역리스트: 
                 """+ query
+                # 만약 받은 데이터에 null값이 있다면 공백문자열("")로 보내주세요
                 # 당일여행일때 3곳 1박2일일때 5곳 2박3일일때 10곳만 추천하여 알려주세요.
                 # 날짜가 지역리스트에 포함이 안되었다면 5개를 출력하고 포함안됨을 출력해주세요
             future = self.executor.submit(self.analyze_with_gemini, prompt)
-            gemini_response = future.result(timeout=10)  # Set a timeout for the response
+            gemini_response = future.result(timeout=10)
+
+            # 전체 응답을 문자열로 처리
             combined_response = f"Gemini: {gemini_response}"
-            
-            
+
+            # 응답 문자열에서 각 추천 항목만 추출 (JSON 객체 단위)
+            items = re.findall(r'{.*?}', gemini_response, re.DOTALL)
+
+            # 하나를 무작위로 선택
+            selected = random.choice(items) if items else ""
+
+            # 위도 경도 초기값
+            latitude: Optional[float] = None
+            longitude: Optional[float] = None
+
+            # mapx, mapy 추출 시 정규표현식 사용
+            mapx_match = re.search(r'"mapx"\s*:\s*([\d.]+)', selected)
+            mapy_match = re.search(r'"mapy"\s*:\s*([\d.]+)', selected)
+
+            if mapx_match:
+                try:
+                    longitude = float(mapx_match.group(1))
+                except ValueError:
+                    pass
+            if mapy_match:
+                try:
+                    latitude = float(mapy_match.group(1))
+                except ValueError:
+                    pass
+
             return {
                 "recommendations": [combined_response],
+                "selected_place": selected,
+                "latitude": latitude,
+                "longitude": longitude,
                 "confidence_score": 0.9,
-                "additional_info": "Gemini API 응답"
+                "additional_info": "문자열 응답에서 무작위 장소 선택 및 좌표 추출"
             }
+
         except Exception as e:
             return {
                 "recommendations": ["오류가 발생했습니다. 다시 시도해주세요."],
+                "selected_place": "",
+                "latitude": None,
+                "longitude": None,
                 "confidence_score": 0.1,
                 "additional_info": f"오류: {str(e)}"
             }
