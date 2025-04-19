@@ -79,7 +79,7 @@ public class SYController { // 유저 관리 컨트롤러
             model.addAttribute("member", response); // member 정보
             session.setAttribute("SessionMember", response);  // 세션에 member 저장
             session.setAttribute("kakaologin", false); // kakao 계정 일반로그인 거부 설정
-            return "mypage"; // /WEB-INF/jsp/project1.jsp
+            return "project1"; // /WEB-INF/jsp/project1.jsp
 
         // 로그인 실패
         } else {
