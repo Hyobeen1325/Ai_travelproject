@@ -149,6 +149,7 @@
                 <div class="input-group">
                     <label for="nickname">닉네임</label>
                     <input type="text" id="nickname" name="nickname" required>
+                    <button type="button" class="check-btn">중복확인</button>
                 </div>
                 
                 <div class="input-group">
