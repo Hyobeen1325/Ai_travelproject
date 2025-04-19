@@ -44,7 +44,7 @@ public class JHController {
         }
 
         model.addAttribute("username", email);
-        return "page04";
+        return "page05";
     }
 
     @PostMapping("/ask")
@@ -87,6 +87,11 @@ public class JHController {
         String email = (String) session.getAttribute("email");
         model.addAttribute("username", email);
 
+        // ✅ 이전 aiResponse2 유지
+        model.addAttribute("aiResponse2", session.getAttribute("aiResponse2"));
+        model.addAttribute("latitude", session.getAttribute("latitude"));
+        model.addAttribute("longitude", session.getAttribute("longitude"));
+
         if (query == null || query.trim().isEmpty()) {
             model.addAttribute("aiResponse", "질문을 입력해주세요.");
             return "page05";
@@ -106,11 +111,12 @@ public class JHController {
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);
-            
+
         } catch (Exception e) {
             model.addAttribute("aiResponse", "응답 처리 중 오류 발생");
         }
 
         return "page05";
     }
+
 }

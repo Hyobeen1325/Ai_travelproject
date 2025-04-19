@@ -36,7 +36,8 @@ public class SYController { // 유저 관리 컨트롤러
 
     
     // 로그인 페이지 
-    // http://localhost:8080/login 
+    // http://localhost:8080/login
+    
     // kakao 통합 로그인 
     @GetMapping("")
     public String loginpage(Model model) {
