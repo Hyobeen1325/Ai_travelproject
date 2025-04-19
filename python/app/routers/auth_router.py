@@ -24,8 +24,8 @@ async def register_user(user: MemberCreate, db: Session = Depends(get_db)):
         nickname=user.nickname,
         pwd=user.pwd,
         phon_num=user.phon_num,
-        reg_date=datetime.now(), # 현재 시각으로 설정
-        upt_date=datetime.now()  # 현재 시각으로 설정
+        # reg_date=datetime.now(), # 현재 시각으로 설정
+        # upt_date=datetime.now()  # 현재 시각으로 설정
     )
 
     # 2. 세션에 추가
