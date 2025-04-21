@@ -41,5 +41,5 @@ async def register_user(user: MemberCreate, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         db.rollback()  # 실패 시 rollback 필수!
         raise HTTPException(status_code=500, detail=f"등록 중 오류 발생: {str(e)}")
-    
-    
+
+
