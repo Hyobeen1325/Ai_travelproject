@@ -152,11 +152,13 @@ public class JHController2 {
 			// DTO로 변환
 			if (areaListJ != null) {
 				CWTravelAPI_02_FinalItems areaListO = mapper.readValue(areaListJ, CWTravelAPI_02_FinalItems.class);
-				System.out.println(areaListO.getItems().getItem().get(0).getTitle());
-				System.out.println(areaListO.getItems().getItem().get(0).getMapx());
-				System.out.println(areaListO.getItems().getItem().get(0).getMapy());
+				//System.out.println(areaListO.getItems().getItem().get(0).getTitle());
+				//System.out.println(areaListO.getItems().getItem().get(0).getMapx());
+				//System.out.println(areaListO.getItems().getItem().get(0).getMapy());
+				List<CWTravelAPI_01_Item> areaListOF = areaListO.getItems().getItem();
+	            model.addAttribute("areaListO", areaListOF);
 			}
-            
+
             session.setAttribute("latitude", resultMap.get("latitude"));
             session.setAttribute("longitude", resultMap.get("longitude"));
             

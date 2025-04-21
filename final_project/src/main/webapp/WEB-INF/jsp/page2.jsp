@@ -130,14 +130,11 @@ body {
 </style>
 </head>
 <body>
+	<div class="header">
+	 	<jsp:include page="header.jsp" />	      
+	</div>
 	<div class="page">
-		<div class="container">
-			<div class="header">
-				<img src="image/logo.png" class="logo" alt="로고" class="logo">
-				<div class="page-indicator">
-					<strong>01 02 ----- 03</strong>
-				</div>
-			</div>
+		<div class="container">			
 
 			<div class="content-section">
 				<h1 class="title">여행을 떠나고 싶은 일자를 선택해 주세요</h1>
@@ -270,6 +267,7 @@ body {
             }
             */
         }); 
-    </script>
+    </script>   
+    <jsp:include page="header2.jsp" />	      
 </body>
 </html>

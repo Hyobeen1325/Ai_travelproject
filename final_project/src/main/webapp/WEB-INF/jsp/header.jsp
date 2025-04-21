@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         nav {
-            position: fixed;
+            /*position: fixed;*/
             top: 0;
             left: 0;
             width: 100%;
