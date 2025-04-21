@@ -341,7 +341,7 @@ body {
 				<form action="chat.do" method="get">
 					<div class="search-container">
 						<%-- 입력값 유지 시에도 c:out 사용 --%>
-						<input type="text" name="query" class="search-input"
+						<input type="text" name="query" class="search-input">
 							placeholder="무엇이든 물어보세요" value="<c:out value="${param.query}"/>">
 						<button type="submit" class="search-button">검색</button>
 					</div>

@@ -97,6 +97,7 @@ public class JHController {
 
         // ✅ 이전 aiResponse2 유지
         model.addAttribute("aiResponse2", session.getAttribute("aiResponse2"));
+        model.addAttribute("areaListO",session.getAttribute("areaListO"));
         model.addAttribute("latitude", session.getAttribute("latitude"));
         model.addAttribute("longitude", session.getAttribute("longitude"));
 
@@ -115,8 +116,7 @@ public class JHController {
             model.addAttribute("query", query);
             model.addAttribute("aiResponse", resultMap.get("response"));
 
-            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
-            
+            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");           
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);

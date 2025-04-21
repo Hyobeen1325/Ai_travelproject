@@ -42,7 +42,8 @@ public class JHController2 {
     public String handleCombinedRequest(CWThemeRequest theme, Model model, HttpSession session) {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
-        
+        MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
+        String email = member.getEmail();
         //MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         //String email = member.getEmail();
         
@@ -137,6 +138,7 @@ public class JHController2 {
         // ✅ AI에 질문 보내기
         JHRequestDto2 requestDto = new JHRequestDto2();
         requestDto.setMessage(query);
+        requestDto.setEmail(email);
 
         try {
             var resultMap = jhService.getJHResponse2(requestDto);
@@ -157,6 +159,7 @@ public class JHController2 {
 				//System.out.println(areaListO.getItems().getItem().get(0).getMapy());
 				List<CWTravelAPI_01_Item> areaListOF = areaListO.getItems().getItem();
 	            model.addAttribute("areaListO", areaListOF);
+	            session.setAttribute("areaListO", areaListOF);
 			}
 
             session.setAttribute("latitude", resultMap.get("latitude"));
@@ -167,9 +170,8 @@ public class JHController2 {
             //model.addAttribute("latitude", resultMap.get("latitude"));
             //model.addAttribute("longitude", resultMap.get("longitude"));
 
-            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
+            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");           
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
-
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);
 

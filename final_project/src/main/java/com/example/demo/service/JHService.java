@@ -103,7 +103,7 @@ public class JHService {
             Map<String, Object> responseMap = buildResponseMap(result);
             responseMap.put("latitude", result.getLatitude());
             responseMap.put("longitude", result.getLongitude());
-
+            
             return responseMap;
 
         } catch (HttpClientErrorException e) {
@@ -166,6 +166,22 @@ public class JHService {
             }
             if (dto.getLongitude() != null) {
                 responseMap.put("longitude", dto.getLongitude());
+            }
+            if (dto.getChatLogs() != null) {
+                responseMap.put("chatLogs", dto.getChatLogs());
+            }
+            if (dto.getQnaData() != null) {
+                responseMap.put("qnaData", dto.getQnaData());
+            }
+            if (dto.getQuestions() != null) {
+                responseMap.put("questions", dto.getQuestions());
+            }
+            if (dto.getAnswers() != null) {
+                responseMap.put("answers", dto.getAnswers());
+            }
+            if (dto.getTitles() != null && dto.getUptDates() != null) {
+                List<ChatLogItemDto> chatList = buildChatLogList(dto.getTitles(), dto.getUptDates());
+                responseMap.put("chatList", chatList);
             }
         }
 

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JHRequestDto2 {
     private String message;
+    private String email;
 }
