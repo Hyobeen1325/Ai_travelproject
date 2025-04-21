@@ -432,19 +432,6 @@ body {
 		    position: new kakao.maps.LatLng(y, x),
 		    map: map
 		});
-
-        // 인포윈도우 내용 (간단하게)
-        var iwContent = '<div class="kakaoMarkerContent" align="center">'+message+'</div>';
-        var iwPosition = new kakao.maps.LatLng(y, x);
-
-        // 인포윈도우 생성
-        var infowindow = new kakao.maps.InfoWindow({
-            position : iwPosition,
-            content : iwContent
-        });
-
-        // 마커 위에 인포윈도우 표시 (마우스오버 이벤트 등 제거하고 바로 표시)
-        infowindow.open(map, marker);
 	}
 
     // 지도 컨트롤 추가
