@@ -76,14 +76,18 @@
         .welcome-text {
             color: #fff;
             margin-bottom: 40px;
-            max-width: 800px;
+            max-width: 800px;          
         }
         
         .welcome-title {
-            font-size: 60px;
+            font-size: 100px;
             font-weight: 700;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .welcome-subtitle{
+        	font-size: 60px;
+        	font-weight: 400;
         }
         
         .welcome-description {
@@ -135,6 +139,7 @@
             padding: 80px 0;
             background-color: #fff;
             width: 100%;
+            margin-bottom: 0; /* 하단 여백 제거 */
         }
         
         .features-container {
@@ -143,6 +148,12 @@
             padding: 0 20px;
         }
         
+        .footer-wrapper {
+            width: 100%;
+            background-color: #f8f9fa;
+            position: relative;
+            z-index: 2;
+        }
         .section-title {
             text-align: center;
             font-size: 2.5rem;
@@ -234,6 +245,8 @@
     <div class="container">
         <div class="welcome-text">
             <h1 class="welcome-title">Welcome</h1>
+            <h2 class="welcome-subtitle">${sessionScope.SessionMember.name} 님!</h2>
+            <h3 class="welcome-text">  </h3>
             <p class="welcome-description">
                 AI국내여행 플래너, 소담 여행에 오신 것을 환영합니다.<br>
                 국내 여행을 계획 중이신가요?<br>
@@ -270,7 +283,9 @@
             </div>
         </div>
     </section>
-    
+    <div class="footer-wrapper">
+        <jsp:include page="header2.jsp" />
+    </div>
     <script>
         // 반짝이는 별 효과 생성
         function createStars() {
@@ -291,10 +306,10 @@
         window.addEventListener('load', createStars);
         
         // 로그인 상태 확인
-        // <c:if test="${empty sessionScope.user}">
-        //    location.href = '/#';
-        // </c:if>
-    </script>
-    <jsp:include page="header2.jsp" />
+         <c:if test="${empty sessionScope.SessionMember.email}">
+      	 location.href = '/login';
+         </c:if>
+    </script>   
+   
 </body>
 </html> 

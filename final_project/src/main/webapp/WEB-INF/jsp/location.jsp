@@ -31,6 +31,7 @@
             height: auto;
         }
         .page-indicator {
+        	margin-right: auto;
             font-size: 18px;
             color: #666;
         }
@@ -114,15 +115,9 @@
     </style>
 </head>
 <body>
+    <jsp:include page="header.jsp" />	      
 	<div class="page">
 		<div class="container">
-			<div class="header">
-				<img src="/image/logo.png" alt="로고" class="logo">
-				<div class="page-indicator">
-					<strong>01 ----- 02 03</strong>
-				</div>
-			</div>
-
 			<div class="content-section">
 				<h1 class="title">여행을 떠나고 싶은 지역을 선택해 주세요</h1>
 
@@ -219,6 +214,6 @@
 	        });
 	    });
 	</script>
-
+	<jsp:include page="header2.jsp" />	
 </body>
 </html>

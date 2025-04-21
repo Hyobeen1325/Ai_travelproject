@@ -137,7 +137,7 @@
                     <label for="email">이메일(아이디)</label>
                     <div class="email-group">
                         <input type="email" id="email" name="email" required>
-                        <button type="button" class="check-btn">중복확인</button>
+                        <button type="button" class="check-btn" id="Check_email">중복확인</button>
                     </div>
                 </div>
                 
@@ -148,8 +148,10 @@
                 
                 <div class="input-group">
                     <label for="nickname">닉네임</label>
+                    <div class="email-group">
                     <input type="text" id="nickname" name="nickname" required>
-                    <button type="button" class="check-btn">중복확인</button>
+                    <button type="button" class="check-btn" id="Check_nickname">중복확인</button>
+                    </div>
                 </div>
                 
                 <div class="input-group">
@@ -201,5 +203,7 @@
 	        });
 	    } 
     </script>
+
+    
 </body>
 </html> 
