@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -120,7 +123,7 @@ public class JHService {
             return errorMap;
         }
     }
-
+    
     private String processResponse(String response) {
         if (response == null || response.isBlank()) {
             return "FastAPI로부터 받은 유효한 응답이 없습니다.";

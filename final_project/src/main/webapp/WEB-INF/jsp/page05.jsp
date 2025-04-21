@@ -4,6 +4,7 @@
 <%-- JSTL core 태그 라이브러리 선언 --%>
 <!DOCTYPE html>
 <html lang="ko">
+<jsp:include page="header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -229,6 +230,17 @@ body {
 	outline: none;
 }
 
+        /* 검색 폼 위치 조정 */
+        .search-form-wrapper {
+            position: absolute;
+            bottom: 30px; /* 하단 간격 */
+            left: 30px;  /* 왼쪽 정렬 */
+            right: 30px; /* 오른쪽 간격 */
+            width: calc(100% - 60px); /* 양쪽 패딩 고려 */
+        }
+		#map {
+		    margin-top: 100px;  /* nav 높이만큼 여백 확보 */
+		}
 .search-button {
 	padding: 15px 25px;
 	background-color: #1a73e8;
@@ -273,7 +285,7 @@ body {
 
 					<!-- 파란색 여행 코스 박스 -->
 					<div class="course-box">
-						<h2>${username}님을위한여행코스</h2>
+						<h2>${sessionScope.SessionMember.email}님을위한여행코스</h2>
 						<div class="travel-details">
 							<%-- 컨트롤러에서 전달된 AI 응답 (여행 코스 관련) --%>
 							<c:forEach var="location" items="${areaListO}" varStatus="status">
@@ -292,16 +304,12 @@ body {
 				<div class="search-history-section">
 					<h3>이전 검색 기록</h3>
 
-					<div class="search-history-scroll">
-						<c:forEach var="chatList" items="${chatList}">
-							<div class="qna-box">
-								<div class="chatList-date">
-									<c:out value="${chatList.upt_date}" />
-								</div>
-								<div class="chatList-title">
-									<c:out value="${chatList.title}" />
-								</div>
-							</div>
+				    <div class="search-history-scroll">
+						<c:forEach var="chatList" items="${chatList}" varStatus="status">
+						    <div class="qna-box">
+								<div class="chatList-date"><c:out value="${dateLabels[status.index]}" /></div>
+						        <div class="chatList-title"><c:out value="${chatList.title}" /></div>						           
+						    </div>
 						</c:forEach>
 					</div>
 				</div>
@@ -682,5 +690,6 @@ body {
         };
 		*/
     </script>
+	<jsp:include page="header2.jsp" />
 </body>
 </html>
