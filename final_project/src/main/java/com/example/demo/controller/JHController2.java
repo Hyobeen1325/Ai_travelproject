@@ -18,6 +18,7 @@ import com.example.demo.dto.CWTravelAPI_02_FinalItems;
 import com.example.demo.dto.CWTravelAPI_05_FinalResponse;
 import com.example.demo.dto.ChatLogItemDto;
 import com.example.demo.dto.JHRequestDto2;
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.QnaItemDto;
 import com.example.demo.service.CWTravelAPI_01_Service;
 import com.example.demo.service.JHService;
@@ -42,6 +43,8 @@ public class JHController2 {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
         
+        //MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
+        //String email = member.getEmail();
         
         String high_loc = theme.getHigh_loc();
         String low_loc = theme.getLow_loc();
@@ -139,7 +142,7 @@ public class JHController2 {
             var resultMap = jhService.getJHResponse2(requestDto);
             String areaListSJ = (String) resultMap.get("response");
             //System.out.println(areaListSJ);
-            //session.setAttribute("aiResponse2", resultMap.get("response"));
+            session.setAttribute("aiResponse2", resultMap.get("response"));
 
 			Pattern pattern = Pattern.compile("\\{.*}", Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(areaListSJ);
@@ -162,8 +165,8 @@ public class JHController2 {
             //model.addAttribute("latitude", resultMap.get("latitude"));
             //model.addAttribute("longitude", resultMap.get("longitude"));
 
-            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatList");
-            List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaList");
+            List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
+            List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
 
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);

@@ -1,7 +1,11 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.ChatLogItemDto;
+import com.example.demo.dto.Item;
 import com.example.demo.dto.JHRequestDto;
-import com.example.demo.dto.JHResponseDto;
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.QnaItemDto;
 import com.example.demo.service.JHService;
 
@@ -69,6 +74,7 @@ public class JHController {
             model.addAttribute("aiResponse", resultMap.get("response"));
 
             List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
+            
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);
@@ -79,13 +85,15 @@ public class JHController {
 
         return "page05";
     }
-
+    
     @GetMapping("/chat.do")
     public String handleChatRequest(@RequestParam(value = "query", required = false) String query,
                                     HttpSession session,
                                     Model model) {
-        String email = (String) session.getAttribute("email");
-        model.addAttribute("username", email);
+    
+    MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
+    String email = member.getEmail();
+    	
 
         // ✅ 이전 aiResponse2 유지
         model.addAttribute("aiResponse2", session.getAttribute("aiResponse2"));
@@ -108,9 +116,48 @@ public class JHController {
             model.addAttribute("aiResponse", resultMap.get("response"));
 
             List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
+            
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);
+            List<String> dateLabels = new ArrayList<>();
+            LocalDate today = LocalDate.now();  // 오늘 날짜
+
+            // chatList가 List<Item> 형태라고 가정
+            for (ChatLogItemDto item : chatList) {
+                // item에서 upt_date 가져오기 (Date 형태)
+                Date upt_date = item.getUpt_date(); // 단일 Date
+
+                if (upt_date == null) {
+                    dateLabels.add("알 수 없음");
+                    continue;
+                }
+
+                // Date를 LocalDate로 변환
+                LocalDate date = upt_date.toInstant()
+                                         .atZone(ZoneId.systemDefault())
+                                         .toLocalDate();
+
+                // 날짜 비교
+                long daysBetween = ChronoUnit.DAYS.between(date, today);
+
+                if (daysBetween == 0) {
+                    dateLabels.add("오늘");
+                } else if (daysBetween == 1) {
+                    dateLabels.add("어제");
+                } else if (daysBetween <= 7) {
+                    dateLabels.add("최근 7일간");
+                } else if (daysBetween <= 30) {
+                    dateLabels.add("최근 1달");
+                } else {
+                    dateLabels.add("최근 1달 이후");
+                }
+            }
+            model.addAttribute("dateLabels", dateLabels);
+            
+            
+            
+            
 
         } catch (Exception e) {
             model.addAttribute("aiResponse", "응답 처리 중 오류 발생");
@@ -118,5 +165,6 @@ public class JHController {
 
         return "page05";
     }
+    
 
 }
