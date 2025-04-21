@@ -2,8 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
-<!--  상단 헤더 -->
-<jsp:include page="header.jsp" />
 <head>
   <meta charset="UTF-8">
   <title>My Page</title>
@@ -257,6 +255,8 @@ body {
   </style>
 </head>
 <body>
+<!--  상단 헤더 -->
+<jsp:include page="header.jsp" />
   <div class="mypage-box">
     <div class="mypage-title">내정보</div>
 <!-- 내정보 조회란 -->
