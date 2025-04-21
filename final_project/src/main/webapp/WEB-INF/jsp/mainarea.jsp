@@ -149,6 +149,8 @@
     </div>
 
     <script>
+  		let selectedRnum = null;
+		const areaCodeP = "${param.areaCode}"
 		const areaCodeSP = "${param.areaCodeS}"
         let selectedLocation = null;
 
@@ -186,7 +188,7 @@
                 alert('지역을 선택해 주세요.');
                 return;
             }
-	
+            
             const areaCode = selectedLocation.getAttribute('data-code');
             const areaCodeS = selectedLocation.textContent;
             const page = document.querySelector('.page');

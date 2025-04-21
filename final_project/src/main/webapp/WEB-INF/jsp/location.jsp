@@ -193,6 +193,10 @@
 	                alert('지역을 선택해 주세요.');
 	                return;
 	            }
+
+	            const areaCode = selectedLocation.getAttribute('data-code');
+	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());
+	            //localStorage.setItem('selectedAreaCode',areaCode );
 	            const sigunguCode = selectedLocation.getAttribute('data-code');
 	            const sigunguCodeS = selectedLocation.textContent;
 	            //localStorage.setItem('selectedDetailLocation', selectedLocation.textContent.trim());

@@ -14,7 +14,7 @@ import com.example.demo.dto.CWThemeResponse;
 @Service
 public class CWThemeService {
 	// 선택한 테마값 저장하는 서비스단
-	 @Value("${fastapi.url:http://192.168.0.64:8000}")
+	 @Value("${fastapi.url:http://localhost:8000}")
     private String fastApiUrl;
 
     private final RestTemplate restTemplate;

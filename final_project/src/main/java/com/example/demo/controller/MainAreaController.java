@@ -27,7 +27,7 @@ public class MainAreaController {
     private static final Logger logger = LoggerFactory.getLogger(MainAreaController.class);
 
     @GetMapping("/regions")
-    public String getSubregions(@RequestParam(value = "numOfRows", defaultValue = "20") int numOfRows, Model model) {
+    public String getSubregions(@RequestParam(value = "numOfRows", defaultValue = "100") int numOfRows, Model model) {
         try {
             String serviceKey = "zobQk13tnvYbo%2Fm%2Ff73cuxwgSffsJEm60Y%2FpBKm2hjfetSQd55bSILGX1Nq9vBi9PEGinACney4ZcjXkgXWL4A%3D%3D"; // 실제 서비스 키로 교체
             String apiUrl = "https://apis.data.go.kr/B551011/KorService1/areaCode1?serviceKey="
@@ -50,7 +50,8 @@ public class MainAreaController {
             AreaResponse areaResponse = (AreaResponse) unmarshaller.unmarshal(reader);
 
             // Items에서 Item 리스트 추출
-            List<Item> items = (areaResponse.getBody() != null && areaResponse.getBody().getItems() != null)
+            List<Item> items = (areaResponse.getBody() 
+            		!= null && areaResponse.getBody().getItems() != null)
                     ? areaResponse.getBody().getItems().getItem()
                     : Collections.emptyList();
 
