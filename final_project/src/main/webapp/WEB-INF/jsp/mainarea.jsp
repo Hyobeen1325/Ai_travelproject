@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+	
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>지역 선택</title>
@@ -29,7 +30,7 @@
             width: 150px;
             height: auto;
         }
-        .page-indicator {
+        .page-indicator {        	
             font-size: 18px;
             color: #666;
         }
@@ -113,14 +114,16 @@
     </style>
 </head>
 <body>
+    <div class="header">
+    <jsp:include page="header.jsp" />	
+          
+    </div>
     <div class="page">
+   	
         <div class="container">
-            <div class="header">
-                <img src="/image/logo.png" alt="로고" class="logo">
-                <div class="page-indicator"><strong>01 ----- 02 03</strong></div>
-            </div>
 
             <div class="content-section">
+            
                 <h1 class="title">여행을 떠나고 싶은 지역을 선택해 주세요</h1>
 
                 <c:if test="${not empty error}">
@@ -231,5 +234,6 @@
             }
         });
     </script>
+    <jsp:include page="header2.jsp" />
 </body>
 </html>

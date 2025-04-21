@@ -130,14 +130,11 @@ body {
 </style>
 </head>
 <body>
+	<div class="header">
+    	<jsp:include page="header.jsp" />	      
+    </div>
 	<div class="page">
 		<div class="container">
-			<div class="header">
-				<img src="image/logo.png" class="logo" alt="로고" class="logo">
-				<div class="page-indicator">
-					<strong>01 02 03 -----</strong>
-				</div>
-			</div>
 
 			<div class="content-section">
 				<h1 class="title">여행에서 원하는 테마를 지정해 주세요.</h1>
@@ -154,6 +151,10 @@ body {
                     <div class="location-item">가족</div>
                     <div class="location-item">나홀로</div>
                 </div>
+                	<div class="navigation">
+						<button class="nav-button" id="prevBtn">이전</button>
+						<button class="nav-button" id="nextBtn">다음</button>
+					</div>
                 <form id="choose_form" action="/combinedAreaAI" method="post">
                 	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
                 	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
@@ -168,7 +169,7 @@ body {
                 
 
 				<input type="hidden" id="selectedThemes" name="themes" value="">
-
+ 
     <script>
     	const areaCodeP = "${param.areaCode}"
         const areaCodeSP = "${param.areaCodeS}"
@@ -443,6 +444,11 @@ body {
             	location.href="/project1"
             }
         });
+        
     </script>
-</body>
+    </div>
+    </div>
+    </div>
+   		 <jsp:include page="header2.jsp" />	      
+	</body>
 </html>
