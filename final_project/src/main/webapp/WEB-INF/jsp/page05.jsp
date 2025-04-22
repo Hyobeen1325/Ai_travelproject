@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 응답 페이지</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f3925101927bde5acf150ddd5f551f63"></script>
 <%-- TODO: 카카오 앱 키를 실제 값으로 변경하세요 --%>
 <style>
@@ -27,7 +28,7 @@ body {
 
 /* 왼쪽 섹션 스타일 (이전과 동일) */
 .left-section {
-	width: 60%;
+	width: 50%;
 	display: flex;
 	flex-direction: column;
 }
@@ -267,6 +268,24 @@ body {
 	padding:0;
 	margin:0;
 }
+/* 이미지 스피너 */
+.image-container {
+      position: relative;
+    }
+
+.spinner-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.image {
+  object-fit: cover;
+  display: none; /* 로딩 전까지 숨김 */
+}
 </style>
 </head>
 <body>
@@ -296,7 +315,14 @@ body {
 								<div class="travelAreaInfo">${status.index+1}번째 여행지</div>
 								<div class="travelAreaInfo">${location.title}</div>
 					    		<div class="travelAreaInfo">${location.addr1}</div>
-					    		<img src="${location.firstimage}" alt="여행 이미지" width="300"/>
+								<div class="image-container">
+									<div class="spinner-overlay">
+										<div class="spinner-border" role="status">
+											<span class="visually-hidden">Loading...</span>
+										</div>
+									</div>
+									<img class="image" src="${location.firstimage}" alt="여행 이미지" width="300"/>
+								</div>				    			
 						   		<c:if test="${status.last}"><hr></c:if>
 							</c:forEach>
 						</div>
@@ -354,6 +380,8 @@ body {
 	</div>
 
 	<script> 
+
+	
 	var locations = [
 		<c:forEach var="location" items="${areaListO}"  varStatus="status">
 			{
@@ -709,7 +737,25 @@ body {
             loadKakaoMap();
         };
 		*/
+		
+
+		const containers = document.querySelectorAll(".image-container");
+
+		containers.forEach(container => {
+		  const img = container.querySelector("img.image");
+		  const spinner = container.querySelector("div.spinner-overlay");
+
+		  img.onload = () => {
+		    spinner.style.display = 'none';
+		    img.style.display = 'block';
+		  };
+
+		  img.onerror = () => {
+		    spinner.innerHTML = '<span class="text-danger">이미지를 불러오지 못했습니다.</span>';
+		  };
+		});
     </script>
 	<jsp:include page="header2.jsp" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
