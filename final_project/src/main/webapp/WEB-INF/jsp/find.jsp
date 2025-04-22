@@ -158,7 +158,7 @@
 
   <!-- 비밀번호 찾기 폼 -->
   <div class="form-wrapper" id="find-pwd">
-    <form action="<c:url value='/tempwd' />" method="post" class="form-group">
+    <form action="<c:url value='/login/findpwd' />" method="post" class="form-group">
       <input type="email" name="email" placeholder="아이디" class="input" required>
       <button type="submit" class="button">임시 비밀번호 발송</button>
     </form>
