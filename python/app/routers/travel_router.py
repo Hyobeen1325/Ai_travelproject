@@ -22,12 +22,16 @@ def get_qna_service(db: Session = Depends(get_db)):
 
 
 @router.post("/page04/message", response_model=JHResponse)
-async def process_jh_message(request: JHRequestDto, chat_service: ChatService = Depends(get_chat_service), qna_service: QnaService = Depends(get_qna_service)):
+async def process_jh_message(
+    request: JHRequestDto,
+    chat_service: ChatService = Depends(get_chat_service),
+    qna_service: QnaService = Depends(get_qna_service)
+):
     """
     Spring Boot 연동용 API 엔드포인트
     - 메시지와 이메일 처리
-    - 로그/QNA 업데이트 또는 삽입 (날짜 기반 중복 방지)
-    - 모든 로그 및 관련 QNA 반환 (리스트 형태, 이메일 제공 시)
+    - chat_log 생성 없이, 기존 이메일 기반 최신 chat_log에 QNA 저장
+    - 모든 로그 및 관련 QNA 반환
     """
     try:
         message = request.message
@@ -35,31 +39,27 @@ async def process_jh_message(request: JHRequestDto, chat_service: ChatService = 
 
         # 모델 응답 생성
         result = model_service.process_chatbot_query(message)
-        recommendations_text = "\\n".join([f"- {item}" for item in result["recommendations"]])
+        recommendations_text = "\n".join([f"- {item}" for item in result["recommendations"]])
         additional_info = result.get("additional_info", "")
-        response_text = f"{recommendations_text}\\n\\n{additional_info}" if additional_info else recommendations_text
+        response_text = f"{recommendations_text}\n\n{additional_info}" if additional_info else recommendations_text
 
         response_data = {"response": response_text}
-        processed_chat_log_id = None
 
         if email:
             try:
-                title = result["recommendations"][0] if result["recommendations"] else "일반 대화"
+                # ✅ 기존 chat_log 중 최신 항목 조회
+                latest_log = chat_service.get_latest_chat_log_by_email(email)
+                chat_log_id = latest_log.get("chat_log_id") if latest_log else None
 
-                # Chat Log 처리
-                chat_result = chat_service.update_chat_log(email, title)
-                if chat_result:
-                    processed_chat_log_id = chat_result.get("chat_log_id")
-
-                # QNA 처리
-                if processed_chat_log_id:
+                # ✅ QNA 생성
+                if chat_log_id:
                     qna_service.create_or_update_qna(
-                        chat_log_id=processed_chat_log_id,
+                        chat_log_id=chat_log_id,
                         question=message,
                         answer=response_text
                     )
 
-                # 모든 데이터 조회 및 리스트 생성
+                # 전체 로그 및 QNA 반환
                 all_chat_logs = chat_service.get_chat_logs_by_email(email)
                 all_qna_for_email = qna_service.get_qna_by_email(email)
 
@@ -72,8 +72,9 @@ async def process_jh_message(request: JHRequestDto, chat_service: ChatService = 
                     response_data["questions"] = [qna.get("question") for qna in all_qna_for_email if qna.get("question")]
                     response_data["answers"] = [qna.get("answer") for qna in all_qna_for_email if qna.get("answer")]
 
-                if processed_chat_log_id:
-                    current_qna_data = qna_service.get_qna_by_chat_log_id(processed_chat_log_id)
+                # 현재 chat_log_id의 QNA 필터링
+                if chat_log_id:
+                    current_qna_data = qna_service.get_qna_by_chat_log_id(chat_log_id)
                     if current_qna_data:
                         response_data["qna_data"] = current_qna_data
 
@@ -86,6 +87,7 @@ async def process_jh_message(request: JHRequestDto, chat_service: ChatService = 
         error_message = f"오류가 발생했습니다: {str(e)}"
         return JHResponse(response=error_message)
 
+
     
 @router.post("/page3/message", response_model=JHResponse2)
 async def process_jh_message2(
@@ -97,11 +99,12 @@ async def process_jh_message2(
     Spring Boot 연동용 API 엔드포인트 (조회 전용)
     - Gemini 응답만 생성
     - email을 통해 chat_log 및 qna 데이터 조회
-    - DB 저장/수정 로직 제거
+    - high_loc를 기반으로 chat_log 자동 생성
     """
     try:
         message = request.message
         email = request.email
+        high_loc2 = request.high_loc2  # 추가: high_loc 값 추출
 
         # 모델 응답 생성 (위치 정보 포함 가능성)
         result = model_service.process_Area_query(message)
@@ -118,6 +121,11 @@ async def process_jh_message2(
 
         if email:
             try:
+                # ✅ high_loc로 chat_log 생성
+                if high_loc2:
+                    created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2)
+                    response_data["created_chat_log"] = created_log
+
                 # chat_log 조회
                 all_chat_logs = chat_service.get_chat_logs_by_email(email)
                 chat_log_ids = [log.get("chat_log_id") for log in all_chat_logs if log.get("chat_log_id")]
