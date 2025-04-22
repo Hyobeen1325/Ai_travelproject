@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request # 라우터 처�
 from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
 from app.services import member_service # member service
-from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd # DTO
+from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd, FindID # DTO
 
 router = APIRouter(
     prefix="/login", # 클래스 공통 경로
@@ -38,6 +38,18 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
 def logout(request: Request):
     request.session.clear() # 세션 무효화(삭제)
     return {"msg": "로그아웃 성공!"}
+
+
+# 아이디 찾기
+@router.post("/findid")
+def find_id(data: FindID, db: Session=Depends(get_db)):
+    user_id = member_service.find_member_id(db, data.name, data.phon_num) # 이름과 이메일로 member 아이디 조회
+    if user_id: # 존재하는 경우
+        return {"email":user_id}
+    else: # 존재하지 않은 경우
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+
+# 비밀번호 찾기 
 
 
 # 마이페이지

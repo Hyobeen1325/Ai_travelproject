@@ -21,7 +21,7 @@
         }
 
         .nav-container {
-            max-width: 1280px;
+            max-width: 1300px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -29,7 +29,7 @@
         }
 
         .logo-img {
-            width: 80px;
+            width: 70px;
             height: auto;
             margin-right: 16px;
         }

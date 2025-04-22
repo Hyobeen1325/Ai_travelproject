@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>My Page</title>
+  <title>마이페이지</title>
   <style>
     * {
   margin: 0;
