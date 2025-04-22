@@ -102,7 +102,7 @@ public class JHService {
             Map<String, Object> responseMap = buildResponseMap(result);
             responseMap.put("latitude", result.getLatitude());
             responseMap.put("longitude", result.getLongitude());
-            
+
             return responseMap;
 
         } catch (HttpClientErrorException e) {

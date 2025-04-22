@@ -1,10 +1,6 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -164,7 +160,6 @@ public class JHController2 {
 				//System.out.println(areaListO.getItems().getItem().get(0).getMapy());
 				List<CWTravelAPI_01_Item> areaListOF = areaListO.getItems().getItem();
 	            model.addAttribute("areaListO", areaListOF);
-	            session.setAttribute("areaListO", areaListOF);
 			}
 
             session.setAttribute("latitude", resultMap.get("latitude"));
@@ -180,40 +175,6 @@ public class JHController2 {
 
             model.addAttribute("chatList", chatList);
             model.addAttribute("qnaList", qnaList);
-            List<String> dateLabels = new ArrayList<>();
-            LocalDate today = LocalDate.now();  // 오늘 날짜
-
-            // chatList가 List<Item> 형태라고 가정
-            for (ChatLogItemDto item : chatList) {
-                // item에서 upt_date 가져오기 (Date 형태)
-                Date upt_date = item.getUpt_date(); // 단일 Date
-
-                if (upt_date == null) {
-                    dateLabels.add("알 수 없음");
-                    continue;
-                }
-
-                // Date를 LocalDate로 변환
-                LocalDate date = upt_date.toInstant()
-                                         .atZone(ZoneId.systemDefault())
-                                         .toLocalDate();
-
-                // 날짜 비교
-                long daysBetween = ChronoUnit.DAYS.between(date, today);
-
-                if (daysBetween == 0) {
-                    dateLabels.add("오늘");
-                } else if (daysBetween == 1) {
-                    dateLabels.add("어제");
-                } else if (daysBetween <= 7) {
-                    dateLabels.add("최근 7일간");
-                } else if (daysBetween <= 30) {
-                    dateLabels.add("최근 1달");
-                } else {
-                    dateLabels.add("최근 1달 이후");
-                }
-            }
-            model.addAttribute("dateLabels", dateLabels);
 
         } catch (Exception e) {
             model.addAttribute("aiResponse2", "응답 처리 중 오류 발생");
