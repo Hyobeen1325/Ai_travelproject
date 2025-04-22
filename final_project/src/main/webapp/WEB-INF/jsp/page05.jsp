@@ -565,7 +565,7 @@ body {
 
                 // 또는 메시지만 표시
                 // mapContainer.innerHTML = '<p style="text-align:center; padding-top: 80px; color: #777;">표시할 위치 정보가 없습니다.</p>';
-                // return;ㅇ
+                // return;
             }
             */
 			/*
