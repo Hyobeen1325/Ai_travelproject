@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship # 테이블간 관계 정의시 사용
+# from sqlalchemy.orm import relationship # 테이블간 관계 정의시 사용
 from app.database.database import Base
 from datetime import datetime
 
@@ -19,7 +19,7 @@ class Choose_val_Model(Base):
     uptdate = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     
     # 관계: 하나의 대화 → 하나의 선택값들
-    chat_log = relationship("ChatLog", back_populates="choose_val")
+    # chat_log = relationship("ChatLog", back_populates="choose_val")
 
 # 지역리스트 테이블 모델
 class Area_list_Model(Base):
@@ -39,4 +39,4 @@ class Area_list_Model(Base):
     uptdate = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     
     # 관계: 하나의 대화 → 여러 추천지역
-    chat_log = relationship("ChatLog", back_populates="area_list")
+    # chat_log = relationship("ChatLog", back_populates="area_list")

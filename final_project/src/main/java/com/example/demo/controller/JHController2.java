@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.demo.dto.CWThemeCRUDRequest;
 import com.example.demo.dto.CWThemeRequest;
 import com.example.demo.dto.CWTravelAPI_00_Request;
 import com.example.demo.dto.CWTravelAPI_01_Item;
@@ -49,15 +48,45 @@ public class JHController2 {
         MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         String email = member.getEmail();
         
-        String high_loc2 = theme.getHigh_loc2();
+        String high_loc2 = theme.getHigh_locS();
+        String low_locS = "";
+    	if(!theme.getLow_locS().equals("")) {
+            low_locS = theme.getLow_locS();
+    	}
+
         String high_loc = theme.getHigh_loc();
-        String low_locS = theme.getLow_locS();
         String low_loc = theme.getLow_loc();
-        String theme1 = theme.getTheme1();
-        String theme2 = theme.getTheme2();
-        String theme3 = theme.getTheme3();
-        String theme4 = theme.getTheme4();
+        
         List<String> themes = theme.getTheme();
+        List<String> themeSs = theme.getThemeS();
+        
+        String theme1 = "";
+        String theme2 = "";
+        String theme3 = "";
+        String theme4 = "";
+        
+        System.out.println(themeSs.size());
+        
+        for(int idx=0; idx<4; idx+=1) {
+    		if(idx==0){
+    			theme1 = themeSs.get(idx);
+    		}else if(idx==1) {
+    			theme2 = themeSs.get(idx);
+    		}else if(idx==2) {
+    			if(themes.size()<=3) {
+    				theme3 = "";
+    			}else {
+    				theme3 = themeSs.get(idx);
+    			}
+    		}else if(idx==3) {
+    			if(themes.size()<=4) {
+    				theme4 = "";
+    			}else {
+    				theme4 = themeSs.get(idx);
+    			}
+    		}
+        }
+        
         int days = theme.getDays();
 
         tapi_req.setAreaCodeVal(high_loc);
@@ -147,7 +176,7 @@ public class JHController2 {
         JHRequestDto2 requestDto = new JHRequestDto2();
         requestDto.setMessage(query);
         requestDto.setEmail(email);
-        requestDto.setHigh_loc2(high_locS);
+        requestDto.setHigh_loc2(high_loc2);
         
         requestDto.setLow_loc(low_locS);
         requestDto.setTheme1(theme1);

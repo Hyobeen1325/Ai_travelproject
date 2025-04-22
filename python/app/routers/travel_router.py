@@ -99,7 +99,6 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
     try:
         message = request.message
         email = request.email
-        high_loc2 = request.high_loc2
 
         # 모델 응답 생성 (위치 정보 포함 가능성)
         result = model_service.process_Area_query(message)
@@ -113,10 +112,11 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
             "latitude": result.get("latitude"),
             "longitude": result.get("longitude"),
         }
-        
+        #print("제미나이 답변 : "+response_text)
         # gemini 답변에서 JSON 추출
         match = re.search(r'\{[\s\S]*\}', response_text)
         area_list_json_str = match.group() if match else None
+        #print("해당 답변 json 처리 : "+area_list_json_str)
                 
         processed_chat_log_id = None
 
@@ -126,15 +126,14 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
                 if area_list_json_str:
                     area_list_json = json.loads(area_list_json_str)  # dict
                     area_list = AreaLists(**area_list_json["items"])
+                    
                 else:
                     area_list = []
 
                 title = result["recommendations"][0] if result["recommendations"] else "일반 대화"
 
                 # Chat Log 처리
-                chat_result = chat_service.update_chat_log(email, title)
-                created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2, choose_val=request, area_list=area_list)
-                response_data["created_chat_log"] = created_log
+                chat_result = chat_service.update_chat_log(mem_email=email, answer=title, choose_val=request, area_list=area_list)
                 if chat_result:
                     processed_chat_log_id = chat_result.get("chat_log_id")
 

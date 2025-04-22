@@ -20,9 +20,6 @@ public class CWThemeRequest {
 	// 선택값 문자
 	private String high_locS;
 	private String low_locS;
-	private String theme1;
-	private String theme2;
-	private String theme3;
-	private String theme4;
+	private List<String> themeS;
 
 }
