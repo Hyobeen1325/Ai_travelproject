@@ -221,6 +221,9 @@
     <span class="signup-text">계정이 없으신가요?</span>
      <a href="/register" class="signup-link">회원가입</a> 
    	<!-- ("/register") : 컨트롤러로 설정 url -->
+   	<br>
+   	    <span class="signup-text">계정을 잊어버리셨나요?</span>
+     <a href="/login/find" class="signup-link">아이디 찾기/비밀번호 찾기</a> 
   </div>
 </div>
 <!-- 헤더2 -->
