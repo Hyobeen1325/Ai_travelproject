@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>로그인</title>
   <style>
     body {
       margin: 0;
