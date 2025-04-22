@@ -4,11 +4,11 @@
 <%-- JSTL core 태그 라이브러리 선언 --%>
 <!DOCTYPE html>
 <html lang="ko">
-<jsp:include page="header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 응답 페이지</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f3925101927bde5acf150ddd5f551f63"></script>
 <%-- TODO: 카카오 앱 키를 실제 값으로 변경하세요 --%>
 <style>
@@ -28,16 +28,16 @@ body {
 
 /* 왼쪽 섹션 스타일 (이전과 동일) */
 .left-section {
-	width: 30%;
+	width: 50%;
 	display: flex;
 	flex-direction: column;
-	background-color: #fff;
-	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 지도 컨테이너 (이전과 동일) */
 .map-container {
-	height: 30%;
+	position: relative;
+	bottom: 100px;
+	height: 100%;
 	width: 100%;
 	position: relative;
 	border-bottom: 1px solid #eaeaea;
@@ -52,7 +52,8 @@ body {
 
 /* 여행 정보 섹션 (이전과 동일) */
 .travel-info {
-	height: 50%;
+	position: relative;
+	height: 90%;
 	padding: 20px;
 	overflow-y: auto;
 	position: relative;
@@ -267,15 +268,36 @@ body {
 	padding:0;
 	margin:0;
 }
+/* 이미지 스피너 */
+.image-container {
+      position: relative;
+    }
+
+.spinner-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.image {
+  object-fit: cover;
+  display: none; /* 로딩 전까지 숨김 */
+}
 </style>
 </head>
 <body>
+<jsp:include page="header.jsp" />
 	<div class="container">
 		<!-- 왼쪽 섹션 -->
 		<div class="left-section">
 			<!-- 지도 -->
 			<div class="map-container" id="map"></div>
-
+		</div>
+		<!-- 가운데 섹션 -->
+		<div class="middle-section">
 			<!-- 여행 정보 -->
 			<div class="travel-info">
 				<!-- 여행 코스 컨테이너 -->
@@ -293,7 +315,14 @@ body {
 								<div class="travelAreaInfo">${status.index+1}번째 여행지</div>
 								<div class="travelAreaInfo">${location.title}</div>
 					    		<div class="travelAreaInfo">${location.addr1}</div>
-					    		<img src="${location.firstimage}" alt="여행 이미지" width="300"/>
+								<div class="image-container">
+									<div class="spinner-overlay">
+										<div class="spinner-border" role="status">
+											<span class="visually-hidden">Loading...</span>
+										</div>
+									</div>
+									<img class="image" src="${location.firstimage}" alt="여행 이미지" width="300"/>
+								</div>				    			
 						   		<c:if test="${status.last}"><hr></c:if>
 							</c:forEach>
 						</div>
@@ -319,7 +348,7 @@ body {
 					메인페이지로 이동</button>
 			</div>
 		</div>
-
+		
 		<!-- 검색 결과 섹션 -->
 		<div class="query-result">
 			<%-- c:out을 사용하여 XSS 방지 --%>
@@ -351,6 +380,8 @@ body {
 	</div>
 
 	<script> 
+
+	
 	var locations = [
 		<c:forEach var="location" items="${areaListO}"  varStatus="status">
 			{
@@ -439,6 +470,23 @@ body {
 		var marker = new kakao.maps.Marker({
 		    position: new kakao.maps.LatLng(y, x),
 		    map: map
+		});
+		var iwContent = '<div style="padding: 5px; text-align: center;">'+message+'</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+
+		// 인포윈도우를 생성합니다
+		var infowindow = new kakao.maps.InfoWindow({
+		    content : iwContent
+		});
+		// 마커에 마우스오버 이벤트를 등록합니다
+		kakao.maps.event.addListener(marker, 'mouseover', function() {
+		  // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+		    infowindow.open(map, marker);
+		});
+
+		// 마커에 마우스아웃 이벤트를 등록합니다
+		kakao.maps.event.addListener(marker, 'mouseout', function() {
+		    // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+		    infowindow.close();
 		});
 	}
 
@@ -689,7 +737,25 @@ body {
             loadKakaoMap();
         };
 		*/
+		
+
+		const containers = document.querySelectorAll(".image-container");
+
+		containers.forEach(container => {
+		  const img = container.querySelector("img.image");
+		  const spinner = container.querySelector("div.spinner-overlay");
+
+		  img.onload = () => {
+		    spinner.style.display = 'none';
+		    img.style.display = 'block';
+		  };
+
+		  img.onerror = () => {
+		    spinner.innerHTML = '<span class="text-danger">이미지를 불러오지 못했습니다.</span>';
+		  };
+		});
     </script>
 	<jsp:include page="header2.jsp" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
