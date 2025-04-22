@@ -4,7 +4,6 @@
 <%-- JSTL core 태그 라이브러리 선언 --%>
 <!DOCTYPE html>
 <html lang="ko">
-<jsp:include page="header.jsp" />
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,16 +27,16 @@ body {
 
 /* 왼쪽 섹션 스타일 (이전과 동일) */
 .left-section {
-	width: 30%;
+	width: 60%;
 	display: flex;
 	flex-direction: column;
-	background-color: #fff;
-	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 지도 컨테이너 (이전과 동일) */
 .map-container {
-	height: 30%;
+	position: relative;
+	bottom: 100px;
+	height: 100%;
 	width: 100%;
 	position: relative;
 	border-bottom: 1px solid #eaeaea;
@@ -52,7 +51,8 @@ body {
 
 /* 여행 정보 섹션 (이전과 동일) */
 .travel-info {
-	height: 50%;
+	position: relative;
+	height: 90%;
 	padding: 20px;
 	overflow-y: auto;
 	position: relative;
@@ -270,12 +270,15 @@ body {
 </style>
 </head>
 <body>
+<jsp:include page="header.jsp" />
 	<div class="container">
 		<!-- 왼쪽 섹션 -->
 		<div class="left-section">
 			<!-- 지도 -->
 			<div class="map-container" id="map"></div>
-
+		</div>
+		<!-- 가운데 섹션 -->
+		<div class="middle-section">
 			<!-- 여행 정보 -->
 			<div class="travel-info">
 				<!-- 여행 코스 컨테이너 -->
@@ -319,7 +322,7 @@ body {
 					메인페이지로 이동</button>
 			</div>
 		</div>
-
+		
 		<!-- 검색 결과 섹션 -->
 		<div class="query-result">
 			<%-- c:out을 사용하여 XSS 방지 --%>
@@ -439,6 +442,23 @@ body {
 		var marker = new kakao.maps.Marker({
 		    position: new kakao.maps.LatLng(y, x),
 		    map: map
+		});
+		var iwContent = '<div style="padding: 5px; text-align: center;">'+message+'</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+
+		// 인포윈도우를 생성합니다
+		var infowindow = new kakao.maps.InfoWindow({
+		    content : iwContent
+		});
+		// 마커에 마우스오버 이벤트를 등록합니다
+		kakao.maps.event.addListener(marker, 'mouseover', function() {
+		  // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 마커위에 표시합니다
+		    infowindow.open(map, marker);
+		});
+
+		// 마커에 마우스아웃 이벤트를 등록합니다
+		kakao.maps.event.addListener(marker, 'mouseout', function() {
+		    // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+		    infowindow.close();
 		});
 	}
 

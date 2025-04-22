@@ -135,11 +135,11 @@ body {
 /*-------스피너-------*/
 #spinner {
 	position: relative;
-	top: 15rem;
+	top: 500px;
 	display: none;
 	width: 5rem;
 	height: 5rem;
-	border-width: 1em;
+	border-width: 0.5em;
 }
 </style>
 </head>
