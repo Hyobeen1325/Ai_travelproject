@@ -49,6 +49,7 @@ public class JHController2 {
         
         MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         String email = member.getEmail();
+        
         String high_loc2 = theme.getHigh_loc2();
         String high_loc = theme.getHigh_loc();
         String low_loc = theme.getLow_loc();
@@ -143,7 +144,7 @@ public class JHController2 {
         requestDto.setMessage(query);
         requestDto.setEmail(email);
         requestDto.setHigh_loc2(high_loc2);
-        
+        // 
         try {
             var resultMap = jhService.getJHResponse2(requestDto);
             String areaListSJ = (String) resultMap.get("response");
