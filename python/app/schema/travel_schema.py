@@ -62,6 +62,22 @@ class JHResponse2(BaseModel):
     answer: Optional[str] = None  # QNA 답변 내용 (선택)
     chat_logs: Optional[List[ChatLogItem]] = None  # 모든 채팅 로그 (선택)
     qna_data: Optional[List[QnaItem]] = None  # 모든 QNA 데이터 (선택)
+    
+class JHRequestDto3(BaseModel):
+    """JH 서비스 요청 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
+    message: str # 사용자 메시지 (필수)
+    email: Optional[str] = None # 사용자 이메일 (선택)
+    
+class JHResponse3(BaseModel):
+    """JH 서비스 응답 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
+    response: str  # 응답 메시지 (필수)
+    # JHResponse와 동일한 필드 추가
+    upt_date: Optional[str] = None # 업데이트 날짜 (선택)
+    title: Optional[str] = None  # 채팅 제목 (선택)
+    question: Optional[str] = None  # QNA 질문 내용 (선택)
+    answer: Optional[str] = None  # QNA 답변 내용 (선택)
+    chat_logs: Optional[List[ChatLogItem]] = None  # 모든 채팅 로그 (선택)
+    qna_data: Optional[List[QnaItem]] = None  # 모든 QNA 데이터 (선택)
 
 class TravelRecommendationResponse(BaseModel):
     """여행 추천 응답 스키마"""

@@ -2,9 +2,6 @@ package com.example.demo.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,8 +21,10 @@ import org.springframework.web.client.RestTemplate;
 import com.example.demo.dto.ChatLogItemDto;
 import com.example.demo.dto.JHRequestDto;
 import com.example.demo.dto.JHRequestDto2;
+import com.example.demo.dto.JHRequestDto3;
 import com.example.demo.dto.JHResponseDto;
 import com.example.demo.dto.JHResponseDto2;
+import com.example.demo.dto.JHResponseDto3;
 
 @Service
 public class JHService {
@@ -123,7 +122,43 @@ public class JHService {
             return errorMap;
         }
     }
-    
+    public Map<String, Object> getJHResponse3(JHRequestDto3 chatRequest) {
+        String url = fastApiUrl + "/page5/message";
+        try {
+            ResponseEntity<JHResponseDto3> response = restTemplate.postForEntity(
+                url,
+                chatRequest,
+                JHResponseDto3.class
+            );
+
+            JHResponseDto3 result = response.getBody();
+            if (result == null) {
+                result = new JHResponseDto3();
+                result.setResponse("FastAPI 응답 없음");
+            } else {
+                String processedResponse = processResponse(result.getResponse());
+                result.setResponse(processedResponse);
+            }
+
+            return buildResponseMap(result);
+
+        } catch (HttpClientErrorException e) {
+            System.err.println("Client error: " + e.getResponseBodyAsString());
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("response", "클라이언트 에러: " + e.getMessage());
+            return errorMap;
+        } catch (HttpServerErrorException e) {
+            System.err.println("Server error: " + e.getResponseBodyAsString());
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("response", "서버 에러: " + e.getMessage());
+            return errorMap;
+        } catch (Exception e) {
+            System.err.println("Error calling FastAPI: " + e.getMessage());
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("response", "FastAPI 호출 중 에러 발생: " + e.getMessage());
+            return errorMap;
+        }
+    }
     private String processResponse(String response) {
         if (response == null || response.isBlank()) {
             return "FastAPI로부터 받은 유효한 응답이 없습니다.";
@@ -167,6 +202,24 @@ public class JHService {
             if (dto.getLongitude() != null) {
                 responseMap.put("longitude", dto.getLongitude());
             }
+            if (dto.getChatLogs() != null) {
+                responseMap.put("chatLogs", dto.getChatLogs());
+            }
+            if (dto.getQnaData() != null) {
+                responseMap.put("qnaData", dto.getQnaData());
+            }
+            if (dto.getQuestions() != null) {
+                responseMap.put("questions", dto.getQuestions());
+            }
+            if (dto.getAnswers() != null) {
+                responseMap.put("answers", dto.getAnswers());
+            }
+            if (dto.getTitles() != null && dto.getUptDates() != null) {
+                List<ChatLogItemDto> chatList = buildChatLogList(dto.getTitles(), dto.getUptDates());
+                responseMap.put("chatList", chatList);
+            }
+        }else if (result instanceof JHResponseDto3 dto) {
+            responseMap.put("response", dto.getResponse());    
             if (dto.getChatLogs() != null) {
                 responseMap.put("chatLogs", dto.getChatLogs());
             }

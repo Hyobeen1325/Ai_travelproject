@@ -96,3 +96,5 @@ class ChatService:
         except Exception as e:
             print(f"get_latest_chat_log_by_email Error: {e}")
             return None
+    def get_chat_log_by_id(self, chat_log_id: str) -> Dict:
+        return self.db.query(ChatLog).filter(ChatLog.chat_log_id == chat_log_id).first().to_dict()
