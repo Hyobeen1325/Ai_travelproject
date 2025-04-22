@@ -57,17 +57,6 @@ class AreaList(BaseModel):
     addr1: Optional[str] = None
     addr2: Optional[str] = None
 
-# 선택값 리퀘스트
-class ChooseVal(BaseModel):
-    high_loc: str
-    chat_log_id: str
-    low_loc: str
-    theme1: str
-    theme2: str
-    theme3: Optional[str] = None
-    theme4: Optional[str] = None
-    days: int
-
 class AreaLists(BaseModel):
     area_list: List[AreaList]
 
@@ -75,8 +64,14 @@ class JHRequestDto2(BaseModel):
     """JH 서비스 요청 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
     message: str # 사용자 메시지 (필수)
     email: Optional[str] = None # 사용자 이메일 (선택)
-    high_loc2:Optional[str] = None
-    choose_val: Optional[ChooseVal] = None  # 선택값들
+    high_loc2: str
+    chat_log_id:Optional[str] = None
+    low_loc: str
+    theme1: str
+    theme2: str
+    theme3: Optional[str] = None
+    theme4: Optional[str] = None
+    days: int
     
 class JHResponse2(BaseModel):
     """JH 서비스 응답 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""

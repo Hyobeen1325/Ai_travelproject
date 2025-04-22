@@ -152,16 +152,12 @@ public class JHController2 {
         requestDto.setEmail(email);
         requestDto.setHigh_loc2(high_locS);
         
-        CWThemeCRUDRequest choose_val = new CWThemeCRUDRequest();
-        choose_val.setHigh_loc(high_locS);
-        choose_val.setLow_loc(low_locS);
-        choose_val.setTheme1(theme1);
-        choose_val.setTheme2(theme2);
-        choose_val.setTheme3(theme3);
-        choose_val.setTheme4(theme4);
-        choose_val.setDays(days);
-        
-        requestDto.setChoose_val(choose_val);
+        requestDto.setLow_loc(low_locS);
+        requestDto.setTheme1(theme1);
+        requestDto.setTheme2(theme2);
+        requestDto.setTheme3(theme3);
+        requestDto.setTheme4(theme4);
+        requestDto.setDays(days);
         
         try {
             var resultMap = jhService.getJHResponse2(requestDto);

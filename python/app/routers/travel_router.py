@@ -1,8 +1,7 @@
 # app/routers/travel_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.templating import Jinja2Templates
-from app.schema.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2
-from app.schema.ycw_schema import ChooseValCreate, AreaListCreate
+from app.schema.travel_schema import JHRequestDto, JHResponse, JHRequestDto2, JHResponse2, AreaLists
 from app.services.model_service import TravelModelService
 from app.services.chat_service import ChatService
 from app.services.qna_service import QnaService
@@ -95,7 +94,6 @@ async def process_jh_message(
 @router.post("/page3/message", response_model=JHResponse2)
 async def process_jh_message2(
     request: JHRequestDto2,
-    insert_vals:ChooseValCreate,
     chat_service: ChatService = Depends(get_chat_service),
     qna_service: QnaService = Depends(get_qna_service)
 ):
@@ -123,24 +121,22 @@ async def process_jh_message2(
             "longitude": result.get("longitude"),
         }
         
-        # gemini 답변에서 JSON만 추출
+        # gemini 답변에서 JSON 추출
         match = re.search(r'\{[\s\S]*\}', response_text)
-        json_str = match.group() if match else None
-
-        # 2. 파싱
-        if json_str:
-            data = json.loads(json_str)  # dict
-            response = GeminiResponse(**data)
-
-            # 예시 출력
-            for place in response.items.item:
-                print(place.title, place.mapx)
+        area_list_json_str = match.group() if match else None
                 
         if email:
             try:
+                # 2. 파싱
+                if area_list_json_str:
+                    area_list_json = json.loads(area_list_json_str)  # dict
+                    area_list = AreaLists(**area_list_json["items"])
+                else:
+                    area_list = []
+                
                 # ✅ high_loc로 chat_log 생성
                 if high_loc2:
-                    created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2, insert_vals=insert_vals)
+                    created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2, choose_val=request, area_list=area_list)
                     response_data["created_chat_log"] = created_log
 
                 # chat_log 조회
