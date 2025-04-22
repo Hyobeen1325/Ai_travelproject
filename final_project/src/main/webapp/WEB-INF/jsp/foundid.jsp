@@ -46,11 +46,15 @@
     }
 
     .back-link {
+      text-align: center;
       margin-top: 30px;
       text-align: right;
-      text-decoration: none;
     }
 
+    .back-link a {
+      color: #4a90e2;
+      text-decoration: none;
+    }
   </style>
   <script>
     var message = "${msg}";
