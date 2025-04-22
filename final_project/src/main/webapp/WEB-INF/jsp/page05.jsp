@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI 응답 페이지</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f3925101927bde5acf150ddd5f551f63"></script>
 <%-- TODO: 카카오 앱 키를 실제 값으로 변경하세요 --%>
 <style>
@@ -358,29 +359,85 @@ body {
 			</p>
 			<div class="ai-response">
 				<h3>AI 응답:</h3>
-				<div class="response-content">
+				<!--<div class="response-content" id="aiResponseContainer">
 					<%-- 컨트롤러에서 전달된 aiResponse 출력 (백엔드에서 <br> 처리했으므로 escapeXml=false) --%>
 					<c:out value="${requestScope.aiResponse}" escapeXml="false"
 						default="이곳에 AI 모델의 응답이 표시됩니다." />
-				</div>
+				</div>-->
+				<!-- 채팅 로그 영역 -->
+					        
+
+					        <!-- QnA 리스트 영역 (필요한 경우 추가) -->
+					        <div id="qnaContainer"></div>
 			</div>
 
 			<!-- 검색 폼 (위치 조정됨) -->
 			<div class="search-form-wrapper">
-				<form action="chat.do" method="get">
+				
 					<div class="search-container">
 						<%-- 입력값 유지 시에도 c:out 사용 --%>
-						<input type="text" name="query" class="search-input"
-							placeholder="무엇이든 물어보세요" value="<c:out value="${param.query}"/>">
-						<button type="submit" class="search-button">검색</button>
+						<input type="text" id="query" class="search-input" placeholder="무엇이든 물어보세요"
+						 value="<c:out value='${param.query}'/>">
+						<button type="button" class="search-button" id="searchButton">검색</button>
 					</div>
-				</form>
+				
 			</div>
 		</div>
 	</div>
 
 	<script> 
+		// 검색 버튼 클릭 시 AJAX 요청을 보냄
+				        $("#searchButton").on("click", function() {
+				            var query = $("#query").val().trim();
 
+				            if (query === "") {
+				                alert("질문을 입력해주세요.");
+				                return;
+				            }
+
+				            // 비동기적으로 서버에 요청 보내기
+				            $.ajax({
+				                url: "/chat.do",  // JHController에서 처리되는 URL
+				                method: "GET",
+				                data: { query: query },  // query 파라미터 전송
+				                dataType: "json",  // 응답 형식 JSON
+				                success: function(response) {
+				                    // 응답 받은 데이터를 사용해 페이지 업데이트
+				                    if (response.aiResponse) {
+				                        $("#aiResponseContainer").html(response.aiResponse);
+				                    }
+
+				                    if (response.chatList && response.chatList.length > 0) {
+				                        var chatHtml = "<ul>";
+				                        response.chatList.forEach(function(chatItem) {
+				                            chatHtml += "<li>" + chatItem.message + "</li>";
+				                        });
+				                        chatHtml += "</ul>";
+				                        $("#chatLogContainer").html(chatHtml);
+				                    }
+
+				                    // 추가적으로 QnA 리스트가 있다면 표시
+				                    if (response.qnaList && response.qnaList.length > 0) {
+				                        var qnaHtml = "<ul>";
+				                        response.qnaList.forEach(function(qnaItem) {
+				                            qnaHtml += "<li><strong>" + qnaItem.question + ":</strong> " + qnaItem.answer + "</li>";
+				                        });
+				                        qnaHtml += "</ul>";
+				                        $("#qnaContainer").html(qnaHtml);
+				                    }
+				                },
+				                error: function() {
+				                    alert("응답 처리 중 오류가 발생했습니다.");
+				                }
+				            });
+							
+				        });
+						// Enter 키를 눌렀을 때 검색 버튼 클릭 이벤트 발생
+						   $("#query").on("keypress", function(e) {
+						       if (e.which === 13) {  // Enter 키의 keyCode는 13
+						           $("#searchButton").click();  // 검색 버튼 클릭
+						       }
+						   }); 
 	
 	var locations = [
 		<c:forEach var="location" items="${areaListO}"  varStatus="status">
