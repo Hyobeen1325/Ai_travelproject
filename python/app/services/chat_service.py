@@ -104,3 +104,23 @@ class ChatService:
         except Exception as e:
             print(f"Error getting chat logs: {e}")
             return []
+    def get_latest_chat_log_by_email(self, email: str) -> Optional[Dict[str, Any]]:
+        try:
+            log = self.db.query(ChatLog).filter(
+                ChatLog.mem_email == email
+            ).order_by(ChatLog.chat_log_id.desc()).first()
+
+            if log:
+                return {
+                    "chat_log_id": log.chat_log_id,
+                    "title": log.title,
+                    "upt_date": log.upt_date.strftime("%Y-%m-%d")
+                }
+
+            return None
+
+        except Exception as e:
+            print(f"get_latest_chat_log_by_email Error: {e}")
+            return None
+    def get_chat_log_by_id(self, chat_log_id: str) -> Dict:
+        return self.db.query(ChatLog).filter(ChatLog.chat_log_id == chat_log_id).first().to_dict()

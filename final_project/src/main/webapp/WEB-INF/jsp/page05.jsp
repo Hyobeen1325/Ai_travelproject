@@ -377,6 +377,15 @@ body {
 				</div>
 
 
+				    <div class="search-history-scroll">
+						<c:forEach var="chatList" items="${chatList}" varStatus="status">
+						    <div class="qna-box">
+								<div class="chatList-date"><c:out value="${dateLabels[status.index]}" /></div>
+						        <div class="chatList-title" data-chat-       
+				id="${chatList.chat_log_id}"><c:out value="${chatList.title}" /></div>						    		    </div>
+						</c:forEach>
+					</div>
+				</div>
 
 				<!-- 이전 화면 버튼 -->
 				<button class="back-button" onclick="location.href='project1'">
@@ -418,7 +427,40 @@ body {
 		</div>
 	</div>
 
-	<script> 
+	<script>
+		$(document).ready(function () {
+		    // chatList.title 클릭 이벤트 핸들링
+		    $(document).on("click", ".chatList-title", function () {
+		        const chatLogId = $(this).data("chat-id");
+
+		        if (!chatLogId) {
+		            alert("chat_log_id가 존재하지 않습니다.");
+		            return;
+		        }
+
+		        $.ajax({
+		            url: "/callQna", // SpringBoot Controller의 매핑 주소
+		            method: "GET",
+		            data: { chatLogId: chatLogId },
+		            dataType: "json",
+		            success: function (response) {
+		                if (response.qnaList && response.qnaList.length > 0) {
+		                    let qnaHtml = "<ul>";
+		                    response.qnaList.forEach(function (qnaItem) {
+		                        qnaHtml += "<li><strong>" + qnaItem.question + ":</strong> " + qnaItem.answer + "</li>";
+		                    });
+		                    qnaHtml += "</ul>";
+		                    $("#qnaContainer").html(qnaHtml);
+		                } else {
+		                    $("#qnaContainer").html("<p>해당 대화에 대한 QnA가 없습니다.</p>");
+		                }
+		            },
+		            error: function () {
+		                alert("QnA 데이터를 불러오는 중 오류가 발생했습니다.");
+		            }
+		        });
+		    });
+		}); 
 		// 검색 버튼 클릭 시 AJAX 요청을 보냄
 				        $("#searchButton").on("click", function() {
 				            var query = $("#query").val().trim();

@@ -43,9 +43,10 @@ public class JHController2 {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
         
-        //MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
-        //String email = member.getEmail();
+        MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
+        String email = member.getEmail();
         
+        String high_loc2 = theme.getHigh_loc2();
         String high_loc = theme.getHigh_loc();
         String low_loc = theme.getLow_loc();
         List<String> themes = theme.getTheme();
@@ -137,7 +138,9 @@ public class JHController2 {
         // ✅ AI에 질문 보내기
         JHRequestDto2 requestDto = new JHRequestDto2();
         requestDto.setMessage(query);
-
+        requestDto.setEmail(email);
+        requestDto.setHigh_loc2(high_loc2);
+        // 
         try {
             var resultMap = jhService.getJHResponse2(requestDto);
             String areaListSJ = (String) resultMap.get("response");

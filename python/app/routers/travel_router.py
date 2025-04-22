@@ -1,7 +1,7 @@
 # app/routers/travel_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.templating import Jinja2Templates
-from app.schema.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2
+from app.schema.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2,JHRequestDto3, JHResponse3
 from app.services.model_service import TravelModelService
 from app.services.chat_service import ChatService
 from app.services.qna_service import QnaService
@@ -156,3 +156,44 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
     except Exception as e:
         error_message = f"오류가 발생했습니다: {str(e)}"
         return JHResponse2(response=error_message)
+
+@router.post("/page5/message", response_model=JHResponse3)
+async def process_jh_message3(
+    request: JHRequestDto3,
+    chat_service: ChatService = Depends(get_chat_service),
+    qna_service: QnaService = Depends(get_qna_service)
+):
+    try:
+        message = request.message  # 이 값은 chat_log_id
+        email = request.email
+
+        response_data = {}
+
+        # 1. chat_log 저장 (선택적)
+        if email and message:
+            created_log = chat_service.update_chat_log(mem_email=email, answer=message)
+            response_data["created_chat_log"] = created_log
+
+        # 2. 선택된 chat_log_id의 QnA만 조회
+        if message:
+            matched_qna_list = qna_service.get_qna_by_chat_log_id(message)
+            if matched_qna_list:
+                response_data["questions"] = [qna.get("question") for qna in matched_qna_list if qna.get("question")]
+                response_data["answers"] = [qna.get("answer") for qna in matched_qna_list if qna.get("answer")]
+                response_data["qna_data"] = matched_qna_list
+
+        # 3. 선택된 chat_log_id만 응답에 포함 (기존 all_chat_logs 제거)
+        if message:
+            selected_log = chat_service.get_chat_log_by_id(message)
+            if selected_log:
+                response_data["titles"] = [selected_log.get("title")]
+                response_data["upt_dates"] = [selected_log.get("upt_date")]
+                response_data["chat_logs"] = [selected_log]
+
+        return JHResponse3(**response_data)
+
+    except Exception as e:
+        error_message = f"오류가 발생했습니다: {str(e)}"
+        return JHResponse3(response=error_message)
+
+
