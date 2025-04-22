@@ -29,7 +29,12 @@ body {
 
 /* 왼쪽 섹션 스타일 (이전과 동일) */
 .left-section {
-	width: 50%;
+	width: 33%;
+	display: flex;
+	flex-direction: column;
+}
+.middle-section {
+	width: 33%;
 	display: flex;
 	flex-direction: column;
 }
@@ -37,17 +42,16 @@ body {
 /* 지도 컨테이너 (이전과 동일) */
 .map-container {
 	position: relative;
-	bottom: 100px;
-	height: 100%;
+	height: 50%;
 	width: 100%;
 	position: relative;
 	border-bottom: 1px solid #eaeaea;
 }
 
-.kakaoMarkerContent{
-	padding:5px;
-	font-size:12px;
-	text-align:center;
+.kakaoMarkerContent {
+	padding: 5px;
+	font-size: 12px;
+	text-align: center;
 	width: 100px;
 }
 
@@ -177,7 +181,7 @@ body {
 
 /* 검색 결과 섹션 (이전과 동일) */
 .query-result {
-	width: 45%; /* 필요시 조정 */
+	width: 33%; /* 필요시 조정 */
 	padding: 30px;
 	display: flex;
 	flex-direction: column;
@@ -232,17 +236,17 @@ body {
 	outline: none;
 }
 
-        /* 검색 폼 위치 조정 */
-        .search-form-wrapper {
-            position: absolute;
-            bottom: 30px; /* 하단 간격 */
-            left: 30px;  /* 왼쪽 정렬 */
-            right: 30px; /* 오른쪽 간격 */
-            width: calc(100% - 60px); /* 양쪽 패딩 고려 */
-        }
-		#map {
-		    margin-top: 100px;  /* nav 높이만큼 여백 확보 */
-		}
+/* 검색 폼 위치 조정 */
+.search-form-wrapper {
+	position: absolute;
+	bottom: 30px; /* 하단 간격 */
+	left: 30px; /* 왼쪽 정렬 */
+	right: 30px; /* 오른쪽 간격 */
+	width: calc(100% - 60px); /* 양쪽 패딩 고려 */
+}
+
+
+
 .search-button {
 	padding: 15px 25px;
 	background-color: #1a73e8;
@@ -265,9 +269,31 @@ body {
 	right: 30px; /* 오른쪽 간격 */
 	width: calc(100% - 60px); /* 양쪽 패딩 고려 */
 }
+
 .travelAreaInfo {
-	padding:0;
-	margin:0;
+	padding: 0;
+	margin: 0;
+}
+/* 이미지 스피너 */
+.image-container {
+	position: relative;
+}
+
+.spinner-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 10;
+}
+
+.image {
+	object-fit: cover;
+	display: none; /* 로딩 전까지 숨김 */
 }
 /* 이미지 스피너 */
 .image-container {
@@ -290,12 +316,29 @@ body {
 </style>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+	<jsp:include page="header.jsp" />
 	<div class="container">
 		<!-- 왼쪽 섹션 -->
 		<div class="left-section">
 			<!-- 지도 -->
 			<div class="map-container" id="map"></div>
+			<!-- 이전 검색 기록 섹션 -->
+			<div class="search-history-section">
+				<h3>이전 검색 기록</h3>
+
+				<div class="search-history-scroll">
+					<c:forEach var="chatList" items="${chatList}" varStatus="status">
+						<div class="qna-box">
+							<div class="chatList-date">
+								<c:out value="${dateLabels[status.index]}" />
+							</div>
+							<div class="chatList-title">
+								<c:out value="${chatList.title}" />
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+			</div>
 		</div>
 		<!-- 가운데 섹션 -->
 		<div class="middle-section">
@@ -313,43 +356,33 @@ body {
 							<%-- 컨트롤러에서 전달된 AI 응답 (여행 코스 관련) --%>
 							<c:forEach var="location" items="${areaListO}" varStatus="status">
 								<hr>
-								<div class="travelAreaInfo">${status.index+1}번째 여행지</div>
+								<div class="travelAreaInfo">${status.index+1}번째여행지</div>
 								<div class="travelAreaInfo">${location.title}</div>
-					    		<div class="travelAreaInfo">${location.addr1}</div>
+								<div class="travelAreaInfo">${location.addr1}</div>
 								<div class="image-container">
 									<div class="spinner-overlay">
 										<div class="spinner-border" role="status">
 											<span class="visually-hidden">Loading...</span>
 										</div>
 									</div>
-									<img class="image" src="${location.firstimage}" alt="여행 이미지" width="300"/>
-								</div>				    			
-						   		<c:if test="${status.last}"><hr></c:if>
+									<img class="image" src="${location.firstimage}" alt="여행 이미지"
+										width="270" />
+								</div>
+								<c:if test="${status.last}">
+									<hr>
+								</c:if>
 							</c:forEach>
 						</div>
 					</div>
 				</div>
 
-				<!-- 이전 검색 기록 섹션 -->
-				<div class="search-history-section">
-					<h3>이전 검색 기록</h3>
 
-				    <div class="search-history-scroll">
-						<c:forEach var="chatList" items="${chatList}" varStatus="status">
-						    <div class="qna-box">
-								<div class="chatList-date"><c:out value="${dateLabels[status.index]}" /></div>
-						        <div class="chatList-title"><c:out value="${chatList.title}" /></div>						           
-						    </div>
-						</c:forEach>
-					</div>
-				</div>
 
 				<!-- 이전 화면 버튼 -->
 				<button class="back-button" onclick="location.href='project1'">
 					메인페이지로 이동</button>
 			</div>
 		</div>
-		
 		<!-- 검색 결과 섹션 -->
 		<div class="query-result">
 			<%-- c:out을 사용하여 XSS 방지 --%>
@@ -465,7 +498,7 @@ body {
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	mapOption = { 
     	center: new kakao.maps.LatLng(Y, X), // 지도의 중심좌표
-    	level: 11 // 지도의 확대 레벨
+    	level: 10 // 지도의 확대 레벨
 	};
 
 	//지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
@@ -528,7 +561,7 @@ body {
 		    position: new kakao.maps.LatLng(y, x),
 		    map: map
 		});
-		var iwContent = '<div style="padding: 5px; text-align: center;">'+message+'</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+		var iwContent = '<div style="padding: 5px 10px; max-width:200px;">'+message+'</div>'; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
 
 		// 인포윈도우를 생성합니다
 		var infowindow = new kakao.maps.InfoWindow({
@@ -813,6 +846,7 @@ body {
 		});
     </script>
 	<jsp:include page="header2.jsp" />
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

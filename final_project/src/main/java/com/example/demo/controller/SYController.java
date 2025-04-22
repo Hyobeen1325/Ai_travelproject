@@ -98,7 +98,6 @@ public class SYController { // 유저 관리 컨트롤러
     		System.out.print("아이디 찾기 성공"); // 확인 메세지 
     		model.addAttribute("msg", "아이디 찾기 성공!"); // 알림 메세지 
     		model.addAttribute("foundid",foundID); 
-    		model.addAttribute("foundid", foundID);
     		return "foundid";  // /WEB-INF/jsp/findid.jsp
     		
     	// 아이디 찾기 실패

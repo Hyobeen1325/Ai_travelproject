@@ -5,9 +5,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.ChatLogItemDto;
+import com.example.demo.dto.Item;
 import com.example.demo.dto.JHRequestDto;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.QnaItemDto;
@@ -89,58 +87,58 @@ public class JHController {
     }
     
     @GetMapping("/chat.do")
-    @ResponseBody
-    public Map<String, Object> handleChatRequest(@RequestParam(value = "query", required = false) String query,
-                                                 HttpSession session) {
-        // Session에서 사용자 정보를 가져오기
-        MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
-        String email = member.getEmail();
+    public String handleChatRequest(@RequestParam(value = "query", required = false) String query,
+                                    HttpSession session,
+                                    Model model) {
+    
+    MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
+    String email = member.getEmail();
+    	
 
-        // 응답 데이터 구성할 Map
-        Map<String, Object> responseMap = new HashMap<>();
+        // ✅ 이전 aiResponse2 유지
+        model.addAttribute("aiResponse2", session.getAttribute("aiResponse2"));
+        model.addAttribute("latitude", session.getAttribute("latitude"));
+        model.addAttribute("longitude", session.getAttribute("longitude"));
 
-        // 입력 값이 없으면 기본 메시지 반환
         if (query == null || query.trim().isEmpty()) {
-            responseMap.put("aiResponse", "질문을 입력해주세요.");
-            return responseMap;
+            model.addAttribute("aiResponse", "질문을 입력해주세요.");
+            return "page05";
         }
 
-        // JHRequestDto 객체 생성 후 입력 값 설정
         JHRequestDto requestDto = new JHRequestDto();
         requestDto.setMessage(query);
         requestDto.setEmail(email);
 
         try {
-            // 챗봇 응답 데이터 받기
             var resultMap = jhService.getJHResponse(requestDto);
 
-            // 응답 내용 저장
-            responseMap.put("aiResponse", resultMap.get("response"));
-            
-            // 채팅 로그 데이터 (ChatLogItemDto 리스트)
+            model.addAttribute("query", query);
+            model.addAttribute("aiResponse", resultMap.get("response"));
+
             List<ChatLogItemDto> chatList = (List<ChatLogItemDto>) resultMap.get("chatLogs");
-            responseMap.put("chatList", chatList);
-
-            // QnA 데이터 (QnaItemDto 리스트)
+            
             List<QnaItemDto> qnaList = (List<QnaItemDto>) resultMap.get("qnaData");
-            responseMap.put("qnaList", qnaList);
-
-            // 날짜 라벨 처리
+            model.addAttribute("chatList", chatList);
+            model.addAttribute("qnaList", qnaList);
             List<String> dateLabels = new ArrayList<>();
-            LocalDate today = LocalDate.now(); // 오늘 날짜
+            LocalDate today = LocalDate.now();  // 오늘 날짜
 
-            // 날짜 라벨 생성
+            // chatList가 List<Item> 형태라고 가정
             for (ChatLogItemDto item : chatList) {
+                // item에서 upt_date 가져오기 (Date 형태)
                 Date upt_date = item.getUpt_date(); // 단일 Date
+
                 if (upt_date == null) {
                     dateLabels.add("알 수 없음");
                     continue;
                 }
 
+                // Date를 LocalDate로 변환
                 LocalDate date = upt_date.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+                                         .atZone(ZoneId.systemDefault())
+                                         .toLocalDate();
 
+                // 날짜 비교
                 long daysBetween = ChronoUnit.DAYS.between(date, today);
 
                 if (daysBetween == 0) {
@@ -155,14 +153,17 @@ public class JHController {
                     dateLabels.add("최근 1달 이후");
                 }
             }
-            responseMap.put("dateLabels", dateLabels);
+            model.addAttribute("dateLabels", dateLabels);
+            
+            
+            
+            
 
         } catch (Exception e) {
-            // 오류 처리
-            responseMap.put("aiResponse", "응답 처리 중 오류 발생");
+            model.addAttribute("aiResponse", "응답 처리 중 오류 발생");
         }
 
-        return responseMap; // JSON 형태로 반환
+        return "page05";
     }
     
 

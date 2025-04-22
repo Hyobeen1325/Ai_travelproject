@@ -173,7 +173,6 @@ body {
                 	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
                 	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
                 	<input type="hidden" name="days" value="${param.days}"/>
-					<input type="hidden" name="high_loc2" value="${param.areaCodeS}"/>
                 </form>
                 
                 <form id="choose_add_form" action="/choose_val" method="post">

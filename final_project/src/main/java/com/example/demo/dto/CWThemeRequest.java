@@ -15,7 +15,6 @@ public class CWThemeRequest {
 	private String high_loc;
 	private String low_loc;
 	private List<String> theme;
-	private String high_loc2;
 	private int days;
 	
 
