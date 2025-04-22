@@ -11,4 +11,6 @@ public class JHRequestDto2 {
     private String message;
     private String email;
     private String high_loc2;
+    
+    private CWThemeCRUDRequest choose_val;
 }

@@ -11,12 +11,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CWThemeRequest {
 	
-	// 선택값
+	// 선택값 코드
 	private String high_loc;
 	private String low_loc;
 	private List<String> theme;
-	private String high_loc2;
 	private int days;
-	
+
+	// 선택값 문자
+	private String high_locS;
+	private String low_locS;
+	private String theme1;
+	private String theme2;
+	private String theme3;
+	private String theme4;
 
 }

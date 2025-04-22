@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.dto.CWThemeCRUDRequest;
 import com.example.demo.dto.CWThemeRequest;
 import com.example.demo.dto.CWTravelAPI_00_Request;
 import com.example.demo.dto.CWTravelAPI_01_Item;
@@ -43,15 +44,22 @@ public class JHController2 {
     private final JHService jhService;
 
     @PostMapping("/combinedAreaAI")
-    public String handleCombinedRequest(CWThemeRequest theme, Model model, HttpSession session) {
+    public String handleCombinedRequest(
+    		CWThemeRequest theme,
+    		Model model, HttpSession session) {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
         
         MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         String email = member.getEmail();
-        String high_loc2 = theme.getHigh_loc2();
+        String high_locS = theme.getHigh_locS();
         String high_loc = theme.getHigh_loc();
+        String low_locS = theme.getLow_locS();
         String low_loc = theme.getLow_loc();
+        String theme1 = theme.getTheme1();
+        String theme2 = theme.getTheme2();
+        String theme3 = theme.getTheme3();
+        String theme4 = theme.getTheme4();
         List<String> themes = theme.getTheme();
         int days = theme.getDays();
 
@@ -142,7 +150,18 @@ public class JHController2 {
         JHRequestDto2 requestDto = new JHRequestDto2();
         requestDto.setMessage(query);
         requestDto.setEmail(email);
-        requestDto.setHigh_loc2(high_loc2);
+        requestDto.setHigh_loc2(high_locS);
+        
+        CWThemeCRUDRequest choose_val = new CWThemeCRUDRequest();
+        choose_val.setHigh_loc(high_locS);
+        choose_val.setLow_loc(low_locS);
+        choose_val.setTheme1(theme1);
+        choose_val.setTheme2(theme2);
+        choose_val.setTheme3(theme3);
+        choose_val.setTheme4(theme4);
+        choose_val.setDays(days);
+        
+        requestDto.setChoose_val(choose_val);
         
         try {
             var resultMap = jhService.getJHResponse2(requestDto);

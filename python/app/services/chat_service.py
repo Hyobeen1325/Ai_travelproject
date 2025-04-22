@@ -3,12 +3,14 @@ from datetime import date
 from typing import Optional, Dict, Any, List
 from sqlalchemy.orm import Session
 from app.models.kjh_models import ChatLog
+from app.schema.travel_schema import JHRequestDto2, ChooseVal, AreaList
+from app.models.ycw_models import Choose_val_Model, Area_list_Model
 
 class ChatService:
     def __init__(self, db: Session):
         self.db = db
 
-    def update_chat_log(self, mem_email: str, answer: str) -> Optional[Dict[str, Any]]:
+    def update_chat_log(self, mem_email: str, answer: str, insert_vals: JHRequestDto2) -> Optional[Dict[str, Any]]:
         """
         answer 값을 기반으로 title은 answer + ' 여행' 으로 지정.
         기존 로그 여부에 상관없이 매번 새로운 chat_log 생성.
@@ -43,7 +45,33 @@ class ChatService:
                 upt_date=current_date
             )
             self.db.add(new_log)
+            
+            db_choose_val = Choose_val_Model(
+                chat_log_id=new_chat_log_id,
+                high_loc=insert_vals.choose_val.high_loc,
+                low_loc=insert_vals.choose_val.low_loc,
+                theme1=insert_vals.choose_val.theme1,
+                theme2=insert_vals.choose_val.theme2,
+                theme3=insert_vals.choose_val.theme3,
+                theme4=insert_vals.choose_val.theme4,
+                days=insert_vals.choose_val.days)
+            self.db.add(db_choose_val)
+            
+            for a in insert_vals.area_list:
+                db_area_list = Area_list_Model(
+                    title = a.title,
+                    mapx = a.mapx,
+                    mapy = a.mapy,
+                    contenttypeid = a.contenttypeid,
+                    firstimage = a.firstimage,
+                    firstimage2 = a.firstimage2,
+                    tel = a.tel,
+                    addr1 = a.addr1,
+                    addr2 = a.addr2)
+                self.db.add(db_area_list)
+            
             self.db.commit()
+            
             return {
                 "chat_log_id": new_chat_log_id,
                 "title": trimmed_title,

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 # 선택값 리퀘스트
 class ChooseValCreate(BaseModel):
@@ -8,8 +9,8 @@ class ChooseValCreate(BaseModel):
     low_loc: str
     theme1: str
     theme2: str
-    theme3: str
-    theme4: str
+    theme3: Optional[str] = None
+    theme4: Optional[str] = None
     days: int
 
 # 선택값 리스폰스
@@ -28,11 +29,11 @@ class AreaListCreate(BaseModel):
     mapx: float
     mapy: float
     contenttypeid: str
-    firstimage: str
-    firstimage2: str
-    tel: str
-    addr1: str
-    addr2: str
+    firstimage: Optional[str] = None
+    firstimage2: Optional[str] = None
+    tel: Optional[str] = None
+    addr1: Optional[str] = None
+    addr2: Optional[str] = None
 
 # 지역리스트 리스폰스
 class AreaListResponse(AreaListCreate):

@@ -7,7 +7,7 @@ from datetime import datetime
 class Choose_val_Model(Base):
     __tablename__ = "choose_val"
     choose_id = Column(Integer, primary_key=True, index=True)
-    chat_log_id = Column(String(20), ForeignKey('chat_log.chat_log_id'))
+    chat_log_id = Column(String(20)) # , ForeignKey('chat_log.chat_log_id')
     high_loc = Column(String(100))
     low_loc = Column(String(100))
     theme1 = Column(String(100))
@@ -25,7 +25,7 @@ class Choose_val_Model(Base):
 class Area_list_Model(Base):
     __tablename__ = "area_list"
     area_list_id = Column(Integer, primary_key=True, index=True)
-    chat_log_id = Column(String(20), ForeignKey('chat_log.chat_log_id'))
+    chat_log_id = Column(String(20)) # , ForeignKey('chat_log.chat_log_id')
     title = Column(String(100))
     mapx = Column(String(100))
     mapy = Column(String(100))
