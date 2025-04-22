@@ -8,6 +8,22 @@ from fastapi import HTTPException # 예외 처리
 def get_member_by_email(db: Session, email: str): # 이메일로 회원정보 조회
     return db.query(SQLMember).filter(SQLMember.email == email).first() # db 조회
 
+# 아이디 찾기(이름, 전화번호)
+def get_member_by_name_and_phon_num(db: Session, name: str, phon_num: str): # 이름과 전화번호로 회원정보 조회
+    return db.query(SQLMember).filter(SQLMember.name == name, SQLMember.phon_num == phon_num).first() # db 조회
+
+
+# 아이디 찾기
+def find_member_id(db: Session, name: str, phon_num: str): 
+    db_member =  get_member_by_name_and_phon_num(db, name, phon_num) # db로 member 조회
+    if db_member : # 이름과 전화번호로 member 조회 
+        return db_member.email # 조회된 아이디 반환
+    return None # 조회된 데이터가 없는 경우, 무효화(None) 반환
+    
+# 비밀번호 찾기 
+
+
+
 # 마이페이지 
 # 내정보 수정 (이메일, 닉네임, 전화번호)
 def update_member(db: Session, email: str, update_data: UpdateModel): # 이메일로 내정보 업데이트
