@@ -19,7 +19,7 @@ class Choose_val_Model(Base):
     uptdate = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     
     # 관계: 하나의 대화 → 하나의 선택값들
-    chat_log = relationship("ChatLog", ForeignKey('chat_log.chat_log_id'))
+    chat_log = relationship("ChatLog", back_populates="choose_val")
 
 # 지역리스트 테이블 모델
 class Area_list_Model(Base):
