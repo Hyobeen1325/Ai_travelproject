@@ -13,6 +13,7 @@ public class CWThemeRequest {
 	
 	// 선택값
 	private String high_loc;
+	private String high_loc2;
 	private String low_loc;
 	private List<String> theme;
 	private int days;
