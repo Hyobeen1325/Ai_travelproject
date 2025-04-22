@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>아이디 / 비밀번호 찾기</title>
+  <title>아이디 찾기/비밀번호 찾기</title>
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -123,6 +123,12 @@
     window.onload = function () {
       showTab('find-id'); // 기본 탭
     };
+    
+ 	// 메세지 출력
+    var message = "${msg}";
+    if (message != "") {
+        alert(message);
+    };
   </script>
 </head>
 <body>
@@ -143,7 +149,7 @@
 
   <!-- 아이디 찾기 폼 -->
   <div class="form-wrapper" id="find-id">
-    <form action="<c:url value='/findId' />" method="post" class="form-group">
+    <form action="<c:url value='/login/findid' />" method="post" class="form-group">
       <input type="text" name="name" placeholder="이름" class="input" required>
       <input type="text" name="phon_num" placeholder="전화번호" class="input" required>
       <button type="submit" class="button">확인</button>
