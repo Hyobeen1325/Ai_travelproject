@@ -125,8 +125,15 @@ public class SYService { // 유저 관리 서비스
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null && response.getBody().containsKey("temp_pwd")) {
                 String temp_pwd = (String) response.getBody().get("temp_pwd");
                 String email = findPwdRequest.getEmail();
-                service.sendEmail(email, "소담여행-임시 비밀번호 발송", 
-                		"임시 비밀번호는 " + temp_pwd + "입니다.");
+                service.sendEmail(email, "[소담여행] - 임시 비밀번호 발송 안내", 
+                		"소담여행을 찾아주셔서 감사합니다.\r\n"
+                		+"회원님의 임시 비밀번호는 " + temp_pwd + " 입니다.\r\n"
+                		+"빠른 시일 내에 소담여행 사이트를 방문하여, 비밀번호를 변경하시는 것을 권장드립니다.\r\n"
+                		+"감사합니다.\r\n"
+                		+"-소담여행 드림-\r\n"
+                		+"\r\n"
+                		+"\r\n"
+                		+ "소담여행 사이트 방문하기🌌 : [http://sodam.com]\r\n");
                 return  "임시 비밀번호 발송 완료"; 
             
             // 이메일 유효성 검사
