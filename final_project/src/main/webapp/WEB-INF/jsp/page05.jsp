@@ -271,10 +271,7 @@ body {
     width: calc(100% - 60px);
 }
 
-		#map {
-		    margin-top: 100px;  /* nav 높이만큼 여백 확보 */
-		}
-
+		
 
 .travelAreaInfo {
 	padding: 0;
