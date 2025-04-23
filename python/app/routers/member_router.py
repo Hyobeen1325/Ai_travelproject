@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends, Request # 라우터 처�
 from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
 from app.services import member_service # member service
-from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd # DTO
+from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd, FindID, FindPwd # DTO
+from app.schema.randompwd import RandomPwd # 임시 비밀번호 생성 모델
 
 router = APIRouter(
     prefix="/login", # 클래스 공통 경로
@@ -38,6 +39,35 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
 def logout(request: Request):
     request.session.clear() # 세션 무효화(삭제)
     return {"msg": "로그아웃 성공!"}
+
+
+# 아이디 찾기
+@router.post("/findid")
+def find_id(data: FindID, db: Session=Depends(get_db)):
+    user_id = member_service.find_member_id(db, data.name, data.phon_num) # 이름과 이메일로 member 아이디 조회
+    if user_id: # 존재하는 경우
+        return {"email":user_id}
+    else: # 존재하지 않은 경우
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+
+# 비밀번호 찾기 
+@router.post("/findpwd")
+def find_pwd(data: FindPwd, db: Session=Depends(get_db)):
+    # member 정보 조회 
+    user = member_service.get_member_by_email(db, data.email) # 이메일로 member 조회
+    if not user: # 존재하지 않는 경우
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+    
+    # 임시 비밀번호 생성 
+    random_pwd =  RandomPwd() 
+    temp_pwd = random_pwd.random_password(length=20) # 임시 비밀번호 길이
+    
+    # 임시 비밀번호 발송 
+    temp_pwd = member_service.find_member_pwd(db, data.email, temp_pwd)
+    if temp_pwd: # 발송 성공 
+        return {"temp_pwd":temp_pwd} # 임시 비밀번호
+    else: # 발송 실패 
+        raise HTTPException(status_code=500, detail="임시 비밀번호 발송에 실패하였습니다.") # 예외 처리
 
 
 # 마이페이지

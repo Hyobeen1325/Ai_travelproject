@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.dto.FindIDDTO;
+import com.example.demo.dto.FindPwdDTO;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.dto.UpdatePwdDTO;
-import com.example.demo.service.SYService;
+import com.example.demo.service.SYService; // member service 
 
 import jakarta.servlet.http.HttpSession; // 세션 관리
+import jakarta.validation.Valid;
+
 
 @Controller
 @RequestMapping("/login") // 클래스 공통 경로
@@ -38,8 +43,8 @@ public class SYController { // 유저 관리 컨트롤러
 
     // 로그인 페이지
     // http://localhost:8080/login
-
-    // kakao 통합 로그인
+    
+    // kakao 통합 로그인 페이지
     @GetMapping("")
     public String loginpage(Model model) {
         // kakao 로그인 성공 시, URL 생성 후 login.jsp로 전달
@@ -50,7 +55,7 @@ public class SYController { // 유저 관리 컨트롤러
         return "login"; // /WEB-INF/jsp/login.jsp
     }
 
-    // kakao 통합로그인 계정 정보
+    // kakao 통합 로그인 계정 정보
     // http://localhost:8080/login/kakaologin?code=...
     @GetMapping("/kakaologin")
     public String kakaologin(@RequestParam("code") String code, HttpSession session, Model model) {
@@ -60,13 +65,87 @@ public class SYController { // 유저 관리 컨트롤러
         session.setAttribute("kakaologin", true); // 세션에 kakako 계정 정보 저장
         return "project1"; //  /WEB-INF/jsp//project1.jsp
     }
-
+    
     // 회원가입 페이지
     @GetMapping("/register")
     public String joinpage() {
-        return "register"; // /WEB-INF/jsp/register.jsps
+        return "register"; // /WEB-INF/jsp/register.jsp
     }
 
+    // 아이디 찾기/비밀번호 찾기 페이지 
+    // http://localhost:8080/login/find
+    @GetMapping("/find")
+    public String findpage() {
+    	return "find"; // /WEB-INF/jsp/find.jsp
+    }
+    
+    // 아이디 찾기 유효성 검사 (이름, 전화번호) 
+    @PostMapping("/findid")
+    public String findid(@RequestParam("name") String name, @RequestParam("phon_num") String phon_num, 
+    					HttpSession session, Model model) {
+    	
+    	// null 또는 공백인 경우 
+    	if(name == null || name.trim().isEmpty() || phon_num == null || phon_num.trim().isEmpty()) {
+    		// trim() : 공백 제거, isEmpty() : 문자길이 체크
+    		model.addAttribute("msg", "이름과 전화번호 둘다 입력해주세요."); // 알림 메세지
+    		return "find"; 
+    	} 
+    	
+    	// 아이디 찾기 
+    	FindIDDTO findIDRequest = new FindIDDTO();
+    	findIDRequest.setName(name); // 이름 
+    	findIDRequest.setPhon_num(phon_num); // 전화번호
+    	
+    	String foundID = service.findID(findIDRequest); 
+    	
+    	// 아이디 찾기 성공 
+    	if(foundID!= null && !foundID.isEmpty()) {
+    		System.out.print("아이디 찾기 성공"); // 확인 메세지 
+    		model.addAttribute("msg", "아이디 찾기 성공!"); // 알림 메세지 
+    		model.addAttribute("foundid",foundID); 
+    		session.invalidate(); // 세션으로 member 무효화
+    		return "foundid";  // /WEB-INF/jsp/findid.jsp
+    		
+    	// 아이디 찾기 실패
+    	}else{
+    		System.out.print("아이디 찾기 실패"); // 확인 메세지 
+    		model.addAttribute("msg", "아이디 찾기 실패"); // 알림 메세지 
+    		return "find"; 
+    	}
+    	
+    }
+    
+    
+    // 비밀번호 찾기 유효성 검사 (이메일) 
+    @PostMapping("/findpwd")
+    public String findpwd(@Valid FindPwdDTO findpwd, BindingResult bindingResult, Model model) {
+    	// Valid : 유효성 검사, BindingResult : 유효성 결과 및 오류 확인
+    	if(bindingResult.hasErrors()) {
+    		System.out.print("이메일 유효성 검사 실패"); // 확인 메세지 
+    		model.addAttribute("msg", "이메일 유효성 검사 실패"); // 알림 메세지
+    		model.addAttribute("msg", bindingResult.getFieldError("email").getDefaultMessage());
+    		return "find";
+    	}
+    	
+    	String resultMsg = service.findPwd(findpwd);
+    	model.addAttribute("msg", resultMsg);
+    	
+    	// 발송 성공 
+    	if(resultMsg.contains("발송 완료")) { 
+    		System.out.print("임시 비밀번호 발송 성공!"); // 확인 메세지 
+    		model.addAttribute("msg","임시 비밀번호 발송 성공"); // 알림 메세지
+    		return "login";
+    		
+    	// 발송 실패 	
+			} else {
+				System.out.print("임시 비밀번호 발송 실패"); // 확인 메세지 
+				model.addAttribute("msg","임시 비밀번호 발송 실패"); // 알림 메세지
+    		return "find";
+    	}
+    	
+    }
+    
+    
     // 로그인 유효성 검사 (아이디, 비밀번호)
     @PostMapping("/member")
     public String login(LoginDTO loginRequest, HttpSession session, Model model) {
@@ -79,12 +158,12 @@ public class SYController { // 유저 관리 컨트롤러
             model.addAttribute("member", response); // member 정보
             session.setAttribute("SessionMember", response);  // 세션에 member 저장
             session.setAttribute("kakaologin", false); // kakao 계정 일반로그인 거부 설정
-            return "project1"; // /WEB-INF/jsp/project1.jsp
+            return "project1"; 
 
         // 로그인 실패
         } else {
             model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "login"; // /WEB-INF/jsp/login.jsp
+            return "login"; 
         }
     }
 
@@ -97,7 +176,7 @@ public class SYController { // 유저 관리 컨트롤러
         model.addAttribute("msg", "로그아웃 성공! 로그인 창으로 이동합니다."); // 성공 메세지
         model.addAttribute("msg", response); // member 정보
         session.invalidate(); // 세션으로 member 무효화
-        return "redirect:/login"; // /WEB-INF/jsp/login.jsp
+        return "redirect:/login"; 
     }
 
 
@@ -110,7 +189,7 @@ public class SYController { // 유저 관리 컨트롤러
         
         if (SessionMember != null && SessionMember.getEmail().equals(email)) {
             model.addAttribute("member", SessionMember); // 세션으로 로그인 중인 member 유지
-            return "mypage";
+            return "mypage"; // /WEB-INF/jsp/mypage.jsp
             
         } else {
             // 마이페이지 안의 내정보 데이터 처리
@@ -121,14 +200,14 @@ public class SYController { // 유저 관리 컨트롤러
                 model.addAttribute("msg", "내정보 조회 성공!"); // 알림 메세지 
                 model.addAttribute("member", response); // member 정보
                 session.setAttribute("SessionMember", response); // 세션 유지
-                return "mypage";
+                return "mypage"; 
                 
             // 조회 실패 
             } else { 
                 System.out.print("내정보 조회 실패"); // 확인 메세지 
                 model.addAttribute("msg", "내정보 조회 실패!"); // 적절한 실패 메시지
                 session.invalidate(); // 세션 무효화
-                return "redirect:/login";
+                return "redirect:/login"; 
             }
         }
     }
@@ -142,7 +221,7 @@ public class SYController { // 유저 관리 컨트롤러
         MemberDTO SessionMember = (MemberDTO) session.getAttribute("SessionMember");
         if (SessionMember == null || !SessionMember.getEmail().equals(email)) { // 세션이 유효하지 않은 경우 
             model.addAttribute("msg", "다시 로그인해주세요.");
-            return "redirect:/login";
+            return "redirect:/login"; 
         }
 
         MemberDTO response = service.updateMypage(email, updateRequest);
@@ -151,7 +230,7 @@ public class SYController { // 유저 관리 컨트롤러
         if (response == null) { // 이메일 수정 실패
             model.addAttribute("msg", "이미 사용 중인 이메일 입니다. 다른 이메일을 입력해주세요.");
             model.addAttribute("member", SessionMember); // 기존 정보 유지
-            return "mypage";
+            return "mypage"; 
             
         // 수정 성공
         } else { 
@@ -159,7 +238,7 @@ public class SYController { // 유저 관리 컨트롤러
             model.addAttribute("msg", "내정보 수정 성공!"); // 알림 메세지
             model.addAttribute("member", response); // 수정 정보 갱신
             session.setAttribute("SessionMember", response); // 세션 갱신
-            return "mypage";
+            return "mypage"; 
         }
     }
 
@@ -173,7 +252,7 @@ public class SYController { // 유저 관리 컨트롤러
         // 로그인 변경 대상 member 유효성 검사
         if (SessionMember == null || !SessionMember.getEmail().equals(email)) { // 세션이 유효하지 않을 경우
             model.addAttribute("msg", "다시 로그인해주세요.");
-            return "login";
+            return "login"; 
         }
 
         // 비밀번호 변경 서비스 호출

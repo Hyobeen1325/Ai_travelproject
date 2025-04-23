@@ -15,7 +15,7 @@
 
 	.container {
 	  max-width: 500px;
-	  margin: 200px auto; 
+	  margin: 150px auto; 
 	  background: #fff;
 	  border-radius: 15px;
 	  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -32,7 +32,7 @@
 
 	
 	.find-title {
-	  font-size: 25px;
+	  font-size: 23px;
 	  font-weight: 600;
 	  color: #333;
 	  margin-bottom: 25px;
@@ -89,6 +89,13 @@
     .button:hover {
       background-color: #357abd;
     }
+    .find-box {
+	  background-color: #f9f9f9; /* 박스 배경색 */
+	  border: 1px solid #ddd; /* 박스 테두리 */
+	  border-radius: 8px; /* 박스 둥근 모서리 */
+	  padding: 20px; /* 박스 내부 여백 */
+	  margin-bottom: 20px; /* 아래 요소와의 간격 (선택 사항) */
+	}
 
     .back-link {
       text-align: center;
@@ -126,7 +133,8 @@
 <div class="container">
   <div class="find-title">아이디 찾기 / 비밀번호 찾기</div>
   
-  <!-- 탭 메뉴 -->
+ <!-- 탭 메뉴 -->
+ <div class="find-box">
   <div class="tab-menu">
     <div data-tab="find-id" onclick="showTab('find-id')">아이디 찾기</div>
     <div>|</div>
@@ -144,12 +152,12 @@
 
   <!-- 비밀번호 찾기 폼 -->
   <div class="form-wrapper" id="find-pwd">
-    <form action="<c:url value='/tempwd' />" method="post" class="form-group">
+    <form action="<c:url value='/login/findpwd' />" method="post" class="form-group">
       <input type="email" name="email" placeholder="아이디" class="input" required>
       <button type="submit" class="button">임시 비밀번호 발송</button>
     </form>
   </div>
-
+</div>
   <!-- 로그인 이동 -->
   <div class="back-link">
     <a href="/login">← 로그인으로 돌아가기</a>

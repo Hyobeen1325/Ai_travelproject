@@ -25,28 +25,36 @@
 	
 	var sx = 126.83737555322481;
 	var sy = 37.55525165729346;
+	
 	var ex = 126.88265238619182;
 	var ey = 37.481440035175375;
 	
-	function searchPubTransPathAJAX() {
+	var gx = 126.74265238619182;
+	var gy = 37.521440035175375;
+	
+	
+	
+	function searchPubTransPathAJAX(ax,ay,bx,by) {
 		var xhr = new XMLHttpRequest();
 		//ODsay apiKey 입력
-		var url = "https://api.odsay.com/v1/api/searchPubTransPathT?SX="+sx+"&SY="+sy+"&EX="+ex+"&EY="+ey+"&apiKey=8ph%2FjNSbi1RGUdtqnZ0%2BX1XZjeDsZNNu5V7rUAbQTps";
+		var url = "https://api.odsay.com/v1/api/searchPubTransPathT?SX="+ax+"&SY="+ay+"&EX="+bx+"&EY="+by+"&apiKey=8ph%2FjNSbi1RGUdtqnZ0%2BX1XZjeDsZNNu5V7rUAbQTps";
 		xhr.open("GET", url, true);
 		xhr.send();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
 			console.log( JSON.parse(xhr.responseText) ); // <- xhr.responseText 로 결과를 가져올 수 있음
 			//노선그래픽 데이터 호출
-			callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
+			callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj,ax,ay,bx,by);
 			}
 		}
 	}
 	
 	//길찾기 API 호출
-	searchPubTransPathAJAX();
+	searchPubTransPathAJAX(sx,sy,ex,ey);
+
+	searchPubTransPathAJAX(ex,ey,gx,gy);
 	
-	function callMapObjApiAJAX(mabObj){
+	function callMapObjApiAJAX(mabObj,ax,ay,bx,by){
 		var xhr = new XMLHttpRequest();
 		//ODsay apiKey 입력
 		var url = "https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"+mabObj+"&apiKey=8ph%2FjNSbi1RGUdtqnZ0%2BX1XZjeDsZNNu5V7rUAbQTps";
@@ -55,8 +63,8 @@
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				var resultJsonData = JSON.parse(xhr.responseText);
-				drawKakaoMarker(sx,sy);					// 출발지 마커 표시
-				drawKakaoMarker(ex,ey);					// 도착지 마커 표시
+				drawKakaoMarker(ax,ay);					// 출발지 마커 표시
+				drawKakaoMarker(bx,by);					// 도착지 마커 표시
 				drawKakaoPolyLine(resultJsonData);		// 노선그래픽데이터 지도위 표시
 				// boundary 데이터가 있을경우, 해당 boundary로 지도이동
 				if(resultJsonData.result.boundary){
