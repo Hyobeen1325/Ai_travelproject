@@ -69,20 +69,20 @@ public class JHController2 {
         
         for(int idx=0; idx<4; idx+=1) {
     		if(idx==0){
-    			theme1 = themeSs.get(idx);
+    			theme1 = themeSs.get(0);
     		}else if(idx==1) {
-    			theme2 = themeSs.get(idx);
+    			theme2 = themeSs.get(1);
     		}else if(idx==2) {
-    			if(themes.size()<=3) {
+    			if(themeSs.size()<3) {
     				theme3 = "";
     			}else {
-    				theme3 = themeSs.get(idx);
+    				theme3 = themeSs.get(2);
     			}
     		}else if(idx==3) {
-    			if(themes.size()<=4) {
+    			if(themeSs.size()<4) {
     				theme4 = "";
     			}else {
-    				theme4 = themeSs.get(idx);
+    				theme4 = themeSs.get(3);
     			}
     		}
         }

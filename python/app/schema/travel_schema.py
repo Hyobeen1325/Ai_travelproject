@@ -44,29 +44,13 @@ class JHResponse(BaseModel):
     chat_logs: Optional[List[ChatLogItem]] = None  # 모든 채팅 로그 (선택)
     qna_data: Optional[List[QnaItem]] = None  # 모든 QNA 데이터 (선택)
 
-# 지역리스트 리퀘스트
-class AreaList(BaseModel):
-    chat_log_id: str
-    title: str
-    mapx: float
-    mapy: float
-    contenttypeid: str
-    firstimage: Optional[str] = None
-    firstimage2: Optional[str] = None
-    tel: Optional[str] = None
-    addr1: Optional[str] = None
-    addr2: Optional[str] = None
-
-class AreaLists(BaseModel):
-    area_list: List[AreaList]
-
 class JHRequestDto2(BaseModel):
     """JH 서비스 요청 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
     message: str # 사용자 메시지 (필수)
     email: Optional[str] = None # 사용자 이메일 (선택)
     high_loc2: str
     chat_log_id:Optional[str] = None
-    low_loc: str
+    low_loc: Optional[str] = None
     theme1: str
     theme2: str
     theme3: Optional[str] = None

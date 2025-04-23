@@ -3,14 +3,14 @@ from datetime import date
 from typing import Optional, Dict, Any, List
 from sqlalchemy.orm import Session
 from app.models.kjh_models import ChatLog
-from app.schema.travel_schema import JHRequestDto2, AreaLists
+from app.schema.travel_schema import JHRequestDto2
 from app.models.ycw_models import Choose_val_Model, Area_list_Model
 
 class ChatService:
     def __init__(self, db: Session):
         self.db = db
 
-    def update_chat_log(self, mem_email: str, answer: str, choose_val: JHRequestDto2, area_list: AreaLists) -> Optional[Dict[str, Any]]:
+    def update_chat_log(self, mem_email: str, answer: str, choose_val: JHRequestDto2, area_list: dict) -> Optional[Dict[str, Any]]:
         """
         답변 내용(answer)을 기반으로 chat_log title을 자동 생성하여 삽입 또는 업데이트
         - 같은 날, 같은 title이면 무시
@@ -84,17 +84,18 @@ class ChatService:
                 days=choose_val.days)
             self.db.add(db_choose_val)
             
-            for a in area_list:
+            for a in area_list["items"]["item"]:
                 db_area_list = Area_list_Model(
-                    title = a.title,
-                    mapx = a.mapx,
-                    mapy = a.mapy,
-                    contenttypeid = a.contenttypeid,
-                    firstimage = a.firstimage,
-                    firstimage2 = a.firstimage2,
-                    tel = a.tel,
-                    addr1 = a.addr1,
-                    addr2 = a.addr2)
+                    chat_log_id = new_chat_log_id,
+                    title = a["title"],
+                    mapx = a["mapx"],
+                    mapy = a["mapy"],
+                    contenttypeid = a["contenttypeid"],
+                    firstimage = a["firstimage"],
+                    firstimage2 = a["firstimage2"],
+                    tel = a["tel"],
+                    addr1 = a["addr1"],
+                    addr2 = a["addr2"])
                 self.db.add(db_area_list)
             
             self.db.commit()

@@ -1,7 +1,7 @@
 # app/routers/travel_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.templating import Jinja2Templates
-from app.schema.travel_schema import JHRequestDto, JHResponse, JHRequestDto2, JHResponse2, JHRequestDto3, JHResponse3, AreaLists
+from app.schema.travel_schema import JHRequestDto, JHResponse, JHRequestDto2, JHResponse2, JHRequestDto3, JHResponse3
 from app.services.model_service import TravelModelService
 from app.services.chat_service import ChatService
 from app.services.qna_service import QnaService
@@ -112,24 +112,30 @@ async def process_jh_message2(request: JHRequestDto2, chat_service: ChatService 
             "latitude": result.get("latitude"),
             "longitude": result.get("longitude"),
         }
+        
         #print("제미나이 답변 : "+response_text)
+        
         # gemini 답변에서 JSON 추출
         match = re.search(r'\{[\s\S]*\}', response_text)
         area_list_json_str = match.group() if match else None
+        
         #print("해당 답변 json 처리 : "+area_list_json_str)
                 
+        # json 문자열 json list로 전환
+        # print("지역리스트 json 처리 시작")
+        try:
+            area_list = json.loads(area_list_json_str)  # dict
+            # print("지역리스트 json: ", area_list_json)
+            # area_list = AreaLists(**area_list_json["items"])
+            # print("AreaLists 객체: ", area_list)
+        except Exception as e:
+            area_list = {}
+            print("지역리스트 json 처리중 에러 발생:", e)
+            
         processed_chat_log_id = None
 
         if email:
             try:
-                # 2. 파싱
-                if area_list_json_str:
-                    area_list_json = json.loads(area_list_json_str)  # dict
-                    area_list = AreaLists(**area_list_json["items"])
-                    
-                else:
-                    area_list = []
-
                 title = result["recommendations"][0] if result["recommendations"] else "일반 대화"
 
                 # Chat Log 처리
