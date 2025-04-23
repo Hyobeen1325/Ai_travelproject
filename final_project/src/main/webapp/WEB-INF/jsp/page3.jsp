@@ -172,13 +172,8 @@ body {
                 <form id="choose_form" action="/combinedAreaAI" method="post">
                 	<input type="hidden" name="high_loc" value="${param.areaCode}"/>
                 	<input type="hidden" name="low_loc" value="${param.sigunguCode}"/>
-                	<input type="hidden" name="days" value="${param.days}"/>
-					<input type="hidden" name="high_loc2" value="${param.areaCodeS}"/>
-                </form>
-                
-                <form id="choose_add_form" action="/choose_val" method="post">
-                	<input type="hidden" name="high_loc" value="${param.areaCodeS}"/>
-                	<input type="hidden" name="low_loc" value="${param.sigunguCodeS}"/>
+                	<input type="hidden" name="high_locS" value="${param.areaCodeS}"/>
+                	<input type="hidden" name="low_locS" value="${param.sigunguCodeS}"/>
                 	<input type="hidden" name="days" value="${param.days}"/>
                 </form>
    			</div>
@@ -237,7 +232,6 @@ body {
             	spinner.style.display = 'block';
 
 	            const form = document.getElementById('choose_form'); // 전송할 폼
-	            const addform = document.getElementById('choose_add_form'); // 전송할 폼
 	            
 	            const page = document.querySelector('.page');
 	            page.classList.add('slide-out');
@@ -252,10 +246,10 @@ body {
 	            		form.appendChild(input1)
 	            		
 	                    const input101 = document.createElement("input"); // 추가할 내용
-	                    input101.name = "theme"
+	                    input101.name = "themeS"
 	                   	input101.type = "hidden"
 	            		input101.value = "자연"
-	            		addform.appendChild(input101)
+	            		form.appendChild(input101)
 	            	}
 	            	if(theme=="액티비티"){
 	                    const input2 = document.createElement("input"); // 추가할 내용
@@ -265,10 +259,10 @@ body {
 	            		form.appendChild(input2)
 	            		
 	                    const input102 = document.createElement("input"); // 추가할 내용
-	                    input102.name = "theme"
+	                    input102.name = "themeS"
 	                   	input102.type = "hidden"
 	            		input102.value = "액티비티"
-	            		addform.appendChild(input102)
+	            		form.appendChild(input102)
 	            	}
 	            	if(theme=="축제"){
 	                    const input3 = document.createElement("input"); // 추가할 내용
@@ -284,10 +278,10 @@ body {
 	            		form.appendChild(input4)
 	            		
 	                    const input103 = document.createElement("input"); // 추가할 내용
-	                    input103.name = "theme"
+	                    input103.name = "themeS"
 	                   	input103.type = "hidden"
 	            		input103.value = "축제"
-	            		addform.appendChild(input103)
+	            		form.appendChild(input103)
 	            	}
 	            	if(theme=="쇼핑"){
 	                    const input5 = document.createElement("input"); // 추가할 내용
@@ -297,10 +291,10 @@ body {
 	            		form.appendChild(input5)
 	            		
 	                    const input104 = document.createElement("input"); // 추가할 내용
-	                    input104.name = "theme"
+	                    input104.name = "themeS"
 	                   	input104.type = "hidden"
 	            		input104.value = "쇼핑"
-	            		addform.appendChild(input104)
+	            		form.appendChild(input104)
 	            	}
 	            	if(theme=="음식점"){
 	            		const input6 = document.createElement("input"); // 추가할 내용
@@ -308,6 +302,7 @@ body {
 	                    input6.type = "hidden"
 	            		input6.value = "A05"
 	            		form.appendChild(input6)
+	            		
 	            		const input7 = document.createElement("input"); // 추가할 내용
 	                    input7.name = "theme"
 	                    input7.type = "hidden"
@@ -315,10 +310,10 @@ body {
 	            		form.appendChild(input7)
 	            		
 	                    const input105 = document.createElement("input"); // 추가할 내용
-	                    input105.name = "theme"
+	                    input105.name = "themeS"
 	                   	input105.type = "hidden"
 	            		input105.value = "음식점"
-	            		addform.appendChild(input105)
+	            		form.appendChild(input105)
 	            	}
 	            	if(theme=="문화예술역사"){
 	            		const input8 = document.createElement("input"); // 추가할 내용
@@ -353,10 +348,10 @@ body {
 	            		form.appendChild(input13)
 	            		
 	                    const input106 = document.createElement("input"); // 추가할 내용
-	                    input106.name = "theme"
+	                    input106.name = "themeS"
 	                   	input106.type = "hidden"
 	            		input106.value = "문화예술역사"
-	            		addform.appendChild(input106)
+	            		form.appendChild(input106)
 	            	}
 	            	if(theme=="캠핑"){
 	            		const input14 = document.createElement("input"); // 추가할 내용
@@ -366,10 +361,10 @@ body {
 	            		form.appendChild(input14)
 	            		
 	                    const input107 = document.createElement("input"); // 추가할 내용
-	                    input107.name = "theme"
+	                    input107.name = "themeS"
 	                   	input107.type = "hidden"
 	            		input107.value = "캠핑"
-	            		addform.appendChild(input107)
+	            		form.appendChild(input107)
 	            	}
 	            	if(theme=="가족"){
 	            		const input15 = document.createElement("input"); // 추가할 내용
@@ -379,10 +374,10 @@ body {
 	            		form.appendChild(input15)
 	            		
 	                    const input108 = document.createElement("input"); // 추가할 내용
-	                    input108.name = "theme"
+	                    input108.name = "themeS"
 	                   	input108.type = "hidden"
 	            		input108.value = "가족"
-	            		addform.appendChild(input108)
+	            		form.appendChild(input108)
 	            	}
 	            	if(theme=="나홀로"){
 	            		const input16 = document.createElement("input"); // 추가할 내용
@@ -392,53 +387,14 @@ body {
 	            		form.appendChild(input16)
 	            		
 	                    const input109 = document.createElement("input"); // 추가할 내용
-	                    input109.name = "theme"
+	                    input109.name = "themeS"
 	                   	input109.type = "hidden"
 	            		input109.value = "나홀로"
-	            		addform.appendChild(input109)
+	            		form.appendChild(input109)
 	            	}
             	})
 
 	    		form.submit();
-	    		
-	            const formData = new FormData(addform); // 폼의 모든 input 데이터를 수집
-	            const jsonData = {}; // 제이슨 생성
-	            formData.forEach((value, key) => {
-	                if (jsonData[key]) {
-	                    // 이미 값이 있으면 배열로
-	                    if (Array.isArray(jsonData[key])) {
-	                        jsonData[key].push(value);
-	                    } else {
-	                        jsonData[key] = [jsonData[key], value];
-	                    }
-	                } else {
-	                    jsonData[key] = value; // 아니면 그냥 처리
-	                }
-	            });
-	        	fetch("/choose_val", {
-	    			method: "POST",
-	    			headers: {
-	    			  "Content-Type": "application/json"
-	    			},
-	    			body: JSON.stringify(jsonData) // 해당 제이슨을 패치로 전송
-	           	}).then(response => {
-	    	        if (!response.ok) {
-	    	            throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
-	    	        }
-	    	        return response.text();
-	    	    }).then(data => {
-	            	console.log('서버 응답:'+ data);
-	            	// location.href = "/choose_val/All";
-	            }).catch(error => {
-	            	console.log('에러 발생:'+ error);
-	            });
-	            
-	            // 선택된 테마 정보를 localStorage에 저장
-	            // localStorage.setItem('selectedThemes', JSON.stringify([...selectedThemes]));
-	            
-	            // setTimeout(() => {
-	            //     location.href = '/ask';
-	            // }, 500);
             }
         });
 
@@ -450,20 +406,9 @@ body {
             		+'&sigunguCodeS='+sigunguCodeSP
     				+'&days='+daysP;
         });
+        
         // 페이지 로드 시 이전에 선택한 테마가 있다면 표시 // 테마 선택이 마지막이니 해당 코드는 필요 없을 듯
         window.addEventListener('load', function() {
-        	/*
-            const savedThemes = JSON.parse(localStorage.getItem('selectedThemes') || '[]');
-            if (savedThemes.length > 0) {
-                document.querySelectorAll('.location-item').forEach(item => {
-                    if (savedThemes.includes(item.textContent)) {
-                        item.classList.add('selected');
-                        selectedThemes.add(item.textContent);
-                    }
-                });
-            }
-            */
-            // 페이지 열릴 때 이전에 선택한 값이 없으면 안되니까 메인으로 돌아가기
             if(!areaCodeP){
             	alert("환영합니다\n여행을 계획해보세요")
             	location.href="/project1"

@@ -48,7 +48,18 @@ class JHRequestDto2(BaseModel):
     """JH 서비스 요청 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""
     message: str # 사용자 메시지 (필수)
     email: Optional[str] = None # 사용자 이메일 (선택)
+<<<<<<< HEAD
     high_loc2:Optional[str] = None
+=======
+    high_loc2: str
+    chat_log_id:Optional[str] = None
+    low_loc: Optional[str] = None
+    theme1: str
+    theme2: str
+    theme3: Optional[str] = None
+    theme4: Optional[str] = None
+    days: int
+>>>>>>> branch 'develop' of https://github.com/Hyobeen1325/Ai_travelproject.git
     
 class JHResponse2(BaseModel):
     """JH 서비스 응답 스키마 2 (Spring Boot 연동용) - 위치 정보 포함"""

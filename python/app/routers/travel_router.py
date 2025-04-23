@@ -1,13 +1,15 @@
 # app/routers/travel_router.py
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.templating import Jinja2Templates
-from app.schema.travel_schema import TravelKeywordRequest, TravelRecommendationResponse, ChatbotRequest, JHRequestDto, JHResponse, JHRequestDto2, JHResponse2,JHRequestDto3, JHResponse3
+from app.schema.travel_schema import JHRequestDto, JHResponse, JHRequestDto2, JHResponse2, JHRequestDto3, JHResponse3
 from app.services.model_service import TravelModelService
 from app.services.chat_service import ChatService
 from app.services.qna_service import QnaService
 from app.database.database import get_db
 from sqlalchemy.orm import Session
 from typing import List
+import re
+import json
 
 router = APIRouter()
 model_service = TravelModelService()
@@ -118,6 +120,27 @@ async def process_jh_message2(
             "latitude": result.get("latitude"),
             "longitude": result.get("longitude"),
         }
+        
+        #print("제미나이 답변 : "+response_text)
+        
+        # gemini 답변에서 JSON 추출
+        match = re.search(r'\{[\s\S]*\}', response_text)
+        area_list_json_str = match.group() if match else None
+        
+        #print("해당 답변 json 처리 : "+area_list_json_str)
+                
+        # json 문자열 json list로 전환
+        # print("지역리스트 json 처리 시작")
+        try:
+            area_list = json.loads(area_list_json_str)  # dict
+            # print("지역리스트 json: ", area_list_json)
+            # area_list = AreaLists(**area_list_json["items"])
+            # print("AreaLists 객체: ", area_list)
+        except Exception as e:
+            area_list = {}
+            print("지역리스트 json 처리중 에러 발생:", e)
+            
+        processed_chat_log_id = None
 
         if email:
             try:
@@ -126,7 +149,20 @@ async def process_jh_message2(
                     created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2)
                     response_data["created_chat_log"] = created_log
 
-                # chat_log 조회
+                # Chat Log 처리
+                chat_result = chat_service.update_chat_log(mem_email=email, answer=title, choose_val=request, area_list=area_list)
+                if chat_result:
+                    processed_chat_log_id = chat_result.get("chat_log_id")
+
+                # QNA 처리
+                if processed_chat_log_id:
+                    qna_service.create_or_update_qna(
+                        chat_log_id=processed_chat_log_id,
+                        question=message,
+                        answer=response_text
+                    )
+
+                # 모든 데이터 조회 및 리스트 생성
                 all_chat_logs = chat_service.get_chat_logs_by_email(email)
                 chat_log_ids = [log.get("chat_log_id") for log in all_chat_logs if log.get("chat_log_id")]
 

@@ -43,17 +43,54 @@ public class JHController2 {
     private final JHService jhService;
 
     @PostMapping("/combinedAreaAI")
-    public String handleCombinedRequest(CWThemeRequest theme, Model model, HttpSession session) {
+    public String handleCombinedRequest(
+    		CWThemeRequest theme,
+    		Model model, HttpSession session) {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
         
         MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         String email = member.getEmail();
         
-        String high_loc2 = theme.getHigh_loc2();
+        String high_loc2 = theme.getHigh_locS();
+        String low_locS = "";
+    	if(!theme.getLow_locS().equals("")) {
+            low_locS = theme.getLow_locS();
+    	}
+
         String high_loc = theme.getHigh_loc();
         String low_loc = theme.getLow_loc();
+        
         List<String> themes = theme.getTheme();
+        List<String> themeSs = theme.getThemeS();
+        
+        String theme1 = "";
+        String theme2 = "";
+        String theme3 = "";
+        String theme4 = "";
+        
+        System.out.println(themeSs.size());
+        
+        for(int idx=0; idx<4; idx+=1) {
+    		if(idx==0){
+    			theme1 = themeSs.get(0);
+    		}else if(idx==1) {
+    			theme2 = themeSs.get(1);
+    		}else if(idx==2) {
+    			if(themeSs.size()<3) {
+    				theme3 = "";
+    			}else {
+    				theme3 = themeSs.get(2);
+    			}
+    		}else if(idx==3) {
+    			if(themeSs.size()<4) {
+    				theme4 = "";
+    			}else {
+    				theme4 = themeSs.get(3);
+    			}
+    		}
+        }
+        
         int days = theme.getDays();
 
         tapi_req.setAreaCodeVal(high_loc);
@@ -144,7 +181,14 @@ public class JHController2 {
         requestDto.setMessage(query);
         requestDto.setEmail(email);
         requestDto.setHigh_loc2(high_loc2);
-        // 
+        
+        requestDto.setLow_loc(low_locS);
+        requestDto.setTheme1(theme1);
+        requestDto.setTheme2(theme2);
+        requestDto.setTheme3(theme3);
+        requestDto.setTheme4(theme4);
+        requestDto.setDays(days);
+        
         try {
             var resultMap = jhService.getJHResponse2(requestDto);
             String areaListSJ = (String) resultMap.get("response");
