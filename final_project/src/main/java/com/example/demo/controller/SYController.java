@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,14 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.dto.FindIDDTO;
+import com.example.demo.dto.FindPwdDTO;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.dto.UpdatePwdDTO;
-import com.example.demo.dto.FindIDDTO;
-
 import com.example.demo.service.SYService; // member service 
+
 import jakarta.servlet.http.HttpSession; // 세션 관리
+import jakarta.validation.Valid;
+
 
 @Controller
 @RequestMapping("/login") // 클래스 공통 경로
@@ -77,7 +81,8 @@ public class SYController { // 유저 관리 컨트롤러
     
     // 아이디 찾기 유효성 검사 (이름, 전화번호) 
     @PostMapping("/findid")
-    public String findid(@RequestParam("name") String name, @RequestParam("phon_num") String phon_num, Model model) {
+    public String findid(@RequestParam("name") String name, @RequestParam("phon_num") String phon_num, 
+    					HttpSession session, Model model) {
     	
     	// null 또는 공백인 경우 
     	if(name == null || name.trim().isEmpty() || phon_num == null || phon_num.trim().isEmpty()) {
@@ -98,6 +103,7 @@ public class SYController { // 유저 관리 컨트롤러
     		System.out.print("아이디 찾기 성공"); // 확인 메세지 
     		model.addAttribute("msg", "아이디 찾기 성공!"); // 알림 메세지 
     		model.addAttribute("foundid",foundID); 
+    		session.invalidate(); // 세션으로 member 무효화
     		return "foundid";  // /WEB-INF/jsp/findid.jsp
     		
     	// 아이디 찾기 실패
@@ -112,8 +118,31 @@ public class SYController { // 유저 관리 컨트롤러
     
     // 비밀번호 찾기 유효성 검사 (이메일) 
     @PostMapping("/findpwd")
-    public String findpwd() {
-    	return "";
+    public String findpwd(@Valid FindPwdDTO findpwd, BindingResult bindingResult, Model model) {
+    	// Valid : 유효성 검사, BindingResult : 유효성 결과 및 오류 확인
+    	if(bindingResult.hasErrors()) {
+    		System.out.print("이메일 유효성 검사 실패"); // 확인 메세지 
+    		model.addAttribute("msg", "이메일 유효성 검사 실패"); // 알림 메세지
+    		model.addAttribute("msg", bindingResult.getFieldError("email").getDefaultMessage());
+    		return "find";
+    	}
+    	
+    	String resultMsg = service.findPwd(findpwd);
+    	model.addAttribute("msg", resultMsg);
+    	
+    	// 발송 성공 
+    	if(resultMsg.contains("발송 완료")) { 
+    		System.out.print("임시 비밀번호 발송 성공!"); // 확인 메세지 
+    		model.addAttribute("msg","임시 비밀번호 발송 성공"); // 알림 메세지
+    		return "login";
+    		
+    	// 발송 실패 	
+			} else {
+				System.out.print("임시 비밀번호 발송 실패"); // 확인 메세지 
+				model.addAttribute("msg","임시 비밀번호 발송 실패"); // 알림 메세지
+    		return "find";
+    	}
+    	
     }
     
     

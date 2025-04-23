@@ -45,7 +45,6 @@ class FindID(BaseModel): # 아이디 찾기 모델
     
 class FindPwd(BaseModel): # 비밀번호 찾기 모델
     email: str # 이메일(아이디)
-    new_pwd: str # 임시 비밀번호(새 비밀번호)
 
 
 class Member(MemberBase): # member 테이블의 전체 스키마(MemberBase) 데이터 지정
