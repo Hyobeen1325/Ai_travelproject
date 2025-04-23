@@ -214,57 +214,60 @@ body {
 	line-height: 1.6;
 }
 
-/* 검색 관련 스타일 (이전과 동일) */
 .search-container {
-	display: flex;
-	width: 100%;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	border-radius: 30px;
-	overflow: hidden;
-	background-color: #fff; /* 배경 추가 */
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 999px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 }
 
 .search-input {
-	flex: 1;
-	padding: 15px 20px;
-	border: none;
-	font-size: 16px;
-	outline: none;
+    flex-grow: 1;
+    padding: 14px 20px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background-color: transparent;
+    min-width: 0; /* flex-item 축소 가능하게 함 */
 }
 
-        /* 검색 폼 위치 조정 */
-        .search-form-wrapper {
-            position: absolute;
-            bottom: 30px; /* 하단 간격 */
-            left: 30px;  /* 왼쪽 정렬 */
-            right: 30px; /* 오른쪽 간격 */
-            width: calc(100% - 60px); /* 양쪽 패딩 고려 */
-        }
-		#map {
-		    margin-top: 100px;  /* nav 높이만큼 여백 확보 */
-		}
 .search-button {
-	padding: 15px 25px;
-	background-color: #1a73e8;
-	color: white;
-	border: none;
-	cursor: pointer;
-	font-weight: bold;
-	transition: background-color 0.3s;
+    flex-shrink: 0; /* 버튼이 줄어들지 않도록 고정 */
+    padding: 14px 25px;
+    background-color: #1a73e8;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    border-radius: 0 999px 999px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .search-button:hover {
-	background-color: #155fba;
+    background-color: #155fba;
 }
 
-/* 검색 폼 위치 조정 */
 .search-form-wrapper {
-	position: absolute;
-	bottom: 30px; /* 하단 간격 */
-	left: 30px; /* 왼쪽 정렬 */
-	right: 30px; /* 오른쪽 간격 */
-	width: calc(100% - 60px); /* 양쪽 패딩 고려 */
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    right: 30px;
+    width: calc(100% - 60px);
 }
+
+		#map {
+		    margin-top: 100px;  /* nav 높이만큼 여백 확보 */
+		}
+
+
 .travelAreaInfo {
 	padding:0;
 	margin:0;
@@ -352,11 +355,7 @@ body {
 		
 		<!-- 검색 결과 섹션 -->
 		<div class="query-result">
-			<%-- c:out을 사용하여 XSS 방지 --%>
-			<p>
-				검색어:
-				<c:out value="${param.query}" default="질문 없음" />
-			</p>
+			
 			<div class="ai-response">
 				<h3>AI 응답:</h3>
 				<!--<div class="response-content" id="aiResponseContainer">

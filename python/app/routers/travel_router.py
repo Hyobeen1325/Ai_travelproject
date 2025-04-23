@@ -146,43 +146,22 @@ async def process_jh_message2(
             try:
                 # ✅ high_loc로 chat_log 생성
                 if high_loc2:
-                    created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2)
+                    created_log = chat_service.update_chat_log(mem_email=email, answer=high_loc2, choose_val=request, area_list=area_list)
                     response_data["created_chat_log"] = created_log
 
-                # Chat Log 처리
-                chat_result = chat_service.update_chat_log(mem_email=email, answer=title, choose_val=request, area_list=area_list)
-                if chat_result:
-                    processed_chat_log_id = chat_result.get("chat_log_id")
-
-                # QNA 처리
-                if processed_chat_log_id:
-                    qna_service.create_or_update_qna(
-                        chat_log_id=processed_chat_log_id,
-                        question=message,
-                        answer=response_text
-                    )
-
+                
                 # 모든 데이터 조회 및 리스트 생성
-                all_chat_logs = chat_service.get_chat_logs_by_email(email)
-                chat_log_ids = [log.get("chat_log_id") for log in all_chat_logs if log.get("chat_log_id")]
+                all_chat_logs = chat_service.get_chat_logs_by_email(email)            
 
                 if all_chat_logs:
                     response_data["titles"] = [log.get("title") for log in all_chat_logs if log.get("title")]
                     response_data["upt_dates"] = [log.get("upt_date") for log in all_chat_logs if log.get("upt_date")]
                     response_data["chat_logs"] = all_chat_logs
 
-                # qna 조회
-                all_qna_for_email = qna_service.get_qna_by_email(email)
+                
 
-                if all_qna_for_email:
-                    response_data["questions"] = [qna.get("question") for qna in all_qna_for_email if qna.get("question")]
-                    response_data["answers"] = [qna.get("answer") for qna in all_qna_for_email if qna.get("answer")]
-
-                    # 필터링된 qna 반환 (chat_log_id 매칭)
-                    filtered_qna = [
-                        qna_data for qna_data in all_qna_for_email if qna_data.get("chat_log_id") in chat_log_ids
-                    ]
-                    response_data["qna_data"] = filtered_qna
+               
+                    
 
             except Exception as e:
                 print(f"데이터 조회 실패 (page3): {str(e)}")

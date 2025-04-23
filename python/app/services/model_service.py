@@ -7,6 +7,7 @@ import re
 import random
 import os
 from concurrent.futures import ThreadPoolExecutor
+import unicodedata
 
 class TravelModelService:
     def __init__(self):
