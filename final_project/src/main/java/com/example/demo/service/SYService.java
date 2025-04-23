@@ -125,7 +125,7 @@ public class SYService { // 유저 관리 서비스
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null && response.getBody().containsKey("temp_pwd")) {
                 String temp_pwd = (String) response.getBody().get("temp_pwd");
                 String email = findPwdRequest.getEmail();
-                service.sendEmail(email, "소담여행-임시 비밀번호 발송", 
+                service.sendEmail(email, "[소담여행] - 임시 비밀번호", 
                 		"임시 비밀번호는 " + temp_pwd + "입니다.");
                 return  "임시 비밀번호 발송 완료"; 
             
