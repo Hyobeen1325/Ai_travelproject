@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.dto.FindIDDTO;
-import com.example.demo.dto.FindPwdDTO;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.dto.UpdatePwdDTO;
-import com.example.demo.service.SYService; // member service 
+import com.example.demo.dto.FindIDDTO;
+import com.example.demo.dto.FindPwdDTO;
 
+import com.example.demo.service.SYService; // member service 
 import jakarta.servlet.http.HttpSession; // 세션 관리
-import jakarta.validation.Valid;
+import jakarta.validation.Valid; // 의존성 주입
 
 
 @Controller
