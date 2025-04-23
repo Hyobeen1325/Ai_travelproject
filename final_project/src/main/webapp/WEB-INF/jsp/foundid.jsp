@@ -31,12 +31,13 @@
     }
 
     .result-box {
-      background-color: #f9f9f9; /* 박스 배경색 */
-      border: 1px solid #ddd; /* 박스 테두리 */
-      border-radius: 8px; /* 박스 둥근 모서리 */
-      padding: 20px; /* 박스 내부 여백 */
-      margin-bottom: 20px; /* 아래 요소와의 간격 */
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px; 
+      padding: 20px;
+      margin-bottom: 20px;
       text-align: left;
+      
     }
 
     .result-id {
@@ -49,8 +50,14 @@
       margin-top: 30px;
       text-align: right;
       text-decoration: none;
+      
     }
-
+	
+	  .back-link a {
+      color: #4a90e2;
+      text-decoration: none;
+    }
+    
   </style>
   <script>
     var message = "${msg}";
