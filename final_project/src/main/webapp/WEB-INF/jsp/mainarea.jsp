@@ -232,6 +232,10 @@
                     }
                 });
             }
+            
+            <c:if test="${empty sessionScope.SessionMember.email}">
+         	 location.href = '/login';
+            </c:if>
         });
     </script>
     <jsp:include page="header2.jsp" />

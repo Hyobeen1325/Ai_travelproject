@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.SignupDTO;
 import com.example.demo.service.CHBService;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody; // 추가
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -21,14 +25,27 @@ public class RegisterController {
     @GetMapping("")
     public String getRegisterForm() {
         return "register";
+	}/*
+		 * 
+		 * @PostMapping("/signupProcess")
+		 * 
+		 * @ResponseBody //json 메세지를 가져온다 public ResponseEntity<?>
+		 * signupProcess(@RequestBody SignupDTO signupDTO) { // @RequestBody로 변경 String
+		 * message = service.register(signupDTO);
+		 * 
+		 * return ResponseEntity.ok(message); // 회원 가입 페이지 다시 보여주기
+		 * 
+		 * }
+		 */
+    @GetMapping("/check-email")
+    public ResponseEntity<String> checkEmail(@RequestParam String email) {
+        String exists = service.emailExists(email);
+        return ResponseEntity.ok(exists);
     }
 
-    @PostMapping("/signupProcess")
-    @ResponseBody //json 메세지를 가져온다
-    public ResponseEntity<?> signupProcess(@RequestBody SignupDTO signupDTO) { // @RequestBody로 변경
-        String message = service.register(signupDTO);
-
-            return ResponseEntity.ok(message); // 회원 가입 페이지 다시 보여주기
-        
+    @GetMapping("/check-nickname")
+    public ResponseEntity<String> checkNickname(@RequestParam String nickname) {
+    	String exists = service.nicknameExists(nickname);
+        return ResponseEntity.ok(exists);
     }
 }
