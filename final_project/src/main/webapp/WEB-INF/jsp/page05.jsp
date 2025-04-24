@@ -319,7 +319,7 @@ body {
 							</div>
 							<div class="chatList-title"
 								data-chat-id="${chatList.chat_log_id}">
-								<c:out value="${chatList.title}" />
+								<button class="back-button"><c:out value="${chatList.title}  (${chatList.reg_date})" /></button>
 							</div>
 						</div>
 					</c:forEach>
@@ -332,8 +332,7 @@ body {
 			<div class="travel-info">
 				<!-- 여행 코스 컨테이너 -->
 				<div class="course-container">
-					<!-- 원형 일정 (하드코딩 유지) -->
-					<div class="schedule-circle">당일</div>
+					
 
 					<!-- 파란색 여행 코스 박스 -->
 					<div class="course-box">
@@ -385,7 +384,11 @@ body {
 				<!-- QnA 리스트 영역 (필요한 경우 추가) -->
 				<div id="qnaContainer"></div>
 			</div>
-
+			<div id="globalSpinner" class="spinner-overlay" style="display: none;">
+			  <div class="spinner-border" role="status">
+			    <span class="visually-hidden">Loading...</span>
+			  </div>
+			</div>
 			<!-- 검색 폼 (위치 조정됨) -->
 			<div class="search-form-wrapper">
 				<div class="search-container">
@@ -399,6 +402,13 @@ body {
 	</div>
 
 	<script>
+		function showSpinner() {
+		    $("#globalSpinner").show();
+		}
+		function hideSpinner() {
+		    $("#globalSpinner").hide();
+		}
+		const initialQueryValue = document.getElementById("query").value;
 		$(document).ready(function () {
 		    // chatList.title 클릭 이벤트 핸들링
 		    $(document).on("click", ".chatList-title", function () {
@@ -408,7 +418,8 @@ body {
 		            alert("chat_log_id가 존재하지 않습니다.");
 		            return;
 		        }
-
+				showSpinner();
+				
 		        $.ajax({
 		            url: "/callQna", // SpringBoot Controller의 매핑 주소
 		            method: "GET",
@@ -428,7 +439,10 @@ body {
 		            },
 		            error: function () {
 		                alert("QnA 데이터를 불러오는 중 오류가 발생했습니다.");
-		            }
+		            },
+					complete: function () {
+					            hideSpinner(); // ✅ 로딩 종료
+					        }
 		        });
 		    });
 		}); 
@@ -440,7 +454,8 @@ body {
 				                alert("질문을 입력해주세요.");
 				                return;
 				            }
-
+							showSpinner(); // ✅ 로딩 시작
+							
 				            // 비동기적으로 서버에 요청 보내기
 				            $.ajax({
 				                url: "/chat.do",  // JHController에서 처리되는 URL
@@ -474,8 +489,12 @@ body {
 				                },
 				                error: function() {
 				                    alert("응답 처리 중 오류가 발생했습니다.");
-				                }
+				                },
+								 complete: function () {
+								    hideSpinner(); // ✅ 로딩 종료
+								    }
 				            });
+							document.getElementById("query").value = initialQueryValue;
 							
 				        });
 						// Enter 키를 눌렀을 때 검색 버튼 클릭 이벤트 발생
