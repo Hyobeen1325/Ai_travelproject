@@ -167,7 +167,7 @@ class TravelModelService:
         """사용자 쿼리를 처리하여 Gemini API를 사용하여 응답 생성"""
         try:
             # Use a thread pool to handle the request 
-            prompt = "간단하고 짧게 대답해주세요. 질문: " + query
+            prompt = "간단하고 짧게 대답해주세요. 답변에 이모티콘이나 이모지등을 쓰지말아줘 질문: " + query
             future = self.executor.submit(self.analyze_with_gemini, prompt)
             gemini_response = future.result(timeout=10)  # Set a timeout for the response
             combined_response = f"Gemini: {gemini_response}"
