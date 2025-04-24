@@ -1,5 +1,5 @@
 # app/services/chat_service.py
-from datetime import date
+from datetime import datetime, date
 from typing import Optional, Dict, Any, List
 from sqlalchemy.orm import Session
 from app.models.kjh_models import ChatLog
@@ -17,8 +17,8 @@ class ChatService:
         기존 로그 여부에 상관없이 매번 새로운 chat_log 생성.
         """
         try:
+            current_date2 = datetime.now()
             current_date = date.today()
-
             # 1. title 생성 (answer + ' 여행')
             if answer:
                 trimmed_title = (answer.strip().replace("\n", " ") + " 여행")[:100]
@@ -42,7 +42,7 @@ class ChatService:
                 chat_log_id=new_chat_log_id,
                 mem_email=mem_email,
                 title=trimmed_title,
-                reg_date=current_date,
+                reg_date=current_date2,
                 upt_date=current_date
             )
             self.db.add(new_log)
@@ -98,7 +98,7 @@ class ChatService:
                     "chat_log_id": log.chat_log_id,
                     "mem_email": log.mem_email,
                     "title": log.title,
-                    "reg_date": log.reg_date.strftime("%Y-%m-%d") if log.reg_date else None,
+                    "reg_date": log.reg_date.strftime("%Y-%m-%d %H:%M") if log.reg_date else None,
                     "upt_date": log.upt_date.strftime("%Y-%m-%d") if log.upt_date else None
                 }
                 formatted_results.append(formatted_row)
@@ -136,7 +136,7 @@ class ChatService:
                     "chat_log_id": log.chat_log_id,
                     "mem_email": log.mem_email,
                     "title": log.title,
-                    "reg_date": log.reg_date.strftime("%Y-%m-%d") if log.reg_date else None,
+                    "reg_date": log.reg_date.strftime("%Y-%m-%d %H:%M") if log.reg_date else None,
                     "upt_date": log.upt_date.strftime("%Y-%m-%d") if log.upt_date else None
                 }
             return None

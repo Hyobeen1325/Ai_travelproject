@@ -139,8 +139,7 @@ async def process_jh_message2(
         except Exception as e:
             area_list = {}
             print("지역리스트 json 처리중 에러 발생:", e)
-            
-        processed_chat_log_id = None
+              
 
         if email:
             try:
