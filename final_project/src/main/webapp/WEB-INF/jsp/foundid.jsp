@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -32,12 +31,13 @@
     }
 
     .result-box {
-      background-color: #f9f9f9; 
+      background-color: #f9f9f9;
       border: 1px solid #ddd;
-      border-radius: 8px;
+      border-radius: 8px; 
       padding: 20px;
-      margin-bottom: 20px; 
+      margin-bottom: 20px;
       text-align: left;
+      
     }
 
     .result-id {
@@ -47,15 +47,17 @@
     }
 
     .back-link {
-      text-align: center;
       margin-top: 30px;
       text-align: right;
+      text-decoration: none;
+      
     }
-
-    .back-link a {
+	
+	  .back-link a {
       color: #4a90e2;
       text-decoration: none;
     }
+    
   </style>
   <script>
     var message = "${msg}";
@@ -70,7 +72,7 @@
 <div class="container">
   <h2 class="result-title">아이디 찾기 결과</h2>
   <div class="result-box">
-    <c:if test="${not empty foundID}">
+    <c:if test="${not empty foundid}">
       <p class="result-text">찾으시는 아이디는
       <strong class="result-id">${foundid}</strong> 입니다.</p>
     </c:if>
