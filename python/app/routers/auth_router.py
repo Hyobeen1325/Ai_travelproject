@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends # 라우터 처리, 예외 처리, 의존성 주입
+from fastapi import APIRouter, HTTPException, Depends, Query# 라우터 처리, 예외 처리, 의존성 주입
 from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
 from app.models.sql_member import SQLMember # SQLAlchemy 모델
@@ -41,5 +41,24 @@ async def register_user(user: MemberCreate, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         db.rollback()  # 실패 시 rollback 필수!
         raise HTTPException(status_code=500, detail=f"등록 중 오류 발생: {str(e)}")
+# ✅ 이메일 중복 확인
+@router.get("/check-email", response_model=Member)
+async def check_email(email: str = Query(..., regex="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"),
+                      db: Session = Depends(get_db)):
+    # print("받은 이메일", email)
+    user = db.query(SQLMember).filter(SQLMember.email == email).first()
+    # print("sql 알케미 작동 ", user)
+    if not user:
+        raise HTTPException(status_code=400, detail="해당 이메일로 조회된 회원이 없습니다.")
+    return Member.from_orm(user)
 
+# ✅ 닉네임 중복 확인
+@router.get("/check-nickname", response_model=Member)
+async def check_nickname(nickname: str = Query(..., min_length=2, max_length=20), db: Session = Depends(get_db)):
+    print("받은 닉네임", nickname)
+    user = db.query(SQLMember).filter(SQLMember.nickname == nickname).first()
+    print("sql 알케미 작동", user)
+    if not user:
+        raise HTTPException(status_code=400, detail="이미 존재하는 닉네임입니다.")
+    return Member.from_orm(user)
 

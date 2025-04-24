@@ -254,7 +254,7 @@ body {
             }else if (daysP==2) {
             	document.getElementById("twoDay").classList.add('selected');
             }else if (daysP==3) {
-            	document.getElementById("triDay").classList.add('selected');
+            	document.getElementById("triDay").classList.add('selected');                   
             }
             /*
             if (savedDuration) {
@@ -266,6 +266,11 @@ body {
                 });
             }
             */
+            
+            if(!areaCodeP){
+            	alert("환영합니다\n여행을 계획해보세요")
+            	location.href="/project1"
+            }
         }); 
     </script>   
     <jsp:include page="header2.jsp" />	      

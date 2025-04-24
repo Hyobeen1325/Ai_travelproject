@@ -160,7 +160,7 @@
                 </div>
                 
                 <div class="input-group">
-                    <label for="phone" >휴대폰 번호</label>
+                    <label for="phone" >휴대폰 번호</label> 
                     <input type="tel" id="phon_num" name="phon_num" required>
                 </div>
                 
@@ -203,6 +203,67 @@
 	        });
 	    } 
     </script>
+    <script type="text/javascript">
+    // 이메일 중복 확인
+    document.getElementById("Check_email").addEventListener("click", function () {
+        const email = document.getElementById("email").value;
+        const safeEmail = encodeURIComponent(email);
+        console.log(email)
+        console.log(safeEmail)
+        if (!email) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+        onAjax(safeEmail)
+    });
+    function onAjax(email){
+    	fetch("http://localhost:8000/auth/check-email?email="+email, {
+			method: "GET",
+			headers: {
+			  "Content-Type": "application/json"
+			}
+       	})
+            .then(response => response.json())
+            .then(data => {
+                if (data.email) {
+                    alert("이미 사용 중인 이메일입니다.");
+                } else {
+                    alert("사용 가능한 이메일입니다.");
+                }
+            })
+            .catch(error => console.log("에러 발생:", error));
+    }
+
+    // 닉네임 중복 확인
+    document.getElementById("Check_nickname").addEventListener("click", function () {
+        const nickname = document.getElementById("nickname").value;
+        const safeNickname = encodeURIComponent(nickname);
+        console.log(safeNickname)
+        if (!nickname) {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+        oonAjax(safeNickname)
+    });
+    function oonAjax(nickname){
+    	fetch("http://localhost:8000/auth/check-nickname?nickname="+nickname, {
+			method: "GET",
+			headers: {
+			  "Content-Type": "application/json"
+			}
+       	})
+            .then(response => response.json())
+            .then(data => {
+                if (data.nickname) {
+                    alert("이미 사용 중인 닉네임입니다.");
+                } else {
+                    alert("사용 가능한 닉네임입니다.");
+                }
+            })
+            .catch(error => console.log("에러 발생:", error));
+    }
+</script>
+    
 
     
 </body>
