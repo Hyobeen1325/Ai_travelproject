@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends, Request # 라우터 처리, 예외 처리, 의존성 주입
 from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
@@ -69,6 +70,20 @@ def find_pwd(data: FindPwd, db: Session=Depends(get_db)):
     else: # 발송 실패 
         raise HTTPException(status_code=500, detail="임시 비밀번호 발송에 실패하였습니다.") # 예외 처리
 
+# 관리자 페이지 
+# 전체 회원정보 조회 
+@router.get("/admin")
+def admin_all_member(db: Session=Depends(get_db)): # 전체 member 조회
+    all_member = member_service.all_member(db) # db 조회
+    return all_member # 전체 회원 조회
+
+# 일부 회원정보 조회(이름)
+@router.get("/admin/{name}", response_model=List[MemberBase]) 
+def admin_member_name(name: str, db: Session=Depends(get_db)):
+    user = member_service.get_member_by_name(db, name) # 이름으로 member 조회
+    if not user:
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+    return user
 
 # 마이페이지
 # 내정보 조회
