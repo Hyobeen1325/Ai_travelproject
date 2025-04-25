@@ -16,7 +16,7 @@ def get_member_by_name_and_phon_num(db: Session, name: str, phon_num: str): # �
 # 아이디 찾기
 def find_member_id(db: Session, name: str, phon_num: str): 
     db_member =  get_member_by_name_and_phon_num(db, name, phon_num) # db로 member 조회
-    if db_member : # 이름과 전화번호로 member 조회 
+    if db_member: # 이름과 전화번호로 member 조회 
         return db_member.email # 조회된 아이디 반환
     return None # 조회된 데이터가 없는 경우, 무효화(None) 반환
     
@@ -29,6 +29,18 @@ def find_member_pwd(db: Session, email: str, temp_pwd: FindPwd): # 이메일과 
         db.refresh(db_member) # db에 반영
         return temp_pwd   # 발송 성공
     return None  # 발송 실패, None 반환
+
+
+# 관리자 페이지
+# 전체 회원정보 조회
+def all_member(db: Session): # 전체 member 조회
+    db_member = db.query(SQLMember).all()  # db 조회
+    return db_member 
+
+# 일부 회원정보 조회 (이름)
+def get_member_by_name(db: Session, name: str): # 이름으로 member 조회
+    return db.query(SQLMember).filter(SQLMember.name == name).all() # db 조회
+        
             
 # 마이페이지 
 # 내정보 수정 (이메일, 닉네임, 전화번호)
