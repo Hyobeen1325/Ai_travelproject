@@ -260,6 +260,7 @@ public class JHService {
                 chatList.add(item);
             }
         }
+     // commit추가
 
         return chatList;
     }

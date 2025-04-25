@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class JHRequestDto3 {
 private String message;
 private String email;
+//commit추가
 }
