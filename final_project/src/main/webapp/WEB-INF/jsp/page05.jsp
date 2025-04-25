@@ -342,17 +342,19 @@ body {
 							<%-- 컨트롤러에서 전달된 AI 응답 (여행 코스 관련) --%>
 							<c:forEach var="location" items="${areaListO}" varStatus="status">
 								<hr>
-								<div class="travelAreaInfo">${status.index+1}번째여행지</div>
-								<div class="travelAreaInfo">${location.title}</div>
-								<div class="travelAreaInfo">${location.addr1}</div>
-								<div class="image-container">
-									<div class="spinner-overlay">
-										<div class="spinner-border" role="status">
-											<span class="visually-hidden">Loading...</span>
+								<div onclick="getMapPoint(${location.mapx},${location.mapy})" >
+									<div class="travelAreaInfo">${status.index+1}번째여행지</div>
+									<div class="travelAreaInfo">${location.title}</div>
+									<div class="travelAreaInfo">${location.addr1}</div>
+									<div class="image-container">
+										<div class="spinner-overlay">
+											<div class="spinner-border" role="status">
+												<span class="visually-hidden">Loading...</span>
+											</div>
 										</div>
+										<img class="image" src="${location.firstimage}" alt="여행 이미지"
+											width="270" />
 									</div>
-									<img class="image" src="${location.firstimage}" alt="여행 이미지"
-										width="270" />
 								</div>
 								<c:if test="${status.last}">
 									<hr>
@@ -404,6 +406,17 @@ body {
 
 	<script>
 		<!--commit추가-->
+		function getMapPoint(x,y) {
+			
+		    var moveLatLon = new kakao.maps.LatLng(y, x);
+		    console.log("X좌표 "+x)
+		    console.log("Y좌표 "+y)
+		    map.panTo(moveLatLon) // 좌표이동
+		    console.log("좌표 이동")
+		    
+			map.setLevel(5); // 레벨 5로
+		}
+		
 		function showSpinner() {
 		    $("#globalSpinner").show();
 		}
@@ -571,6 +584,12 @@ body {
 		kakao.maps.event.addListener(marker, 'mouseout', function() {
 		    // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
 		    infowindow.close();
+		});
+		
+		// 마커에 클릭이벤트를 등록합니다
+		kakao.maps.event.addListener(marker, 'click', function() {
+		      // 마커 중심좌표 이동
+		      getMapPoint(x,y);  
 		});
 	}
 
