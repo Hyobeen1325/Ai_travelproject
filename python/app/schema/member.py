@@ -11,10 +11,14 @@ class MemberBase(BaseModel):  # member 테이블 베이스 모델
     phon_num: str  # 전화번호
     reg_date: datetime # 생성일 (기본값 : 현재 시각)
     upt_date: datetime  # 수정일 (기본값 : 현재 시각)
+    
+    class Config: # 일부 회원정보 조회
+        orm_mode = True # orm model 처리 
 
 class LoginModel(BaseModel): # 로그인 모델
     email: str
     pwd: str
+
     
 class MypageModel(BaseModel): # 마이페이지 조회 모델
     email: str # 이메일(아이디)
