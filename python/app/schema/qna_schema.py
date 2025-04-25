@@ -15,3 +15,4 @@ class QnaResponse(BaseModel):
     """QNA 응답 스키마"""
     question: str
     answer: str
+     # commit추가

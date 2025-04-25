@@ -19,3 +19,4 @@ class ChatLogResponse(BaseModel):
     """채팅 로그 응답 스키마"""
     reg_date: str
     title: str
+     # commit추가

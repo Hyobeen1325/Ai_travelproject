@@ -38,7 +38,7 @@ async def process_jh_message(
     try:
         message = request.message
         email = request.email
-
+         # commit추가
         # 모델 응답 생성
         result = model_service.process_chatbot_query(message)
         recommendations_text = "\n".join([f"- {item}" for item in result["recommendations"]])

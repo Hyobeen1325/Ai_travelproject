@@ -171,7 +171,7 @@ class TravelModelService:
             future = self.executor.submit(self.analyze_with_gemini, prompt)
             gemini_response = future.result(timeout=10)  # Set a timeout for the response
             combined_response = f"Gemini: {gemini_response}"
-
+            # commit추가
             return {
                 "recommendations": [combined_response],
                 "confidence_score": 0.9,
