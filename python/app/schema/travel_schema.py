@@ -85,7 +85,7 @@ class JHResponse3(BaseModel):
     answer: Optional[str] = None  # QNA 답변 내용 (선택)
     chat_logs: Optional[List[ChatLogItem]] = None  # 모든 채팅 로그 (선택)
     qna_data: Optional[List[QnaItem]] = None  # 모든 QNA 데이터 (선택)
-
+     # commit추가
 class TravelRecommendationResponse(BaseModel):
     """여행 추천 응답 스키마"""
     recommendations: List[str]

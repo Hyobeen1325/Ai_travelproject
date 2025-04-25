@@ -49,7 +49,7 @@ public class JHController {
         if (email == null || email.trim().isEmpty()) {
             return "redirect:/dummylogin";
         }
-
+        // commit추가
         model.addAttribute("username", email);
         return "page05";
     }

@@ -26,4 +26,5 @@ public class JHResponseDto3 {
 
     @JsonProperty("answers")
     private List<String> answers;
+ // commit추가
 }

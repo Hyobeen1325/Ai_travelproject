@@ -52,6 +52,7 @@ public class JHController2 {
     	} 
     	if(email != null) {
     		return "project1";
+    		
     	}
     	else {
     		return "login";
@@ -64,7 +65,7 @@ public class JHController2 {
     		Model model, HttpSession session) {
         List<CWTravelAPI_01_Item> areaList = new ArrayList<>();
         CWTravelAPI_00_Request tapi_req = new CWTravelAPI_00_Request();
-        
+        // commit추가
         MemberDTO member = (MemberDTO) session.getAttribute("SessionMember");
         String email = member.getEmail();
         

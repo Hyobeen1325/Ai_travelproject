@@ -301,6 +301,7 @@ body {
 </style>
 </head>
 <body>
+	
 	<jsp:include page="header.jsp" />
 	<div class="container">
 		<!-- 왼쪽 섹션 -->
@@ -402,6 +403,7 @@ body {
 	</div>
 
 	<script>
+		<!--commit추가-->
 		function showSpinner() {
 		    $("#globalSpinner").show();
 		}

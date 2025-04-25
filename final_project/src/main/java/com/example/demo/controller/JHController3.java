@@ -42,7 +42,7 @@ public class JHController3 {
         try {
             // 챗봇 응답 데이터 받기
             var resultMap = jhService.getJHResponse3(requestDto);
-
+         // commit추가
             // 응답 내용 저장
             responseMap.put("aiResponse", resultMap.get("response"));
             

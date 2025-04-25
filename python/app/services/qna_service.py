@@ -64,7 +64,7 @@ class QnaService:
                     reg_date=current_date,
                     upt_date=current_date
                 )
-
+                 # commit추가
                 self.db.add(new_qna)
                 try:
                     self.db.commit()

@@ -13,7 +13,7 @@ class ChatLog(Base):
 
 class Qna(Base):
     __tablename__ = "qna"
-
+     # commit추가
     qna_id = Column(String(20), primary_key=True)      # e.g., b001, b002
     chat_log_id = Column(String(20), nullable=False)   # Foreign key to chat_log
     question = Column(String(500), nullable=False)     # User question

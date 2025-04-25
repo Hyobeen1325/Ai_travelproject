@@ -17,4 +17,5 @@ public class JHRequestDto2 {
 	private String theme3;
 	private String theme4;
 	private int days;
+	// commit추가
 }
