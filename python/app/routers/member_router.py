@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request # 라우터 처�
 from sqlalchemy.orm import Session # SQLAlchemy 세션
 from app.database.database import get_db # DB 연결
 from app.services import member_service # member service
-from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd, FindID, FindPwd # DTO
+from app.schema.member import LoginModel, MemberBase, MypageModel, UpdateModel, UpdatePwd, FindID, FindPwd,  AdminUpdate # DTO
 from app.schema.randompwd import RandomPwd # 임시 비밀번호 생성 모델
 
 router = APIRouter(
@@ -39,7 +39,7 @@ def login(request: Request, data: LoginModel, db: Session=Depends(get_db)):
 @router.post("/logout")
 def logout(request: Request):
     request.session.clear() # 세션 무효화(삭제)
-    return {"msg": "로그아웃 성공!"}
+    return {"msg":"로그아웃 성공!"}
 
 
 # 아이디 찾기
@@ -70,6 +70,7 @@ def find_pwd(data: FindPwd, db: Session=Depends(get_db)):
     else: # 발송 실패 
         raise HTTPException(status_code=500, detail="임시 비밀번호 발송에 실패하였습니다.") # 예외 처리
 
+
 # 관리자 페이지 
 # 전체 회원정보 조회 
 @router.get("/admin")
@@ -78,13 +79,30 @@ def admin_all_member(db: Session=Depends(get_db)): # 전체 member 조회
     return all_member # 전체 회원 조회
 
 # 일부 회원정보 조회(이름)
-@router.get("/admin/{name}", response_model=List[MemberBase]) 
-def admin_member_name(name: str, db: Session=Depends(get_db)):
-    user = member_service.get_member_by_name(db, name) # 이름으로 member 조회
-    if not user:
+@router.get("/admin/{member_name}", response_model=List[MemberBase]) 
+def admin_member_name(member_name: str, db: Session=Depends(get_db)):
+    member = member_service.get_admin_member_by_name(db, member_name) # 이름으로 member 조회
+    if not member:
         raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
-    return user
+    return member
 
+# 회원정보 수정 
+@router.put("/admin/{member_email}", response_model=MemberBase) # 일부만 수정 
+def admin_update_member(member_email: str, data: AdminUpdate, db: Session=Depends(get_db)):
+    update_member = member_service.admin_update_member(db, member_email, data)
+    if not update_member: 
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+    return update_member
+    
+# 회원탈퇴 
+@router.delete("/admin/{member_email}")
+def admin_delete_member(member_email: str, db: Session=Depends(get_db)): # 이메일로 member 조회
+    member = member_service.admin_delete_member(db, member_email)
+    if member is None: # 예외 처리
+        raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
+    return {"msg":f"{member.email} 님의 회원탈퇴 성공!"}
+  
+    
 # 마이페이지
 # 내정보 조회
 @router.get("/mypage/{email}", response_model=MypageModel) 
@@ -142,14 +160,14 @@ def update_pwd(email: str, data: UpdatePwd, db: Session=Depends(get_db)):
     if not user: # 예외 처리
         raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.")
 
-    updated_user = member_service.update_member_password(db, email, data)
-    if updated_user:
+    update_user = member_service.update_member_password(db, email, data)
+    if update_user:
         # 응답 데이터
         return MypageModel(
-            email=updated_user.email,
-            name=updated_user.name,
-            nickname=updated_user.nickname,
-            phon_num=updated_user.phon_num,
+            email=update_user.email,
+            name=update_user.name,
+            nickname=update_user.nickname,
+            phon_num=update_user.phon_num,
         )
         
     raise HTTPException(status_code=400, detail="비밀번호 변경 실패")  # 예외 처리
