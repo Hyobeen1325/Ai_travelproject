@@ -12,4 +12,5 @@ public class MemberDTO{ // member 테이블의 유저데이터 모델
     private String phon_num; // 전화번호 
     private LocalDateTime reg_date; //생성일 
     private LocalDateTime upt_date; // 수정일
+    private boolean admin; // 관리자 계정 설정
 }

@@ -245,7 +245,14 @@
     <div class="container">
         <div class="welcome-text">
             <h1 class="welcome-title">Welcome</h1>
-            <h2 class="welcome-subtitle">${sessionScope.SessionMember.name} 님!</h2>
+				<h2 class="welcome-subtitle">
+				    <c:if test="${sessionScope.SessionMember.name != null}">
+				        ${sessionScope.SessionMember.name} 님!
+				    </c:if>
+				    <c:if test="${sessionScope.SessionMember.name == null && sessionScope.kakaologin}">
+				        카카오 계정으로 로그인하셨습니다!
+				    </c:if>
+				    </h2>
             <h3 class="welcome-text">  </h3>
             <p class="welcome-description">
                 AI국내여행 플래너, 소담 여행에 오신 것을 환영합니다.<br>
@@ -305,8 +312,8 @@
         // 페이지 로드 시 별 생성
         window.addEventListener('load', createStars);
         
-        // 로그인 상태 확인
-         <c:if test="${empty sessionScope.SessionMember.email}">
+        // 로그인 상태 확인 (일반 로그인 & kakao 통합 로그인 둘다)
+         <c:if test="${empty sessionScope.SessionMember.email && !sessionScope.kakaologin}">
       	 location.href = '/login';
          </c:if>
     </script>   

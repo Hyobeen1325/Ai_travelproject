@@ -193,7 +193,14 @@ body {
         const sigunguCodeSP = "${param.sigunguCodeS}"
         const daysP = "${param.days}"
         let selectedThemes = new Set();
+        
 
+        window.addEventListener('load', function () { // kakao 세션 유지 추가
+            <c:if test="${empty sessionScope.SessionMember.email && !sessionScope.kakaologin}">
+                location.href = '/login';
+            </c:if>
+			});
+        
         // 테마 선택 이벤트 리스너 추가
         document.querySelectorAll('.location-item').forEach(item => {
             item.addEventListener('click', function() {

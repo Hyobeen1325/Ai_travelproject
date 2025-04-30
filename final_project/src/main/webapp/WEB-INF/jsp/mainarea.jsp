@@ -221,10 +221,14 @@
         });
 
         // 페이지 로드 시 이전에 선택한 지역이 있다면 표시
-        window.addEventListener('load', function() {
+			// 페이지 로드 시 로그인 상태 확인
+        window.addEventListener('load', function() { // kakao 세션 유지 추가
+            <c:if test="${empty sessionScope.SessionMember.email && !sessionScope.kakaologin}">
+                location.href = '/login';
+            </c:if>
              // const savedLocation = localStorage.getItem('selectedDetailLocation');
              //if (savedLocation) {
-            if (areaCodeSP) { 
+            if (areaCodeSP) {
                 document.querySelectorAll('.location-item').forEach(item => {
                     if (item.textContent.trim() === areaCodeSP.trim()) {// savedLocation.trim()
                         item.classList.add('selected');
@@ -232,10 +236,6 @@
                     }
                 });
             }
-            
-            <c:if test="${empty sessionScope.SessionMember.email}">
-         	 location.href = '/login';
-            </c:if>
         });
     </script>
     <jsp:include page="header2.jsp" />

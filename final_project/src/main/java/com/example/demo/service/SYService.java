@@ -1,12 +1,16 @@
 package com.example.demo.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,7 @@ import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.dto.UpdatePwdDTO;
+import com.example.demo.dto.AdminUpDTO;
 import com.example.demo.dto.FindIDDTO; 
 import com.example.demo.dto.FindPwdDTO; 
 
@@ -24,6 +29,9 @@ import com.example.demo.dto.FindPwdDTO;
 public class SYService { // 유저 관리 서비스
     // FastAPI URL
     private static final String Login_URL = "http://localhost:8000/login/member";
+    private static final String Admin_URL = "http://localhost:8000/login/admin";
+    private static final String Admin_Name_URL = "http://localhost:8000/login/admin/{member_name}";
+    private static final String Admin_Email_URL = "http://localhost:8000/login/admin/{member_email}";
     private static final String Logout_URL = "http://localhost:8000/login/logout";
     private static final String FindID_URL = "http://localhost:8000/login/findid";
     private static final String FindPwd_URL = "http://localhost:8000/login/findpwd";
@@ -133,7 +141,7 @@ public class SYService { // 유저 관리 서비스
                 		+"-소담여행 드림-\r\n"
                 		+"\r\n"
                 		+"\r\n"
-                		+"소담여행 사이트 방문하기🌌 : [http://sodam.com]\r\n");
+                		+"소담여행 사이트 방문하기🌌 : http://sodam.com\r\n");
                 return  "임시 비밀번호 발송 완료"; 
             
             // 이메일 유효성 검사
@@ -152,7 +160,127 @@ public class SYService { // 유저 관리 서비스
     	
     }
     
+    // 관리자(admin) 페이지 
+    // 회원정보 조회
+    public List<MemberDTO> adminpage() {
+        try {
+            // FastAPI로 GET 요청 전송
+            ResponseEntity<List<MemberDTO>> response = restTemplate.exchange(
+                    Admin_URL, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<List<MemberDTO>>(){}
+            );
+            return response.getBody();
+
+        } catch (Exception e) { // 예외 처리
+            System.err.println("FastAPI 관리자 페이지 조회 중 오류 발생: "+e.getMessage());
+            return null; // 무효화
+        }
+    }
     
+    // 일부 회원정보 조회 (이름) : 검색용
+    public List<MemberDTO> adminMemberNeme(String memberName){
+        try {
+            // FastAPI로 GET 요청 전송
+            // List : 한 명 이상 조회하는 경우
+            ResponseEntity<List<MemberDTO>> response = restTemplate.exchange(
+                    // restTemplate : 제네릭 타입
+                    // 제너릭 타입 : 프로그래밍 언어에서 타입을 파라미터처럼 사용함.
+                    Admin_Name_URL, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<List<MemberDTO>>(){},
+                    // 제네릭 타입(List) 유지로, 응답 모델 타입 명시함.
+                    memberName // {member_name}
+                    // URI(Admin_Name_URL) 템플릿 변수에 값을 할당함.
+            );
+            return response.getBody();
+    		
+        } catch (HttpClientErrorException e) { // 클라이언트 측 & Http 오류 처리
+            HttpStatusCode statusCode = e.getStatusCode();
+            if (statusCode == HttpStatus.NOT_FOUND) { // 404 에러 : 리소스를 찾을 수 없음
+                System.err.println("FastAPI 관리자 페이지 회원정보 이름으로 조회 실패로, 존재하지 않는 회원 : "
+                        + "(상태 코드 :" + statusCode.value() + ")"); // 상태 코드 확인
+                return null; // 무효화
+            } else { // 404 이외, 서버 또는 통신 관련 오류 예외 처리
+                System.err.print("FastAPI 관리자 페이지 회원정보 이름으로 조회 중 Http 오류 발생 : "
+                        + "(상태 코드: " + statusCode.value()
+                        + ", 메시지: " + e.getMessage() + ")");
+                return null; // 무효화
+            }
+
+        } catch (Exception e) { // 예외 처리
+            System.err.println("FastAPI 관리자 페이지 회원정보 이름으로 조회 중 오류 발생: "+e.getMessage());
+            return null; // 무효화
+        }
+    }
+    
+ // 회원정보 수정
+    public MemberDTO updateAdminMember(String memberEmail, AdminUpDTO updateRequest) {
+        try {
+            // HTTP 요청 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON); // JSON 형식으로 반환
+
+            // 요청 데이터(body)와 헤더(header)를 포함한 엔티티 생성
+            HttpEntity<AdminUpDTO> requestEntity = new HttpEntity<>(updateRequest, headers);
+
+            // FastAPI로 PUT 요청 전송
+            ResponseEntity<MemberDTO> response = restTemplate.exchange(
+                    Admin_Email_URL, HttpMethod.PUT, requestEntity,
+                    MemberDTO.class, memberEmail // URL 경로 변수에 값 할당
+            );
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+            HttpStatusCode statusCode = e.getStatusCode();
+            if (statusCode == HttpStatus.NOT_FOUND) { // 404 에러 : 리소스를 찾을 수 없음
+                System.err.println("FastAPI 관리자 페이지 회원정보 수정 실패: 존재하지 않는 회원 (상태 코드: " + statusCode.value() + ")");
+                return null; // 무효화
+            } else { // 404 이외, 서버 또는 통신 관련 에러 예외 처리
+                System.err.println("FastAPI 관리자 페이지 회원정보 수정 중 HTTP 오류 발생: (상태 코드: " + statusCode.value() + ", 메시지: " + e.getMessage() + ")");
+                return null; // 무효화
+            }
+
+        } catch (Exception e) { // 예외 처리
+            System.err.println("FastAPI 관리자 페이지 회원정보 수정 중 오류 발생: " + e.getMessage());
+            return null; // 무효화
+        }
+    }
+    
+    // 회원 탈퇴 (삭제)
+    /*
+    public boolean deleteAdminMember(String memberEmail) {
+        try {
+            // <Map> : {"msg":"메세지 내용"}
+            // FastAPI에서 DELETE 요청
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    Admin_Email_URL, HttpMethod.DELETE, null,
+                    Map.class, memberEmail // URL 경로 변수에 값 할당
+            );
+            // http 응답 코드 범위로 탈퇴 여부 확인
+            HttpStatusCode statusCode = response.getStatusCode();
+            if (statusCode.is2xxSuccessful()) {
+                return true;
+            } else {
+                // FastAPI에서 실패 시 특정 메시지를 반환하는 경우 확인
+                if (response.getBody() != null && response.getBody().containsKey("msg")) {
+                    System.err.println("FastAPI 회원 탈퇴 실패: " + response.getBody().get("msg"));
+                } else {
+                    System.err.println("FastAPI 회원 탈퇴 실패: 상태 코드 " + statusCode.value());
+                }
+                return false;
+            }
+
+        } catch (HttpClientErrorException e) {
+            HttpStatusCode statusCode = e.getStatusCode();
+            System.err.println("FastAPI 관리자 회원 탈퇴 오류 (상태 코드: " + statusCode.value() + ", 메시지: " + e.getResponseBodyAsString() + ")");
+            return false;
+
+        } catch (Exception e) {
+            System.err.println("FastAPI 관리자 회원 탈퇴 중 오류 발생: " + e.getMessage());
+            return false;
+        }
+    }
+*/
+
     // 마이페이지
     // 내정보 조회
     public MemberDTO mypage(String email) { 
@@ -166,7 +294,6 @@ public class SYService { // 유저 관리 서비스
             return null; // 무효화
         }
     }
-
 
     // 내정보 수정
     public MemberDTO updateMypage(String email, MypageUpDTO updateRequest) {

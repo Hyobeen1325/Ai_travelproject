@@ -169,7 +169,12 @@ body {
         const sigunguCodeP = "${param.sigunguCode}"
         const sigunguCodeSP = "${param.sigunguCodeS}"
         const daysP = "${param.days}"
-
+        
+        	window.addEventListener('load', function () { // kakao 세션 유지
+                <c:if test="${empty sessionScope.SessionMember.email && !sessionScope.kakaologin}">
+                    location.href = '/login';
+                </c:if>
+        	 });
         // 지역 선택 이벤트 리스너 추가
         document.querySelectorAll('.location-item').forEach(item => {
             item.addEventListener('click', function() {
