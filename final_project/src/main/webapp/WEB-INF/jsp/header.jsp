@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         nav {
-            /*position: fixed;*/
             top: 0;
             left: 0;
             width: 100%;
@@ -69,7 +68,7 @@
             position: fixed;
             top: 0;
             right: -300px;
-            width: 150px;
+            width: 180px; /* Adjusted width to accommodate admin link */
             height: 100%;
             background-color: #ffffff;
             box-shadow: -2px 0 12px rgba(0, 0, 0, 0.1);
@@ -139,11 +138,14 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
         }
+
+        .admin-link {
+            color: #dc3545;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-<script>
-    </script>
     <nav>
         <div class="nav-container">
             <a href="/project1"><img src="<c:url value='/image/logo.png'/>" alt="Logo" class="logo-img"></img></a>
@@ -161,16 +163,19 @@
         <ul>
             <li><a href="/project1">메인홈</a></li>
             <li>
-            <!-- kakako 계정 마이페이지 접근 거부 설정 -->
-                <c:choose>
-                    <c:when test="${sessionScope.kakaologin == true}">
-                        <a onclick="alert('kakao 계정은 마이페이지에 대한 접근 권한이 없습니다.'); location.href='/login'; return false;">마이페이지</a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="/login/mypage/${sessionScope.SessionMember.email}">마이페이지</a>
-                    </c:otherwise>
-                </c:choose>
+            <c:choose>
+                <%-- kakao 계정 자체적인 세션 처리 불가능으로, 접근 거부로 설정함. --%>
+                <c:when test="${sessionScope.kakaologin == true}">
+                    <a onclick="alert('kakao 계정은 마이페이지에 대한 접근 권한이 없습니다.'); location.href='/login'; return false;">마이페이지</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/login/mypage/${sessionScope.SessionMember.email}">마이페이지</a>
+                </c:otherwise>
+            </c:choose>
             </li>
+            <c:if test="${sessionScope.SessionMember.email == 'admin@email.com'}">
+                <li><a href="/login/admin" class="admin-link">관리자 페이지</a></li>
+                </c:if>
             <li>
                 <a onclick="document.forms['logoutForm'].submit();" class="logout-link">
                     <i class="fas fa-sign-out-alt"></i> 로그아웃
@@ -199,7 +204,6 @@
                 }, 300);
             }
         };
-
     </script>
 </body>
 </html>

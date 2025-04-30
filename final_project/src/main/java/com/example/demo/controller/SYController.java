@@ -1,21 +1,27 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.MypageUpDTO;
 import com.example.demo.dto.UpdatePwdDTO;
+import com.example.demo.dto.AdminUpDTO;
 import com.example.demo.dto.FindIDDTO;
 import com.example.demo.dto.FindPwdDTO;
 
@@ -39,8 +45,15 @@ public class SYController { // 유저 관리 컨트롤러
     // Member Service
     @Autowired
     private SYService service;
+    
+    // 관리자 아이디 설정 
+    private static final String Admin_Email = "admin@email.com";
+    // 관리자 권한 확인 
+    private boolean isAdmin(MemberDTO AdminMember) {
+        return AdminMember != null && AdminMember.getEmail().equals(Admin_Email);
+    }
 
-
+    
     // 로그인 페이지
     // http://localhost:8080/login
     
@@ -72,6 +85,7 @@ public class SYController { // 유저 관리 컨트롤러
         return "register"; // /WEB-INF/jsp/register.jsp
     }
 
+    
     // 아이디 찾기/비밀번호 찾기 페이지 
     // http://localhost:8080/login/find
     @GetMapping("/find")
@@ -179,8 +193,98 @@ public class SYController { // 유저 관리 컨트롤러
         return "redirect:/login"; 
     }
 
+    
+    // 관리자 페이지
+    // http://localhost:8080/login/admin
+    @GetMapping("/admin")
+    public String adminPage(Model model, @SessionAttribute(name = "SessionMember", required = false) MemberDTO AdminMember) {
+        if (!isAdmin(AdminMember)) {
+            model.addAttribute("msg", "관리자 권한이 필요합니다.");
+            return "redirect:/login";
+        }
+        List<MemberDTO> memberList = service.adminpage();
+        model.addAttribute("member", memberList);
+        return "adminpage"; // 관리자 페이지
+    }
 
-    // 마이 페이지 
+    // 일부 회원정보 조회 (이름) : 검색용 
+    @GetMapping("/admin/name")
+    public String AdminMember(@RequestParam("memberName") String memberName, Model model,
+                              @SessionAttribute(name = "SessionMember", required = false) MemberDTO AdminMember) {
+        if (!isAdmin(AdminMember)) {
+            model.addAttribute("msg", "관리자 권한이 필요합니다.");
+            return "redirect:/login";
+        }
+        List<MemberDTO> memberlist = service.adminMemberNeme(memberName);
+        model.addAttribute("member", memberlist);
+        return "adminpage";
+    }
+
+    // 회원정보 조회 (수정)
+    @GetMapping("/admin/{memberEmail}")
+    public String updateAdminForm(@PathVariable("memberEmail") String memberEmail, Model model,
+                                  @SessionAttribute(name = "SessionMember", required = false) MemberDTO AdminMember) {
+        if (!isAdmin(AdminMember)) {
+            model.addAttribute("msg", "관리자 권한이 필요합니다.");
+            return "redirect:/login";
+        }
+        MemberDTO member = service.mypage(memberEmail); // mypage 메소드 재활용 (단일 회원 조회)
+        if (member != null) {
+            model.addAttribute("member", member);
+            return "admin/updateadmin"; // 수정 폼 페이지
+        } else {
+            model.addAttribute("msg", "해당 회원의 정보를 찾을 수 없습니다.");
+            return "redirect:/login/admin";
+        }
+    }
+
+    // 회원정보 수정
+    @PostMapping("/admin/{memberEmail}")
+    public String updateAdmin(@PathVariable("memberEmail") String memberEmail, @ModelAttribute AdminUpDTO updateMember,
+                              Model model, @SessionAttribute(name = "SessionMember", required = false) MemberDTO AdminMember) {
+        if (!isAdmin(AdminMember)) {
+            model.addAttribute("msg", "관리자 권한이 필요합니다.");
+            return "redirect:/login";
+        }
+        MemberDTO updatedMember = service.updateAdminMember(memberEmail, updateMember);
+        if (updatedMember != null) {
+            model.addAttribute("msg", "회원 정보 수정 성공"); // 성공 메시지 전달
+            return "redirect:/login/admin";
+        } else {
+            model.addAttribute("msg", "회원 정보 수정 실패"); // 실패 메시지 전달
+            MemberDTO originalMember = service.mypage(memberEmail);
+            model.addAttribute("member", originalMember); // 기존 정보 다시 전달
+            return "admin/updateadmin"; // 수정 폼으로 리다이렉트
+        }
+    }
+
+    // 회원탈퇴 (삭제)
+/*
+    @DeleteMapping("/admin/{memberEmail}")
+    public String deleteAdmin(@PathVariable("memberEmail") String memberEmail,
+                              @SessionAttribute(name = "SessionMember", required = false) MemberDTO AdminMember,
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+        if (!isAdmin(AdminMember)) {
+            redirectAttributes.addFlashAttribute("msg", "관리자 권한이 필요합니다.");
+            return "redirect:/login";
+        }
+        boolean deleted = service.deleteAdminMember(memberEmail);
+        if (deleted) {
+            model.addAttribute("msg", "회원탈퇴 성공");
+            redirectAttributes.addFlashAttribute("msg", "회원탈퇴 성공");
+        } else {
+            model.addAttribute("msg", "회원탈퇴 실패");
+            redirectAttributes.addFlashAttribute("msg", "회원탈퇴 실패");
+
+        }
+        return "redirect:/login/admin";
+    }
+*/
+
+
+    
+    // 마이페이지 
     // 내정보 조회
     @GetMapping("/mypage/{email}")
     public String mypage(@PathVariable("email") String email, HttpSession session, Model model) {
