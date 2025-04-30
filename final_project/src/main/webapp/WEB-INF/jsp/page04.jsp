@@ -10,6 +10,14 @@
     }
     request.setAttribute("username", username);
 
+    // 카카오 로그인 세션 유지 및 사용자 이름 처리 추가
+    String kakaoNickname = (String) session.getAttribute("kakaoNickname"); // 카카오 닉네임 세션에서 가져오기
+    if (kakaoNickname != null && !kakaoNickname.isEmpty()) {
+        username = kakaoNickname + "님"; // 카카오 닉네임이 있으면 username으로 설정
+    } else if (username != null && !username.equals("방문자")) {
+        username = username + "님"; // 일반 로그인 사용자인 경우 "님" 추가
+    }
+
     // 더미 데이터 또는 컨트롤러에서 전달된 데이터 (실제로는 컨트롤러에서 모델에 담아 전달)
     // request.setAttribute("aiResponse2", "AI 응답 내용..."); // 여행 코스 박스용 AI 응답
     // request.setAttribute("latitude", 37.5665); // 예시 위도

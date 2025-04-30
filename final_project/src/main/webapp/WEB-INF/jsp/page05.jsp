@@ -2,6 +2,23 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%-- JSTL core 태그 라이브러리 선언 --%>
+<%
+    // 세션에서 email 가져오기 (실제 로그인 구현에 따라 키가 다를 수 있음)
+    String username = (String) session.getAttribute("email");
+    // email이 없으면 기본값 또는 로그인 페이지로 리다이렉트 등의 처리 필요
+    if (username == null) {
+        username = "방문자"; // 예시 기본값
+    }
+    request.setAttribute("username", username);
+
+    // 카카오 로그인 세션 유지 및 사용자 이름 처리 추가
+    String kakaoNickname = (String) session.getAttribute("kakaoNickname"); // 카카오 닉네임 세션에서 가져오기
+    if (kakaoNickname != null && !kakaoNickname.isEmpty()) {
+        username = kakaoNickname + "님"; // 카카오 닉네임이 있으면 username으로 설정
+    } else if (username != null && !username.equals("방문자")) {
+        username = username + "님"; // 일반 로그인 사용자인 경우 "님" 추가
+    }
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

@@ -151,8 +151,11 @@
         const areaCodeSP = "${param.areaCodeS}"
         const sigunguCodeSP = "${param.sigunguCodeS}"
         
-	    window.addEventListener('load', function () {
-	        let selectedLocation = null;
+    	    window.addEventListener('load', function () { // kakao 세션 유지 추가
+                <c:if test="${empty sessionScope.SessionMember.email && !sessionScope.kakaologin}">
+                    location.href = '/login';
+                </c:if>
+    	        let selectedLocation = null;
 	
 	        // 이전에 선택한 지역 표시
 	        // const savedLocation = localStorage.getItem('selectedDetailLocation');
