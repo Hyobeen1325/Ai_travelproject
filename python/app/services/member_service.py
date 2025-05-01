@@ -64,6 +64,7 @@ def admin_update_member(db: Session, member_email: str, update_data : AdminUpdat
     return None # 수정된 데이터가 없는 경우, None 반환(업데이트 실패)
             
 # 회원탈퇴 (이메일)
+""" 
 def admin_delete_member(db: Session, member_email: str): # 이메일로 회원탈퇴 
     db_member = get_admin_member_by_email(db, member_email) # db로 member 조회 
     if db_member: 
@@ -71,7 +72,7 @@ def admin_delete_member(db: Session, member_email: str): # 이메일로 회원�
         db.commit()
         return db_member
     return None # 탈퇴회원 데이터 없는 경우, None 반환(탈퇴 실패) 
- 
+"""
             
 # 마이페이지 
 # 내정보 수정 (이메일, 닉네임, 전화번호)

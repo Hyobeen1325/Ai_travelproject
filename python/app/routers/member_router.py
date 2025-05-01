@@ -95,14 +95,14 @@ def admin_update_member(member_email: str, data: AdminUpdate, db: Session=Depend
     return update_member
     
 # 회원탈퇴 
+"""
 @router.delete("/admin/{member_email}")
 def admin_delete_member(member_email: str, db: Session=Depends(get_db)): # 이메일로 member 조회
     member = member_service.admin_delete_member(db, member_email)
     if member is None: # 예외 처리
         raise HTTPException(status_code=404, detail="존재하지 않는 회원입니다.") # 예외 처리
     return {"msg":f"{member.email} 님의 회원탈퇴 성공!"}
-  
-    
+"""  
 # 마이페이지
 # 내정보 조회
 @router.get("/mypage/{email}", response_model=MypageModel) 
